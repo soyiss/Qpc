@@ -20,7 +20,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
     }
 
-    // 시큐리티 쓸때 우리가 써야하는 비번을 콘솔창에 보여줌
+    // 회원가입할때 비밀번호를 암호화함
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

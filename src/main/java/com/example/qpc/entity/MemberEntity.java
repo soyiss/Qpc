@@ -1,8 +1,11 @@
 package com.example.qpc.entity;
 
+import com.example.qpc.dto.MemberDTO;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.management.relation.Role;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +14,7 @@ import java.util.List;
 @Setter
 @Getter
 @Table(name = "member_table")
+@Builder
 public class MemberEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +43,9 @@ public class MemberEntity extends BaseEntity{
     @Column
     private int totalTime;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ProductEntity> productEntityList = new ArrayList<>();
 
@@ -59,6 +66,21 @@ public class MemberEntity extends BaseEntity{
 
     @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ChatEntity> chatEntityList = new ArrayList<>();
+
+    public static MemberEntity toEntity(MemberDTO memberDTO) {
+        MemberEntity memberEntity = MemberEntity.builder()
+                .memberId(memberDTO.getMemberId())
+                .memberPassword(memberDTO.getMemberPassword())
+                .memberName(memberDTO.getMemberName())
+                .memberEmail(memberDTO.getMemberEmail())
+                .memberMobile(memberDTO.getMemberMobile())
+                .memberBirth(memberDTO.getMemberBirth())
+                .overTime(memberDTO.getOverTime())
+                .totalTime(memberDTO.getTotalTime())
+                .role(memberDTO.getRole())
+                .build();
+        return memberEntity;
+    }
 
 
 }
