@@ -12,9 +12,8 @@ public class RoleDTO {
     private String name;
 
 
-    public RoleDTO toDTO(RoleEntity roleEntity) {
-        RoleDTO roleDTO = new RoleDTO(roleEntity.name());
-        return roleDTO;
+    public enum RoleEntity {
+        ROLE_MEMBER, ROLE_ADMIN, ROLE_GUEST
     }
 
 }
