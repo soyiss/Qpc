@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:replace="component/config :: config"></th:block>
+</head>
+<body>
+<div class="container" style="height: 300px"></div>
+<div class="container">
+    <form action="/member/save" method="post">
+        <!--        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="member-email" name="memberEmail"
+                   placeholder="name@example.com">
+            <label for="member-email">Email address</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="member-id" name="memberId" placeholder="memberId">
+            <label for="member-id">아이디</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="member-password" name="memberPassword"
+                   placeholder="memberPassword">
+            <label for="member-password">비밀번호</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="member-name" name="memberName" placeholder="memberId">
+            <label for="member-name">이름</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="date" class="form-control" id="member-birth" name="memberBirth" placeholder="memberBirth">
+            <label for="member-birth">생년월일</label>
+        </div>
+        <input type="submit" value="회원가입" class="btn btn-primary">
+    </form>
+</div>
+<div class="container">
+    <button class="btn btn-primary" onclick="emailCheck()">이메일 체크</button>
+    <div id="email-check" style="display: none">
+        <div class="row">
+            <div class="col">
+                <input type="text" class="form-control" name="inputCode" placeholder="인증번호 입력">
+                <input type="hidden" name="code">
+                <h5 id="input-code-bottom"></h5>
+            </div>
+            <div class="col">
+                <button class="form-control" onclick="emailFinalCheck()">인증번호 확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script th:inline="javascript">
+    const emailCheck = () => {
+        document.getElementById("email-check").style.display = "block";
+        const email = document.querySelector('input[name="memberEmail"]').value;
+        axios({
+            method: "post",
+            url: "/memberSave/mailConfirm",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data: {
+                email: email
+            }
+        }).then(res => {
+            alert("이메일로 인증번호가 발송되었습니다.");
+            document.querySelector('input[name="code"]').value = res.data;
+        }).catch(err => {
+            console.log("실패");
+        })
+    }
+
+    const emailFinalCheck = () => {
+        const typingCode = document.querySelector('input[name="inputCode"]').value;
+        const trueCode = document.querySelector('input[name="code"]').value;
+        const result = document.getElementById("input-code-bottom");
+
+        if(typingCode == trueCode) {
+            result.innerText = "인증완료";
+            result.style.color="green";
+        }else {
+            result.innerText = "인증코드 불일치";
+            result.style.color="red";
+        }
+    }
+
+
+</script>
+</html>

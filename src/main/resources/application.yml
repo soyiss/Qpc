@@ -1,0 +1,40 @@
+# server port
+# server.port=8082
+server:
+  port: 8090
+
+# data base
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db_test?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: user_test
+    password: 1234
+
+  # thymeleaf
+  thymeleaf:
+    cache: false
+
+  # file size
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  # spring data jpa
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+
+# db query log
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: trace
+        type:
+          descriptor:
+            sql:
+              BasicBinder: trace
