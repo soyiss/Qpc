@@ -27,7 +27,7 @@ public class MemberEntity extends BaseEntity{
     @Column(length = 20,nullable = false)
     private String memberName;
 
-    @Column(length = 50,nullable = false)
+    @Column(length = 50,nullable = false,unique = true)
     private String memberEmail;
 
     @Column(length = 20,nullable = false)
