@@ -9,11 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoleDTO {
-    private String name;
-
-
-    public enum RoleEntity {
-        ROLE_MEMBER, ROLE_ADMIN, ROLE_GUEST
-    }
-
+    private RoleEntity role;
 }
