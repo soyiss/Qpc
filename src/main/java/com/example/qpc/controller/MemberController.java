@@ -2,17 +2,22 @@ package com.example.qpc.controller;
 
 
 import com.example.qpc.dto.MemberDTO;
+import com.example.qpc.entity.RoleEntity;
 import com.example.qpc.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
@@ -21,6 +26,7 @@ import javax.validation.Valid;
 public class MemberController {
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
     @PostMapping("/save")
     public String memberSave(@Valid MemberDTO memberDTO, BindingResult bindingResult, Model model) {
@@ -32,6 +38,7 @@ public class MemberController {
         }
         try {
             MemberDTO member = MemberDTO.createMember(memberDTO,passwordEncoder);
+            member.setRole(RoleEntity.ROLE_MEMBER);
             memberService.saveMember(member);
             System.out.println(2);
         } catch (IllegalStateException e) {
@@ -42,18 +49,24 @@ public class MemberController {
         System.out.println(4);
         return "redirect:/";
     }
-//
-//    @PostMapping("/save")
-//    public String memberSave(@ModelAttribute MemberDTO memberDTO) {
-//        UserDTO userDTO = userService.save();
-//        memberDTO.setUserId(userDTO.getId());
-//        // 회원이 작성한 비번을 시큐리티로 해서 변환해줌
-//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-//        memberDTO.setSalt(passwordEncoder.encode(memberDTO.getMemberPassword()));
-//
-//        System.out.println("memberDTO = " + memberDTO);
-//
-//        memberService.save(memberDTO,userDTO);
-//        return "index";
-//    }
+
+    @GetMapping("/login")
+    public String memberLoginForm(Model model) {
+        model.addAttribute("memberDTO", new MemberDTO());
+        return "/memberLogin";
+    }
+
+    @GetMapping("/login/error")
+    public String loginError(Model model) {
+        model.addAttribute("memberDTO", new MemberDTO());
+        model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인해주세요.");
+        return "/memberLogin";
+    }
+
+    @PostMapping("/login")
+    public String memberLogin(@ModelAttribute MemberDTO memberDTO) {
+        System.out.println("memberDTO = " + memberDTO);
+        return "index";
+    }
+
 }
