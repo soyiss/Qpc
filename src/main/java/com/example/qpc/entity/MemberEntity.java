@@ -41,8 +41,10 @@ public class MemberEntity extends BaseEntity{
     @Column
     private int totalTime;
 
-//    @Enumerated(EnumType.STRING)
-//    private Role role;
+    @Enumerated(EnumType.STRING)
+    private RoleEntity role;
+
+
 
     @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ProductEntity> productEntityList = new ArrayList<>();
@@ -65,20 +67,19 @@ public class MemberEntity extends BaseEntity{
     @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ChatEntity> chatEntityList = new ArrayList<>();
 
-//    public static MemberEntity toEntity(MemberDTO memberDTO) {
-//        MemberEntity memberEntity = MemberEntity.builder()
-//                .memberId(memberDTO.getMemberId())
-//                .memberPassword(memberDTO.getMemberPassword())
-//                .memberName(memberDTO.getMemberName())
-//                .memberEmail(memberDTO.getMemberEmail())
-//                .memberMobile(memberDTO.getMemberMobile())
-//                .memberBirth(memberDTO.getMemberBirth())
-//                .overTime(memberDTO.getOverTime())
-//                .totalTime(memberDTO.getTotalTime())
-//                .role(memberDTO.getRole())
-//                .build();
-//        return memberEntity;
-//    }
+    public static MemberEntity toEntity(MemberDTO memberDTO) {
+        MemberEntity memberEntity = new MemberEntity();
+        memberEntity.setMemberId(memberDTO.getMemberId());
+        memberEntity.setMemberPassword(memberDTO.getMemberPassword());
+        memberEntity.setMemberName(memberDTO.getMemberName());
+        memberEntity.setMemberEmail(memberDTO.getMemberEmail());
+        memberEntity.setMemberMobile(memberDTO.getMemberMobile());
+        memberEntity.setMemberBirth(memberDTO.getMemberBirth());
+        memberEntity.setOverTime(memberDTO.getOverTime());
+        memberEntity.setTotalTime(memberDTO.getTotalTime());
+        memberEntity.setRole(memberDTO.getRole());
+        return memberEntity;
+    }
 
 
 }

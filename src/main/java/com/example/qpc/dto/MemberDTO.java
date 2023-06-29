@@ -1,5 +1,7 @@
 package com.example.qpc.dto;
 
+import com.example.qpc.entity.MemberEntity;
+import com.example.qpc.entity.RoleEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,7 +29,7 @@ public class MemberDTO {
     private String createAt; //생성시간
     private String updateAt; //수정시간
 
-    private Role role; // 관리자 권한주는 필드
+    private RoleEntity role; // 관리자 권한주는 필드
 
 
 }
