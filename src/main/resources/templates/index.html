@@ -6,30 +6,45 @@
 <body>
 <div class="container" style="height: 300px"></div>
 <div class="container">
-    <form action="/member/save" method="post">
+    <form action="/member/save" method="post" th:object="${memberDTO}">
         <!--        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
         <div class="form-floating mb-3">
             <input type="email" class="form-control" id="member-email" name="memberEmail"
-                   placeholder="name@example.com">
-            <label for="member-email">Email address</label>
+                   th:field="*{memberEmail}" placeholder="name@example.com">
+            <label for="member-email">이메일 주소</label>
+            <p style="color: red" th:if="${#fields.hasErrors('memberEmail')}" th:errors="*{memberEmail}" class="fieldError"></p>
         </div>
         <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="member-id" name="memberId" placeholder="memberId">
+            <input type="text" class="form-control" id="member-id" name="memberId"
+                   th:field="*{memberId}" placeholder="memberId">
             <label for="member-id">아이디</label>
+            <p style="color: red" th:if="${#fields.hasErrors('memberId')}" th:errors="*{memberId}" class="fieldError"></p>
         </div>
         <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="member-password" name="memberPassword"
-                   placeholder="memberPassword">
+            <input type="password" class="form-control" id="member-password" name="memberPassword"
+                   th:field="*{memberPassword}" placeholder="memberPassword">
             <label for="member-password">비밀번호</label>
+            <p style="color: red" th:if="${#fields.hasErrors('memberPassword')}" th:errors="*{memberPassword}" class="fieldError"></p>
         </div>
         <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="member-name" name="memberName" placeholder="memberId">
+            <input type="text" class="form-control" id="member-name" name="memberName"
+                   th:field="*{memberName}" placeholder="memberName">
             <label for="member-name">이름</label>
+            <p style="color: red" th:if="${#fields.hasErrors('memberName')}" th:errors="*{memberName}" class="fieldError"></p>
         </div>
         <div class="form-floating mb-3">
-            <input type="date" class="form-control" id="member-birth" name="memberBirth" placeholder="memberBirth">
+            <input type="date" class="form-control" id="member-birth" name="memberBirth"
+                   th:field="*{memberBirth}" placeholder="memberBirth">
             <label for="member-birth">생년월일</label>
+            <p style="color: red" th:if="${#fields.hasErrors('memberBirth')}" th:errors="*{memberBirth}" class="fieldError"></p>
         </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="member-mobile" name="memberMobile"
+                   th:field="*{memberMobile}" placeholder="memberMobile">
+            <label for="member-mobile">전화번호</label>
+            <p style="color: red" th:if="${#fields.hasErrors('memberMobile')}" th:errors="*{memberMobile}" class="fieldError"></p>
+        </div>
+
         <input type="submit" value="회원가입" class="btn btn-primary">
     </form>
 </div>
