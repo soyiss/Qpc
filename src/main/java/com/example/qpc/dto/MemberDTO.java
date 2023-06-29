@@ -12,6 +12,8 @@ import javax.management.relation.Role;
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 @Data
 @AllArgsConstructor
@@ -20,12 +22,26 @@ import javax.persistence.OneToMany;
 public class MemberDTO {
 
     private Long id; //회원번호
+
+    @NotBlank(message = "아이디는 필수 입력입니다.")
     private String memberId; //아이디
+
+    @NotBlank(message = "비밀번호는 필수 입력입니다.")
     private String memberPassword; //비밀번호
+
+    @NotBlank(message = "이름은 필수 입력입니다.")
     private String memberName; //이름
+
+    @NotBlank(message = "이메일은 필수 입력입니다.")
+    @Email(message = "이메일 형식으로 입력해주세요.")
     private String memberEmail; //이메일
+
+    @NotBlank(message = "전화번호는 필수 입력입니다.")
     private String memberMobile; //전화번호
+
+    @NotBlank(message = "생년월일은 필수 입력입니다.")
     private String memberBirth; //생년월일
+
     private int overTime; //잔여시간
     private int totalTime; //총시간
     private String createAt; //생성시간
