@@ -76,6 +76,18 @@ public class MemberDTO {
         return member;
     }
 
+    public static MemberDTO toDTO(MemberEntity memberEntity) {
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setMemberId(memberEntity.getMemberId());
+        memberDTO.setMemberPassword(memberEntity.getMemberPassword());
+        memberDTO.setMemberName(memberEntity.getMemberName());
+        memberDTO.setMemberEmail(memberEntity.getMemberEmail());
+        memberDTO.setMemberBirth(memberEntity.getMemberBirth());
+        memberDTO.setMemberMobile(memberEntity.getMemberMobile());
+        memberDTO.setRole(memberEntity.getRole());
+        return memberDTO;
+    }
+
 
 
 
