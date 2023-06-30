@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +21,25 @@ public class MemberService implements UserDetailsService {
     // @Transactional = 로직을 처리하다 에러가 발생하면 변경된 데이터를 로직을 수행하기 이전 상태로 롤백
 
 
+    // 회원가입 코드
     public MemberEntity saveMember(MemberDTO memberDTO) {
-        validateDuplicateMemberEntity(memberDTO);
+        // 회원가입시 이메일 , 아이디 중복 체크
+        validateDuplicateMemberEmail(memberDTO);
+        validateDuplicateMemberId(memberDTO);
         return memberRepository.save(MemberEntity.toEntity(memberDTO));
     }
 
-    private void validateDuplicateMemberEntity(MemberDTO memberDTO) {
+    // 회원가입시 이메일 중복 체크
+    private void validateDuplicateMemberEmail(MemberDTO memberDTO) {
         MemberEntity findMemberEntity = memberRepository.findByMemberEmail(memberDTO.getMemberEmail());
+        if(findMemberEntity != null) {
+            throw new IllegalStateException("이미 가입된 회원입니다.");
+        }
+    }
+
+    // 회원가입시 아이디 중복 체크
+    private void validateDuplicateMemberId(MemberDTO memberDTO) {
+        MemberEntity findMemberEntity = memberRepository.findByMemberId(memberDTO.getMemberId());
         if(findMemberEntity != null) {
             throw new IllegalStateException("이미 가입된 회원입니다.");
         }
@@ -46,4 +59,5 @@ public class MemberService implements UserDetailsService {
                 .roles(memberEntity.getRole().toString())
                 .build();
     }
+
 }
