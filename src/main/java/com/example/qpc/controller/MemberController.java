@@ -18,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Controller
@@ -32,12 +33,12 @@ public class MemberController {
     public String memberSave(@Valid MemberDTO memberDTO, BindingResult bindingResult, Model model) {
         // @Valid = 객체의 유효성검사
         System.out.println("memberDTO = " + memberDTO);
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             System.out.println(1);
             return "/index";
         }
         try {
-            MemberDTO member = MemberDTO.createMember(memberDTO,passwordEncoder);
+            MemberDTO member = MemberDTO.createMember(memberDTO, passwordEncoder);
             member.setRole(RoleEntity.ROLE_MEMBER);
             memberService.saveMember(member);
             System.out.println(2);
@@ -64,9 +65,27 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String memberLogin(@ModelAttribute MemberDTO memberDTO) {
+    public String memberLogin(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
         System.out.println("memberDTO = " + memberDTO);
-        return "index";
+        MemberDTO member = memberService.findByMemberId(memberDTO.getMemberId());
+        if (member == null) { // 아이디가 맞지 않을때
+            model.addAttribute("loginErrorMsg", "아이디를 확인하세요");
+            return "/memberLogin";
+        }
+        if (passwordEncoder.matches(memberDTO.getMemberPassword(), member.getMemberPassword())) {
+            // 로그인 성공
+            session.setAttribute("loginId", member.getMemberId());
+            return "/memberPages/memberMain";
+        } else {
+            // 비밀번호가 맞지 않을때
+            model.addAttribute("loginErrorMsg", "비밀번호를 확인하세요");
+            return "/memberLogin";
+        }
     }
-
 }
+
+
+
+
+
+

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
+//    private final PasswordEncoder passwordEncoder;
 
     // @Transactional = 로직을 처리하다 에러가 발생하면 변경된 데이터를 로직을 수행하기 이전 상태로 롤백
 
@@ -60,4 +61,12 @@ public class MemberService implements UserDetailsService {
                 .build();
     }
 
+
+    public MemberDTO findByMemberId(String memberId) {
+        MemberEntity memberEntity = memberRepository.findByMemberId(memberId);
+        if(memberEntity == null) {
+            return null;
+        }
+        return MemberDTO.toDTO(memberEntity);
+    }
 }
