@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:replace="component/config :: config"></th:block>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>회원리스트화면</h2>
+
+<div id="section">
+    <table>
+        <tr>
+            <th>id</th>
+            <th>아이디</th>
+            <th>이름</th>
+            <th>생년월일</th>
+
+        </tr>
+
+<!--        <c:forEach items="${memberList}" var="member">-->
+            <tr>
+                <td>${member.id}</td>
+                <td>${member.memberId}</td>
+                <td>${member.memberName}</td>
+                <td>${member.memberBirth}</td>
+                <td>
+                    <button>조회</button>
+                </td>
+                <td>
+                    <button>블랙 걸기</button>
+                </td>
+            </tr>
+<!--        </c:forEach>-->
+
+    </table>
+</div>
+
+<button>블랙리스트</button>
+
+
+
+</body>
+</html>
