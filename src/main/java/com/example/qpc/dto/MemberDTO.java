@@ -77,15 +77,15 @@ public class MemberDTO {
     }
 
     public static MemberDTO toDTO(MemberEntity memberEntity) {
-        MemberDTO memberDTO = new MemberDTO();
-        memberDTO.setMemberId(memberEntity.getMemberId());
-        memberDTO.setMemberPassword(memberEntity.getMemberPassword());
-        memberDTO.setMemberName(memberEntity.getMemberName());
-        memberDTO.setMemberEmail(memberEntity.getMemberEmail());
-        memberDTO.setMemberBirth(memberEntity.getMemberBirth());
-        memberDTO.setMemberMobile(memberEntity.getMemberMobile());
-        memberDTO.setRole(memberEntity.getRole());
-        return memberDTO;
+        return MemberDTO.builder()
+                .memberId(memberEntity.getMemberId())
+                .memberPassword(memberEntity.getMemberPassword())
+                .memberName(memberEntity.getMemberName())
+                .memberEmail(memberEntity.getMemberEmail())
+                .memberBirth(memberEntity.getMemberBirth())
+                .memberMobile(memberEntity.getMemberMobile())
+                .role(memberEntity.getRole())
+                .build();
     }
 
 
