@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:replace="component/config :: config"></th:block>
+
+    <th:block th:replace="component/adminNav :: adminNav"></th:block>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h2>게임리스트화면</h2>
+
+
+<div id="section">
+    <table>
+        <tr>
+            <th>id</th>
+            <th>게임 이미지</th>
+            <th>게임 이름</th>
+
+
+        </tr>
+        <c:forEach items="${gameList}" var="game">
+            <tr>
+                <td>${game.id}</td>
+                <td>${game.gameImg}</td>
+                <td>${game.gameName}</td>
+
+                <td>
+                    <button>게임 삭제</button>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
+</div> <br>
+
+<button>게임 등록</button>
+
+</body>
+</html>
