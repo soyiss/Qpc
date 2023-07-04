@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <th:block th:replace="component/config :: config"></th:block>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div id="Container">
+  <h1>먹거리 주문</h1>
+  <div class="button_wrap">
+
+    <button>식사류</button>
+    <button>튀김</button>
+    <button>간식</button>
+    <button>음료</button>
+    <button>세트메뉴</button>
+
+  </div>
+
+  <div id="food_wrap"></div>
+  <div id="order_wrap">
+    <div id="order_wrap_header">
+      <h2>주문 목록</h2>
+    </div>
+
+    <div id="order_wrap_section"></div>
+
+
+    <div id="order_wrap_section2">
+      <h3> 총 금액 </h3>
+    </div>
+
+    <div id="order_wrap_footer">
+
+
+        <h4>요청 사항</h4>
+        <input type="search" id="btnFoodRequest" placeholder="요청사항을 적어주세요." value=""> <br>
+        <button>결제하기</button>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
