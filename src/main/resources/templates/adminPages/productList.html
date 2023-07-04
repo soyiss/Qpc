@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:replace="component/adminNav :: adminNav"></th:block>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>상품리스트</h2>
+
+<div id="section">
+    <table>
+        <tr>
+            <th>id</th>
+            <th>상품 이름</th>
+            <th>상품 가격</th>
+            <th>상품 개수</th>
+
+        </tr>
+        <c:forEach items="${productList}" var="product">
+            <tr>
+                <td>${product.id}</td>
+                <td>${product.productId}</td>
+                <td>${product.productPrice}</td>
+                <td>${product.productCount}</td>
+                <td>
+                    <button>조회</button>
+                </td>
+                <td>
+                    <button>삭제</button>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
+</div>
+
+<button>상품 등록</button>
+
+
+
+</body>
+</html>

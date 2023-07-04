@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:replace="component/config :: config"></th:block>
+
+    <th:block th:replace="component/adminNav :: adminNav"></th:block>
+
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>블랙리스트화면</h2>
+
+<div id="section">
+    <table>
+        <tr>
+            <th>id</th>
+            <th>아이디</th>
+            <th>이름</th>
+            <th>생년월일</th>
+
+        </tr>
+        <c:forEach items="${blackList}" var="black">
+            <tr>
+                <td>${black.id}</td>
+                <td>${black.memberId}</td>
+                <td>${black.memberName}</td>
+                <td>${black.memberBirth}</td>
+                <td>
+                    <button>블랙해제</button>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
+</div>
+<button>회원목록</button>
+
+
+
+</body>
+</html>
