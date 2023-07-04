@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <th:block th:replace="component/config :: config"></th:block>
+    <meta name="_csrf" th:content="${_csrf.token}"/> <!-- CSRF 토큰 추가 -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/> <!-- CSRF 헤더 이름 추가 -->
 </head>
 <style>
     .fieldError {
@@ -74,22 +76,27 @@
     const emailCheck = () => {
         document.getElementById("email-check").style.display = "block";
         const email = document.querySelector('input[name="memberEmail"]').value;
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfParameterName = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
         axios({
             method: "post",
             url: "/memberSave/mailConfirm",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                [csrfParameterName]: csrfToken, // CSRF 토큰 추가
             },
             data: {
-                email: email
+                email: email,
             }
         }).then(res => {
             alert("이메일로 인증번호가 발송되었습니다.");
             document.querySelector('input[name="code"]').value = res.data;
         }).catch(err => {
             console.log("실패");
-        })
+        });
     }
+
 
     const emailFinalCheck = () => {
         const typingCode = document.querySelector('input[name="inputCode"]').value;

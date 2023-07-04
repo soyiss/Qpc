@@ -35,8 +35,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 // 이 주소를 받는 곳에만 모든곳에서 접근가능하도록 설정
                 .authorizeRequests()
-                .antMatchers("/member/save", "/member/login", "/member/login/error", "/memberSave/mailConfirm").permitAll()
-                .antMatchers(HttpMethod.POST,"/member/login").permitAll()
+                .antMatchers("/member/save", "/member/login", "/member/login/error").permitAll()
+                .antMatchers(HttpMethod.POST, "/member/login", "/memberSave/mailConfirm").permitAll()
                 // 다른곳은 로그인 해야 갈수 있도록 설정
                 .anyRequest().authenticated()
                 .and()
