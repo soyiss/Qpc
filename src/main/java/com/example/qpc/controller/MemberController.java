@@ -5,6 +5,8 @@ import com.example.qpc.dto.MemberDTO;
 import com.example.qpc.entity.RoleEntity;
 import com.example.qpc.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,6 +31,7 @@ public class MemberController {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
+    // 일반유저 회원가입
     @PostMapping("/save")
     public String memberSave(@Valid MemberDTO memberDTO, BindingResult bindingResult, Model model) {
         // @Valid = 객체의 유효성검사
@@ -51,12 +54,14 @@ public class MemberController {
         return "redirect:/";
     }
 
+    // 로그인 창으로 이동
     @GetMapping("/login")
     public String memberLoginForm(Model model) {
         model.addAttribute("memberDTO", new MemberDTO());
         return "/memberLogin";
     }
 
+    // 로그인 에러
     @GetMapping("/login/error")
     public String loginError(Model model) {
         model.addAttribute("memberDTO", new MemberDTO());
@@ -64,6 +69,7 @@ public class MemberController {
         return "/memberLogin";
     }
 
+    // 로그인 처리
     @PostMapping("/login")
     public String memberLogin(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
         System.out.println("memberDTO = " + memberDTO);
@@ -82,6 +88,32 @@ public class MemberController {
             return "/memberLogin";
         }
     }
+
+    // 아이디 찾기
+    @PostMapping("/findById/email_check")
+    public ResponseEntity memberEmailCheck(@RequestBody MemberDTO memberDTO) {
+        MemberDTO member = memberService.findByMemberEmail(memberDTO.getMemberEmail());
+        if (member == null) {
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        } else {
+            return new ResponseEntity<>(member.getMemberId(), HttpStatus.OK);
+        }
+    }
+
+    // 비밀번호 찾기
+    @PostMapping("/findById/passwordCheck")
+    public ResponseEntity memberPassword(@RequestBody MemberDTO memberDTO) {
+        MemberDTO member = memberService.findByMemberEmailAndMemberId(memberDTO.getMemberEmail(), memberDTO.getMemberId());
+        if (member == null) {
+            // Axios로 실패시 Alert 띄우기
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        } else {
+            // 비밀번호 재설정하는 모달 On
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }
+
+
 }
 
 

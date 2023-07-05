@@ -69,4 +69,22 @@ public class MemberService implements UserDetailsService {
         }
         return MemberDTO.toDTO(memberEntity);
     }
+
+    public MemberDTO findByMemberEmail(String memberEmail) {
+        MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
+        if(memberEntity == null) {
+            return null;
+        }else {
+            return MemberDTO.toDTO(memberEntity);
+        }
+    }
+
+    public MemberDTO findByMemberEmailAndMemberId(String memberEmail, String memberId) {
+        MemberEntity memberEntity = memberRepository.findByMemberEmailAndMemberId(memberEmail,memberId);
+        if(memberEntity == null) {
+            return null;
+        }else {
+            return MemberDTO.toDTO(memberEntity);
+        }
+    }
 }
