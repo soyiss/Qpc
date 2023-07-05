@@ -79,4 +79,17 @@ public class MemberTest {
             System.out.println("테스트 실패");
         }
     }
+
+//    @Test
+//    @Rollback
+//    @DisplayName("멤버수정 테스트")
+//    public void memberUpdateTest() {
+//        MemberDTO member = createMemberDTO();
+//        MemberEntity memberEntity = memberService.saveMember(member);
+//        member.setId(memberEntity.getId());
+//        MemberDTO savedMember = memberService.memberUpdate(member);
+//
+//
+//    }
+
 }

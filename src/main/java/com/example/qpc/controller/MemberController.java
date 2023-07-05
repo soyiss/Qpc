@@ -113,6 +113,21 @@ public class MemberController {
         }
     }
 
+    // 회원 상세조회 화면 이동
+    @GetMapping("/member/{id}")
+    public String findById(@PathVariable Long id,Model model) {
+        MemberDTO memberDTO = memberService.findById(id);
+        model.addAttribute("memberDTO",memberDTO);
+        return "/memberPages/memberMyPage";
+    }
+
+    @PutMapping("/member/{id}")
+    public String memberUpdate(@ModelAttribute MemberDTO memberDTO) {
+        System.out.println("memberDTO = " + memberDTO);
+        MemberDTO Updatedmember = memberService.memberUpdate(memberDTO);
+        System.out.println("Updatedmember = " + Updatedmember);
+        return "redirect:/member/mypage"+memberDTO.getId();
+    }
 
 }
 
