@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<th:block th:fragment="sidebar">
+<head>
+
+
+</head>
+<body>
+
+
+<div id="sidebar" class="side-bar">
+
+    <div class="member-area">
+<ul>
+
+    <a>자리이동</a>
+    <a>사용종료</a>
+    <button class="toggle-button" onclick="toggleSidebar()">ㅡ</button> <br>
+</ul>
+
+    <form>
+        <input type="text" placeholder="좌석번호">
+        <button>요금충전</button> <br>
+
+
+        충전 시간 : <input> <br>
+        잔여 시간 : <input> <br>
+        사용 시간 : <input> <br>
+    </form> <br>
+
+    <form>
+        <button>채팅</button>
+        <button>호출</button>
+        <button>회원정보</button>
+        <button>먹거리</button> <br>
+
+
+    </form> <br>
+
+</div>
+
+
+<div class="ad-area">
+    <h2>광고고고고고고고고</h2>
+</div>
+
+
+
+</div>
+
+
+
+<script>
+    function toggleSidebar() {
+
+        var sideBar = document.querySelector('.side-bar');
+        var adArea = document.querySelector('.ad-area');
+
+
+        sideBar.classList.toggle('minimized');
+        adArea.classList.toggle('minimized');
+
+
+    }
+</script>
+
+</body>
+
+</th:block>
+</html>
