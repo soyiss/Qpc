@@ -16,7 +16,8 @@ public class ChatController {
         HttpSession session = request.getSession();
         System.out.println("chat param id 값 출력 : "  + id);
         if (id.equals("guest")) {
-            String name = "guest" + session.toString().substring(session.toString().indexOf("@"));
+//            String name = "guest" + session.toString().substring(session.toString().indexOf("@"));
+            String name = "guest";
             session.setAttribute("sessionId", name);
         } else if(id.equals("admin")) {
             String name = "admin";
@@ -28,6 +29,6 @@ public class ChatController {
     @GetMapping("/chat/admin")
     public String enterChatAsAdmin(HttpServletRequest request) {
         log.info("@ChatController, getChat()");
-        return "/chat";
+        return "/chatPages/chat";
     }
 }
