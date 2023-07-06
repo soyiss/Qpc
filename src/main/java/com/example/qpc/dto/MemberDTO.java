@@ -78,6 +78,7 @@ public class MemberDTO {
 
     public static MemberDTO toDTO(MemberEntity memberEntity) {
         return MemberDTO.builder()
+                .id(memberEntity.getId())
                 .memberId(memberEntity.getMemberId())
                 .memberPassword(memberEntity.getMemberPassword())
                 .memberName(memberEntity.getMemberName())

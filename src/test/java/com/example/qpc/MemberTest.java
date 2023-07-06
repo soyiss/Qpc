@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Member;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -80,16 +81,37 @@ public class MemberTest {
         }
     }
 
-//    @Test
-//    @Rollback
-//    @DisplayName("멤버수정 테스트")
-//    public void memberUpdateTest() {
-//        MemberDTO member = createMemberDTO();
-//        MemberEntity memberEntity = memberService.saveMember(member);
-//        member.setId(memberEntity.getId());
-//        MemberDTO savedMember = memberService.memberUpdate(member);
-//
-//
-//    }
+    @Test
+    @Rollback
+    @DisplayName("멤버수정 테스트")
+    public void updateMember() {
+        // given
+        MemberDTO memberDTO = MemberDTO.builder()
+                .memberId("test")
+                .memberEmail("test@wrtn.com")
+                .memberPassword("testpassword")
+                .memberName("테스트유저")
+                .memberBirth("1993-03-03")
+                .memberMobile("010-1111-2222")
+                .build();
+        MemberEntity savedMember = memberService.saveMember(memberDTO);
+
+        // when
+        MemberDTO updateDTO = MemberDTO.builder()
+                .id(savedMember.getId())
+                .memberId("test")
+                .memberEmail("test@wrtn.com")
+                .memberPassword("testpassword")
+                .memberName("수정된테스트유저")
+                .memberBirth("1993-03-03")
+                .memberMobile("010-3333-4444")
+                .build();
+        MemberDTO updatedMember = memberService.memberUpdate(updateDTO);
+
+        // then
+        assertThat(updatedMember.getId()).isEqualTo(savedMember.getId());
+        assertThat(updatedMember.getMemberName()).isEqualTo("수정된테스트유저");
+        assertThat(updatedMember.getMemberMobile()).isEqualTo("010-3333-4444");
+    }
 
 }

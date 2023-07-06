@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Member;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -30,10 +32,6 @@ public class MemberService implements UserDetailsService {
         return memberRepository.save(MemberEntity.toEntity(memberDTO));
     }
 
-    // 회원수정 코드
-//    public MemberEntity updateMember(MemberDTO memberDTO) {
-//        return memberRepository.save(MemberEntity.toUpdateEntity(memberDTO));
-//    }
 
     // 회원가입시 이메일 중복 체크
     private void validateDuplicateMemberEmail(MemberDTO memberDTO) {

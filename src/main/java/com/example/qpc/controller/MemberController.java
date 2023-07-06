@@ -80,6 +80,7 @@ public class MemberController {
         }
         if (passwordEncoder.matches(memberDTO.getMemberPassword(), member.getMemberPassword())) {
             // 로그인 성공
+            System.out.println("member = " + member);
             session.setAttribute("loginId", member.getMemberId());
             return "/memberPages/memberMain";
         } else {
