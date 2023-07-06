@@ -9,12 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoleDTO {
-    private String name;
-
-
-    public RoleDTO toDTO(RoleEntity roleEntity) {
-        RoleDTO roleDTO = new RoleDTO(roleEntity.name());
-        return roleDTO;
-    }
-
+    private RoleEntity role;
 }
