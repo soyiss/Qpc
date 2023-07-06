@@ -9,7 +9,7 @@
   }
 </style>
 <body>
-<form action="/member/login" method="post" th:object="${memberDTO}">
+<form th:action="@{/member/login}" method="post" th:object="${memberDTO}">
   <div class="form-floating mb-3">
     <input type="text" class="form-control" id="member-id" name="memberId"
            th:field="*{memberId}" placeholder="memberId">
@@ -21,7 +21,7 @@
     <label for="member-password">비밀번호</label>
   </div>
   <p th:if="${loginErrorMsg}" class="error" th:text="${loginErrorMsg}"></p>
-  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+<!--  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
   <div style="text-align:center" class="py-3">
     <button type="submit" class="btn btn-outline-dark">로그인</button>
     <button type="button" class="btn btn-outline-dark" onclick="location.href='/'">회원가입</button>

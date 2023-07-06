@@ -37,6 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/member/save", "/member/login", "/member/login/error", "/memberSave/mailConfirm").permitAll()
                 .antMatchers(HttpMethod.POST,"/member/login").permitAll()
+                // Role_MEMBER 인 사람은 /member/** 메소드 사용가능하도록 설정
+                .antMatchers("/member/**").access("hasRole('ROLE_MEMBER')")
                 // 다른곳은 로그인 해야 갈수 있도록 설정
                 .anyRequest().authenticated()
                 .and()
