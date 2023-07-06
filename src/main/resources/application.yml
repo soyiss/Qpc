@@ -10,6 +10,8 @@ spring:
     url: jdbc:mysql://localhost:3306/db_test?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: user_test
     password: 1234
+    websocket:
+      path: /websocket
 
   # thymeleaf
   thymeleaf:
