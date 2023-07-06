@@ -2,6 +2,7 @@ package com.example.qpc;
 
 import com.example.qpc.dto.MemberDTO;
 import com.example.qpc.entity.MemberEntity;
+import com.example.qpc.repository.MemberRepository;
 import com.example.qpc.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,8 @@ public class MemberTest {
     private MemberService memberService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private MemberRepository memberRepository;
 
     public MemberDTO createMemberDTO() {
         MemberDTO memberDTO = MemberDTO.builder()
@@ -112,6 +115,21 @@ public class MemberTest {
         assertThat(updatedMember.getId()).isEqualTo(savedMember.getId());
         assertThat(updatedMember.getMemberName()).isEqualTo("수정된테스트유저");
         assertThat(updatedMember.getMemberMobile()).isEqualTo("010-3333-4444");
+    }
+
+    @Test
+    @Rollback
+    @DisplayName("회원삭제 테스트")
+    public void deleteMember() {
+        MemberDTO member = createMemberDTO();
+        memberService.saveMember(member);
+        MemberDTO memberDTO = memberService.findByMemberEmail("lsw3674@gmail.com");
+
+
+        memberService.delete(memberDTO.getId());
+
+        assertThat(memberRepository.existsById(memberDTO.getId())).isFalse();
+
     }
 
 }

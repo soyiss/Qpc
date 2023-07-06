@@ -116,18 +116,27 @@ public class MemberController {
 
     // 회원 상세조회 화면 이동
     @GetMapping("/member/{id}")
-    public String findById(@PathVariable Long id,Model model) {
+    public String findById(@PathVariable Long id, Model model) {
         MemberDTO memberDTO = memberService.findById(id);
-        model.addAttribute("memberDTO",memberDTO);
+        model.addAttribute("memberDTO", memberDTO);
         return "/memberPages/memberMyPage";
     }
 
+    // 회원 수정처리
     @PutMapping("/member/{id}")
-    public String memberUpdate(@ModelAttribute MemberDTO memberDTO) {
+    public String memberUpdate(@PathVariable Long id,
+                               @ModelAttribute MemberDTO memberDTO) {
         System.out.println("memberDTO = " + memberDTO);
         MemberDTO Updatedmember = memberService.memberUpdate(memberDTO);
         System.out.println("Updatedmember = " + Updatedmember);
-        return "redirect:/member/mypage"+memberDTO.getId();
+        return "redirect:/member/mypage" + memberDTO.getId();
+    }
+
+    // 회원 삭제처리
+    @DeleteMapping("/member/{id}")
+    public String delete(@PathVariable Long id) {
+        memberService.delete(id);
+        return "redirect:/member/mypage" + id;
     }
 
 }

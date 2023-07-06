@@ -99,4 +99,8 @@ public class MemberService implements UserDetailsService {
         MemberEntity memberEntity = memberRepository.save(MemberEntity.toUpdateEntity(memberDTO));
         return MemberDTO.toDTO(memberEntity);
     }
+
+    public void delete(Long id) {
+        memberRepository.deleteById(id);
+    }
 }
