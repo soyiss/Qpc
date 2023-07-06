@@ -3,46 +3,126 @@
 <head>
   <th:block th:replace="component/config :: config"></th:block>
 
-    <meta charset="UTF-8">
-    <title>Title</title>
 </head>
+
+
 <body>
 
-<div id="Container">
-  <h1>먹거리 주문</h1>
-  <div class="button_wrap">
-
-    <button>식사류</button>
-    <button>튀김</button>
-    <button>간식</button>
-    <button>음료</button>
-    <button>세트메뉴</button>
-
-  </div>
-
-  <div id="food_wrap"></div>
-  <div id="order_wrap">
-    <div id="order_wrap_header">
-      <h2>주문 목록</h2>
-    </div>
-
-    <div id="order_wrap_section"></div>
+<div align="center">
+  <h3>[먹거리 주문]</h3>
 
 
-    <div id="order_wrap_section2">
-      <h3> 총 금액 </h3>
-    </div>
+  <div id="food-form" style="display: flex;">
+    <table border="1">
+      <tr align='center'>
+        <td>
+          <table>
+            <tr align='center'>
+              <img src ="../resources/static/img/오르비스항구.png"  width='200px' height='200px' />
+            </tr>
+            <tr align='center'>
+              <td>
+                <b>메이플라면</b>
+              </td>
+            </tr>
+            <tr align='center'>
+              <td>
+                <b>\1000원</b>
+              </td>
+            </tr>
+            <tr align='center'>
+              <td align="right">
+                <input type='button' value='담기'>
+              </td>
+            </tr>
+          </table>
+        </td>
+    </table>
 
-    <div id="order_wrap_footer">
+    <table border="1">
+      <tr align='center'>
+        <td>
+          <table>
+            <tr align='center'>
+              <img src ="../resources/static/img/오르비스항구.png"  width='200px' height='200px' />
+            </tr>
+            <tr align='center'>
+              <td>
+                <b>춘식이빵</b>
+              </td>
+            </tr>
+            <tr align='center'>
+              <td>
+                <b>\2000원</b>
+              </td>
+            </tr>
+            <tr align='center'>
+              <td align="right">
+                <input type='button' value='담기'>
+              </td>
+            </tr>
+          </table>
+        </td>
+    </table>
+
+    <table border="1">
+      <tr align='center'>
+        <td>
+          <table>
+            <tr align='center'>
+              <img src ="../resources/static/img/navImg/디스코드.jpg"  width='200px' height='200px' />
+            </tr>
+            <tr align='center'>
+              <td>
+                <b>라라라떼</b>
+              </td>
+            </tr>
+            <tr align='center'>
+              <td>
+                <b>\1500원</b>
+              </td>
+            </tr>
+            <tr align='center'>
+              <td align="right">
+                <input type='button' value='담기'>
+              </td>
+            </tr>
+          </table>
+        </td>
+    </table>
 
 
-        <h4>요청 사항</h4>
-        <input type="search" id="btnFoodRequest" placeholder="요청사항을 적어주세요." value=""> <br>
-        <button>결제하기</button>
 
-    </div>
+
   </div>
 </div>
 
+
+<form>
+  <label>주문목록</label>
+
+
+
+
+
+
+</form>
+
+
+<input type="text" placeholder="총금액">
+<h4>요청 사항</h4>
+<input type="search" id="btnFoodRequest" placeholder="요청사항을 적어주세요." value=""> <br>
+<button>결제하기</button>
+
+
+
+
+
+
+
+
+
 </body>
+
+
 </html>
