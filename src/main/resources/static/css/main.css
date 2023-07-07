@@ -6,7 +6,7 @@ body {
 }
 
 #nav {
-    background-color: white;
+    background-color: transparent;
     position: sticky;
     top: 0;
 }
@@ -18,7 +18,7 @@ body {
 }
 #nav ul li {
     float: left;
-    border: 1px solid black;
+    /*border: 1px solid black;*/
 
 }
 
@@ -44,3 +44,14 @@ img{
     width: 150px;
 }
 
+.nav-img- {
+    border-radius: 50%;
+}
+.Category-name {
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+}
+.Category-box {
+    padding-right: 10px;
+}
