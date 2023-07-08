@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <th:block th:replace="component/config :: config"></th:block>
+
+    <style>
+
+        /* 모달창을 구성하는 스타일 */
+        .modal {
+            display: none; /* 초기에는 모달창 숨김 */
+            position: fixed; /* 스크롤 내릴 때 위치 고정 */
+            z-index: 1; /* 모달창의 높이값 */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* 모달창을 스크롤 가능하게 함 */
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4); /* 모달창 배경 투명도 조절 */
+        }
+
+        /* 모달창 내부 컨텐츠 표시 스타일 */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        /* 모달창 내부 X 버튼 스타일 */
+        .modal-close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        /* X 버튼 호버 스타일 */
+        .modal-close:hover,
+        .modal-close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* find, save 버튼 스타일 */
+        button {
+            padding: 10px;
+            background-color: #262525;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 50px;
+            left: 0;
+            height: 200px;
+            background-color: gray;
+            width: 100%;
+            padding: 30px;
+
+        }
+
+        .find-area {
+            margin: 0 auto;
+        }
+
+    </style>
+</head>
+<body>
+
+<h2>🕹 Q PC ROOM 🎮</h2>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <p>회원가입</p>
+
+
+
+    </div>
+</div>
+
+
+
+
+<div id="idFindModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <p>아이디/비밀번호 찾기</p>
+    </div>
+</div>
+
+
+<div id="pwFindModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <p>비밀번호 찾기</p>
+    </div>
+</div>
+
+
+
+
+
+<!-- 아이디 찾기 모달창 -->
+<div id="idFindModal2" class="modal">
+    <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <p>아이디 찾기</p>
+        <input type="text" placeholder="이메일"> <button>이메일 인증</button> <br>
+        <input type="text" placeholder="인증번호 입력"> <button>인증번호 확인</button>
+    </div>
+</div>
+
+<!-- 비밀번호 찾기 모달창 -->
+<div id="pwFindModal2" class="modal">
+    <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <p>비밀번호 찾기</p>
+        <input type="text" placeholder="이메일"> <button>이메일 인증</button> <br>
+        <input type="text" placeholder="아이디"> <button>아이디 확인</button> <br>
+
+    </div>
+</div>
+
+</body>
+
+<footer>
+
+    <form>
+        <input type="text" placeholder="ID">
+        <input type="text" placeholder="비밀번호">
+        <input type="submit" value="로그인">
+        <button>요금충전</button>
+        <br>
+    </form>
+
+    <br>
+    <div class="find-area">
+        <button id="btnSave">회원가입</button>
+        <button id="btnFind">아이디/비밀번호 찾기</button>
+    </div>
+
+
+</footer>
+<!-- javascript 코드 -->
+<script>
+    // 모달창 가져오기
+    var modal = document.getElementById("myModal");
+    var idFindModal = document.getElementById("idFindModal");
+    var pwFindModal = document.getElementById("pwFindModal");
+
+    // 모달창을 띄우는 버튼 가져오기
+    var btnFind = document.getElementById("btnFind");
+    var btnSave = document.getElementById("btnSave");
+
+    // X 버튼 가져오기
+    var spanClose = document.getElementsByClassName("modal-close")[0];
+
+    // 버튼 클릭시 모달창 띄우기
+    btnFind.onclick = function() {
+        idFindModal.style.display = "block";
+    }
+    btnSave.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // X 버튼 클릭시 모달창 닫기
+    spanClose.onclick = function() {
+        modal.style.display = "none";
+        idFindModal.style.display = "none";
+        pwFindModal.style.display = "none";
+    }
+
+    // 모달창 외부 클릭시 모달창 닫기
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        } else if (event.target == idFindModal) {
+            idFindModal.style.display = "none";
+        } else if (event.target == pwFindModal) {
+            pwFindModal.style.display = "none";
+        }
+    }
+
+    // 아이디찾기, 비밀번호찾기 버튼 클릭시 모달창 바꾸기
+    var btnFindId = document.createElement("button");
+    btnFindId.innerHTML = "아이디 찾기";
+    btnFindId.onclick = function() {
+        idFindModal.style.display = "none";
+        modal.style.display = "none";
+        document.getElementById("idFindModal2").style.display = "block";
+    }
+
+    var btnFindPw = document.createElement("button");
+    btnFindPw.innerHTML = "비밀번호 찾기";
+    btnFindPw.onclick = function() {
+        idFindModal.style.display = "none";
+        modal.style.display = "none";
+        document.getElementById("pwFindModal2").style.display = "block";
+    }
+
+    idFindModal.getElementsByClassName("modal-content")[0].appendChild(btnFindId);
+    idFindModal.getElementsByClassName("modal-content")[0].appendChild(btnFindPw);
+
+</script>
+
+
+
+
+
+<script th:inline="javascript">
+    const emailCheck = () => {
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const email = document.querySelector('input[name="memberEmail"]').value;
+        document.getElementById("email-check").style.display = "block";
+        axios({
+            method: "post",
+            url: "/memberSave/mailConfirm",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-Token": csrfToken
+            },
+            data: {
+                email: email,
+            }
+        }).then(res => {
+            alert("이메일로 인증번호가 발송되었습니다.");
+            document.querySelector('input[name="code"]').value = res.data;
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
+    const emailFinalCheck = () => {
+        const typingCode = document.querySelector('input[name="inputCode"]').value;
+        const trueCode = document.querySelector('input[name="code"]').value;
+        const result = document.getElementById("input-code-bottom");
+
+        if(typingCode == trueCode) {
+            result.innerText = "인증완료";
+            result.style.color="green";
+        }else {
+            result.innerText = "인증코드 불일치";
+            result.style.color="red";
+        }
+    }
+    //회원가입 실패시 에러 메시지 출력
+    $(document).ready(function(){
+        const errorMessage = [[${errorMessage}]];
+        if(errorMessage != null){
+            alert(errorMessage);
+        }
+    });
+
+
+</script>
+</html>
