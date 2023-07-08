@@ -36,7 +36,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 이 주소를 받는 곳에만 모든곳에서 접근가능하도록 설정
                 .authorizeRequests()
                 // 회원가입, 로그인, 메일보내기는 Role_GUEST 사람만 사용가능하도록 설정
+//                .antMatchers("/member/save", "/member/login", "/member/login/error", "/memberSave/mailConfirm").access("hasRole('ROLE_GUEST')")
                 .antMatchers("/member/save", "/member/login", "/member/login/error", "/memberSave/mailConfirm").permitAll()
+                // 요금결제에 대한 메소드 모든곳에서 사용가능하도록 설정
+                .antMatchers("/payment/**").permitAll()
+                .antMatchers(HttpMethod.POST,"/payment/findById").permitAll()
                 .antMatchers(HttpMethod.POST,"/member/login").permitAll()
                 // Role_MEMBER 인 사람은 /member/** 메소드 사용가능하도록 설정
                 .antMatchers("/member/**").access("hasRole('ROLE_MEMBER')")
