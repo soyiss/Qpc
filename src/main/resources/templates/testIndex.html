@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:replace="component/config :: config"></th:block>
+    <meta th:content="${_csrf.token}" name="_csrf">
+    <meta th:content="${_csrf.parameterName}" name="_csrf_parameter_name">
+</head>
+
+<body>
+<div class="container" style="height: 70%;">
+    <img class="w-100 h-100" th:src="@{/img/testMain.png}" alt="Image 404 Error">
+</div>
+<div class="container mt-4">
+    <button class="btn btn-primary">로그인</button>
+    <button class="btn btn-primary">회원가입</button>
+    <!-- 버튼 -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#payReload">
+        요금 충전
+    </button>
+
+    <!-- 모달 -->
+    <div class="modal fade" id="payReload" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">요금 충전을 위한 계정 확인</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="member-check"
+                               name="checkResult" placeholder="회원체크를 위한 아이디나 이름을 입력해주세요">
+                        <label for="member-check">아이디나 이름 입력</label>
+                        <p th:if="${findByIdErrorMsg}" class="error" th:text="${findByIdErrorMsg}"></p>
+                    </div>
+                    <button class="btn btn-primary" onclick="memberCheck()">회원 확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script th:inline="javascript">
+
+    const memberCheck = () => {
+        const typingKeyword = document.querySelector('input[name="checkResult"]').value;
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        axios({
+            method: "post",
+            url: "/payment/findById",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-Token": csrfToken
+            },
+            data: {
+                keyword: typingKeyword
+            }
+        }).then(res => {
+
+            const payReloadModal = document.querySelector('#payReload');
+            const modal = bootstrap.Modal.getInstance(payReloadModal);
+            modal.hide();
+        }).catch(err => {
+            alert("없습니다")
+        })
+
+    }
+
+</script>
+</html>

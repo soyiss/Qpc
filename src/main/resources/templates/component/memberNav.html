@@ -1,46 +1,45 @@
 <!DOCTYPE html>
 
 <th:block th:fragment="memberNav">
-  <meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-  <div id="nav">
-    <div>
-      <div style="position: relative;">
-        <ul style="display: flex;justify-content: center;">
-          <li style="position: relative;">
-            <a class="Login-Logo" href="/"
-               style="color: black;font-weight: 600;text-decoration: none;font-size: 20px;">
-              🕹 Q PC ROOM
-              🎮 </a>
-          </li>
-          <li class="Category-box">
-            <a class="Category-name">인기게임</a> <br>
-            <img class="nav-img-" th:src="@{/img/navImg/인기게임-디아블로.jpg}" alt="Image Description">
-          </li>
-          <li class="Category-box">
-            <a class="Category-name">스포츠/FPS게임</a> <br>
-            <img class="nav-img-" th:src="@{/img/navImg/스포츠-피파.jpg}" alt="Image Description">
-          </li>
-          <li class="Category-box">
-            <a class="Category-name">캐주얼게임</a> <br>
-            <img class="nav-img-" th:src="@{/img/navImg/캐주얼게임-크아.jpg}" alt="Image Description">
-          </li>
-          <li class="Category-box">
-            <a class="Category-name">스팀/CD게임</a> <br>
-            <img class="nav-img-" th:src="@{/img/navImg/스팀-배그.png}" alt="Image Description">
-          </li>
-          <li class="Category-box">
-            <a class="Category-name">카카오톡</a> <br>
-            <img class="nav-img-" th:src="@{/img/navImg/카카오톡.png}" alt="Image Description">
-          </li>
-          <li>
-            <a class="Category-name">디스코드</a> <br>
-            <img class="nav-img-" th:src="@{/img/navImg/디스코드.jpg}" alt="Image Description">
-          </li>
-        </ul>
-      </div>
+    <div id="nav">
+        <div>
+            <div style="position: relative;">
+                <ul style="display: flex;justify-content: center;">
+                    <li style="position: relative;">
+                        <a class="Login-Logo" href="/"
+                           style="color: black;font-weight: 600;text-decoration: none;font-size: 20px;">
+                            🕹<img th:src="@{/img/Q_PC_Room_Logo.png}" alt="Image Description">🎮 </a>
+                    </li>
+                    <li class="Category-box">
+                        <a class="Category-name">인기게임</a> <br>
+                        <img class="nav-img-" th:src="@{/img/navImg/인기게임-디아블로.jpg}" alt="Image Description">
+                    </li>
+                    <li class="Category-box">
+                        <a class="Category-name">스포츠/FPS게임</a> <br>
+                        <img class="nav-img-" th:src="@{/img/navImg/스포츠-피파.jpg}" alt="Image Description">
+                    </li>
+                    <li class="Category-box">
+                        <a class="Category-name">캐주얼게임</a> <br>
+                        <img class="nav-img-" th:src="@{/img/navImg/캐주얼게임-크아.jpg}" alt="Image Description">
+                    </li>
+                    <li class="Category-box">
+                        <a class="Category-name">스팀/CD게임</a> <br>
+                        <img class="nav-img-" th:src="@{/img/navImg/스팀-배그.png}" alt="Image Description">
+                    </li>
+                    <li class="Category-box">
+                        <a class="Category-name">카카오톡</a> <br>
+                        <img class="nav-img-" th:src="@{/img/navImg/카카오톡.png}" alt="Image Description">
+                    </li>
+                    <li>
+                        <a class="Category-name">디스코드</a> <br>
+                        <img class="nav-img-" th:src="@{/img/navImg/디스코드.jpg}" alt="Image Description">
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-  </div>
 </th:block>
 
 </html>
