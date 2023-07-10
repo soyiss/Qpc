@@ -95,17 +95,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-//    @Autowired
-//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.jdbcAuthentication()
-//                .dataSource(dataSource)
-//                .passwordEncoder(passwordEncoder())
-//                .usersByUsernameQuery("select memberId, memberPassword "
-//                        + "from member "
-//                        + "where memberId = ?")
-//                .authoritiesByUsernameQuery("select memberId, authority "
-//                        + "from authorities "
-//                        + "where memberId = ?");
-//    }
 
 }
