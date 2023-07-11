@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -29,6 +30,16 @@ public class CategoryService {
             categoryDTOList.add(CategoryDTO.toDTO(categoryEntity));
         }
         return categoryDTOList;
+    }
 
+    public CategoryDTO findById(Long id) {
+        CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(() -> new NoSuchElementException());
+        CategoryDTO categoryDTO = CategoryDTO.toDTO(categoryEntity);
+        return categoryDTO;
+    }
+
+    public void update(CategoryDTO categoryDTO) {
+        CategoryEntity categoryEntity = CategoryEntity.toUpdateEntity(categoryDTO);
+        categoryRepository.save(categoryEntity);
     }
 }

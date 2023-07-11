@@ -88,5 +88,44 @@
 
     // 페이지 로딩 후에 카테고리 목록 요청하기
     fetchCategoryList();
+    const category_updateForm = (id) => {
+        axios({
+            method: "get",
+            url: "/category/update/" + id
+        }).then(res => {
+            const category = res.data;
+            console.log("가져온 아이디:",id);
+            console.log("가져온 카테고리:",res.data);
+            const updatedCategoryName = prompt('수정할 카테고리이름',category.categoryName);
+            if (updatedCategoryName !== null) {
+                console.log('사용자 입력:', updatedCategoryName);
+                category_update(id,updatedCategoryName);
+            } else {
+                console.log('사용자가 취소를 선택했습니다.');
+                return; // 함수 종료
+            }
+        }).catch(err => {
+            alert("카테고리 수정 화면을 못가져옴!");
+        });
+
+    }
+
+    const category_update = (id, updatedCategoryName) => {
+        axios({
+            method: "put",
+            url: "/category/" + id,
+            data: JSON.stringify({ categoryName: updatedCategoryName }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => {
+            fetchCategoryList();
+        }).catch(err => {
+            alert("카테고리 수정 실패!");
+        });
+
+    }
+
+
 </script>
 </html>
