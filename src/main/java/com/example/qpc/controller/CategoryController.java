@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,7 +19,7 @@ public class CategoryController {
 
     @GetMapping()
     public String Category(){
-        return "/categories/categoryForm";
+        return "/categories/gameCategoryForm";
     }
 
     @PostMapping()
@@ -38,5 +35,19 @@ public class CategoryController {
         return new ResponseEntity<>(categoryDTO1, HttpStatus.OK);
     }
 
+    @GetMapping("/update/{id}")
+    public ResponseEntity categoryUpdateForm(@PathVariable Long id){
+        System.out.println("업 id = " + id);
+        CategoryDTO categoryDTO = categoryService.findById(id);
+        System.out.println("업 categoryDTO = " + categoryDTO);
+        return new ResponseEntity<>(categoryDTO, HttpStatus.OK);
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity categoryUpdate (@PathVariable Long id, @RequestBody CategoryDTO categoryDTO){
+        System.out.println("categoryDTO = " + categoryDTO);
+        categoryDTO.setId(id);
+        categoryService.update(categoryDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }
