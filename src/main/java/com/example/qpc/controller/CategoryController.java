@@ -50,4 +50,10 @@ public class CategoryController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity categoryDelete(@PathVariable Long id){
+        System.out.println("삭제id = " + id);
+        categoryService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

@@ -42,4 +42,8 @@ public class CategoryService {
         CategoryEntity categoryEntity = CategoryEntity.toUpdateEntity(categoryDTO);
         categoryRepository.save(categoryEntity);
     }
+
+    public void delete(Long id) {
+        categoryRepository.deleteById(id);
+    }
 }

@@ -126,6 +126,17 @@
 
     }
 
+    const category_delete = (id) => {
+        axios({
+            method: "delete",
+            url: "/category/" + id
+        }).then(res => {
+            fetchCategoryList();
+        }).catch(err => {
+            alert("카테고리 삭제 실패!");
+        });
+
+    }
 
 </script>
 </html>
