@@ -1,5 +1,6 @@
 package com.example.qpc.entity;
 
+import com.example.qpc.dto.TimeDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,4 +30,13 @@ public class TimeEntity extends BaseEntity{
 
     @OneToMany(mappedBy = "timeEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<SeatEntity> seatEntityList = new ArrayList<>();
+
+    public static TimeEntity toEntity(TimeDTO timeDTO,MemberEntity memberEntity) {
+        TimeEntity timeEntity = new TimeEntity();
+        timeEntity.setAmount(timeDTO.getAmount());
+        timeEntity.setTime(timeDTO.getTime());
+        timeEntity.setPaymentMethod(timeDTO.getPaymentMethod());
+        timeEntity.setMemberEntity(memberEntity);
+        return timeEntity;
+    }
 }
