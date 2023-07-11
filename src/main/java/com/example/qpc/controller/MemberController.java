@@ -83,6 +83,8 @@ public class MemberController {
             System.out.println("member = " + member);
             session.setAttribute("loginId", member.getMemberId());
             return "/memberPages/memberMain";
+
+
         } else {
             // 비밀번호가 맞지 않을때
             model.addAttribute("loginErrorMsg", "비밀번호를 확인하세요");
@@ -137,6 +139,11 @@ public class MemberController {
     public String delete(@PathVariable Long id) {
         memberService.delete(id);
         return "redirect:/member/mypage" + id;
+    }
+
+    @GetMapping("/adminMain")
+    public String adminMain(){
+        return "/adminPages/adminMain";
     }
 
 }
