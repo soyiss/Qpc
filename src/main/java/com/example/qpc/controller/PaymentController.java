@@ -1,11 +1,9 @@
 package com.example.qpc.controller;
 
-import com.example.qpc.dto.EmailAuthRequestDTO;
-import com.example.qpc.dto.MemberDTO;
-import com.example.qpc.dto.PaymentInformationDTO;
-import com.example.qpc.dto.PaymentMemberDTO;
+import com.example.qpc.dto.*;
 import com.example.qpc.service.MemberService;
 import com.example.qpc.service.PaymentService;
+import com.example.qpc.service.TimeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 public class PaymentController {
     private final PaymentService paymentService;
     private final MemberService memberService;
+    private final TimeService timeService;
 
     @PostMapping("/findById")
     public ResponseEntity paymentFindById(@RequestBody PaymentMemberDTO paymentMemberDTO) throws MessagingException, UnsupportedEncodingException {
@@ -41,7 +40,11 @@ public class PaymentController {
         memberDTO.setOverTime(memberDTO.getOverTime()+paymentInformationDTO.getTime());
         memberDTO.setTotalTime(memberDTO.getTotalTime()+ paymentInformationDTO.getTime());
         memberService.memberUpdate(memberDTO);
-
+        TimeDTO timeDTO = new TimeDTO();
+        timeDTO.setAmount(paymentInformationDTO.getAmount());
+        timeDTO.setTime(paymentInformationDTO.getTime());
+        timeDTO.setPaymentMethod("KakaoPay");
+        timeService.save(memberDTO,timeDTO);
         return new ResponseEntity<>(memberDTO,HttpStatus.OK);
     }
 
