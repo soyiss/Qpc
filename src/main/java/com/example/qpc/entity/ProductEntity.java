@@ -1,5 +1,6 @@
 package com.example.qpc.entity;
 
+import com.example.qpc.dto.ProductDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,4 +47,14 @@ public class ProductEntity {
 
     @OneToMany(mappedBy = "productEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CartEntity> cartEntityList = new ArrayList<>();
+
+    public static ProductEntity toSaveEntity(ProductDTO productDTO) {
+        ProductEntity productEntity = new ProductEntity();
+        productEntity.setProductName(productDTO.getProductName());
+        productEntity.setProductPrice(productDTO.getProductPrice());
+        productEntity.setProductCount(productDTO.getProductCount());
+        productEntity.setFileAttached(0);
+        return productEntity;
+
+    }
 }

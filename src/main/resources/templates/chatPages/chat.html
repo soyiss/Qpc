@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <!-- 	style -->
+    <link href="css/chatStyle.css" rel="stylesheet" />
+
+    <!-- 	bootstrap, jquery -->
+    <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+    <script src="/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 	fontawsome -->
+    <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-lg-12">
+            <div class="card chat-app">
+                <div id="plist" class="people-list">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Search...">
+                    </div>
+
+
+                    <ul id="online-user" class="list-unstyled chat-list mt-2 mb-0">
+
+                        <!-- admin status -->
+                        <li class="clearfix" onclick="activeToggle(this)" id="admin"><img
+                                src="starboot/assets/img/user-astronaut-solid.svg" alt="admin">
+                            <div class="about">
+                                <div id="admin" class="name">admin</div>
+                                <div id="admin-status" class="status">
+                                    <i id="admin-status-icon" class="fa fa-circle offline"> </i>
+                                    <span id="admin-status-content">offline </span>
+                                </div>
+                            </div></li>
+                    </ul>
+                </div>
+
+                <!-- chat section -->
+                <div class="chat">
+                    <div class="chat-header clearfix">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <a href="javascript:void(0);" data-toggle="modal"
+                                   data-target="#view_info"> <img id="myImg"
+                                                                  src="starboot/assets/img/reddit-alien-brands.svg"
+                                                                  alt="me">
+                                </a>
+                                <div class="chat-about">
+                                    <span id="myId" class="m-b-0" th:text="${session.sessionId}"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="chat-history" style="overflow: hidden;">
+                        <ul style="overflow-y: scroll; height: 100%;" id="chat-content" class="m-b-0">
+
+                        </ul>
+                    </div>
+                    <div class="chat-message clearfix">
+                        <div class="input-group-prepend d-flex mb-0">
+                            <input id="msg" type="text"
+                                   onkeydown="if(event.keyCode==13){send()}" class="form-control"
+                                   placeholder="Enter text here...">
+                            <button id="button-send" type="button" class="input-group-text"
+                                    data-toggle="tooltip" data-placement="top" title="send a message">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                            <button id="disconn" type="button" class="input-group-text"
+                                    data-toggle="tooltip" data-placement="top" title="Out from chat">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" th:inline="javascript">
+    var myId = document.getElementById('myId').textContent;
+    var receiverId;
+    var preOnlineList;
+    var adminStatusContent;
+    var preadminStatus;
+    var adminStatus;
+
+    if(myId != 'admin') {
+        receiverId = 'admin';
+    } else {
+        document.getElementById('myImg').src = "starboot/assets/img/user-astronaut-solid.svg";
+    }
+
+    document.querySelector("#disconn").addEventListener("click", (e) => {
+        // location.href = "/";
+        window.close();
+    })
+
+    document.querySelector("#button-send").addEventListener("click", (e) => {
+        send();
+    });
+
+    const websocket = new WebSocket("ws://localhost:8091/ws/chat");
+    websocket.onmessage = onMessage;
+    websocket.onopen = onOpen;
+    websocket.onclose = onClose;
+
+    // send a message
+    function send(){
+        var message = document.getElementById("msg").value;
+        // don't send when content is empty
+        if(message != "") {
+            let msg = {
+                'receiverId' : receiverId,
+                'message' : message
+            }
+
+            if(message != null) {
+                websocket.send(JSON.stringify(msg));
+            }
+            document.getElementById("msg").value = '';
+        }
+    }
+
+    //on exit chat room
+    function onClose(evt) {
+        console.log("close event : " + evt);
+    }
+
+    //on entering chat room
+    function onOpen(evt) {
+        console.log("open event : " + evt);
+    }
+
+    // on message controller
+    function onMessage(msg) {
+        adminStatusContent = document.getElementById('admin-status-content');
+        preAdminStatus = adminStatusContent.innerHTML;
+
+        console.log('msg.data >>> ', msg.data);
+        var data = JSON.parse(msg.data);
+
+        var onlineList = data.onlineList;
+        console.log('onlineList >>>> ', onlineList);
+
+        var senderId = data.senderId;
+        console.log('senderId >>> ', senderId)
+        // var receiverId = data.receiverId;
+        // console.log('receiverId >>> ', receiverId)
+        var message = data.message;
+        console.log('message >>> ', message)
+        var time = data.time;
+        console.log('time >>> ', time)
+        adminStatus = data.adminStatus;
+        console.log('preAdminStatus >>> ', preAdminStatus)
+        console.log('adminStatus >>> ', adminStatus)
+        var newOne = data.newOne;
+        console.log('newOne >>> ', newOne);
+        var outOne = data.outOne;
+        console.log('outOne >>> ', outOne);
+
+
+
+        // when user login
+        // first login admin -> get all onlined user list
+        if(newOne != null) {
+            console.log("new One is not null");
+            if(myId == 'admin' && newOne == "admin") {
+                getOnlineList(onlineList);
+            } else if(myId == "admin" && newOne != "admin") {
+                console.log("new one login >>>> " , newOne);
+                insertOnlineList(newOne);
+            }
+        }
+        // when user disconnect
+        if(outOne != null && myId == 'admin') {
+            console.log("user disconnect >>> ", outOne);
+            deleteOnlieList(outOne);
+        }
+
+        // save or show message
+        if(myId=='admin' && senderId != 'admin' && receiverId != senderId) {
+            addStagingMessage(senderId, time, message);
+        } else {
+            insertMessage(senderId, time, message);
+        }
+
+
+        // update admin status
+        updateAdminStatus();
+        // scroll down
+        scrollDown();
+    }
+
+    // insert a message
+    function insertMessage(senderId, time, message) {
+        var chatContent =  document.querySelector("#chat-content");
+        if(senderId == myId) {
+            // insert a message into chat content to myself
+            var li = document.createElement('li');
+            li.classList.add('message-li', 'clearfix', 'float-right');
+            var infoDiv = document.createElement('div');
+            infoDiv.classList.add('message-data');
+            li.appendChild(infoDiv);
+            var timeSpan = document.createElement('span');
+            timeSpan.classList.add('message-data-time');
+            timeSpan.textContent = time;
+            infoDiv.appendChild(timeSpan);
+            var msgDiv = document.createElement('div');
+            msgDiv.classList.add('message', 'my-message');
+            msgDiv.textContent = message;
+            li.appendChild(msgDiv);
+
+            chatContent.appendChild(li);
+        } else {
+            // insert a message into chat content to other
+            var li = document.createElement('li');
+            li.classList.add('message-li', 'clearfix');
+            var infoDiv = document.createElement('div');
+            infoDiv.classList.add('message-data');
+            li.appendChild(infoDiv);
+            var timeSpan = document.createElement('span');
+            timeSpan.classList.add('message-data-time');
+            timeSpan.textContent = time;
+            infoDiv.appendChild(timeSpan);
+            var msgDiv = document.createElement('div');
+            msgDiv.classList.add('message', 'other-message');
+            msgDiv.textContent = message;
+            li.appendChild(msgDiv);
+
+            chatContent.appendChild(li);
+        }
+    }
+
+    // save staging messages
+    function addStagingMessage(senderId, time, message) {
+
+        var container = [];
+        var data = {
+            "time":time,
+            "message":message,
+            "senderId":senderId
+        }
+        console.log('staging message data >>> ', data)
+        if(sessionStorage.getItem(senderId) != null) {
+            container = JSON.parse(sessionStorage.getItem(senderId));
+            console.log('stagine message container >>> ', container);
+            container.push(data);
+        } else {
+            container.push(data);
+        }
+        sessionStorage.setItem(senderId, JSON.stringify(container));
+
+        if(document.getElementById(senderId) != null) {
+            var circle = document.getElementById(senderId).querySelector('.circle');
+            var count = document.getElementById(senderId).querySelector('.circle > .staging-count');
+            var n = count.textContent;
+            if(n == ""){
+                n = 0
+            }
+            n ++;
+            circle.classList.remove('d-none');
+            count.textContent = n;
+        }
+    }
+
+    // onclick onlined user icon
+    function activeToggle(element){
+        if(!element.classList.contains('active')){
+            element.classList.add('active');
+        } else {
+            element.classList.remove('active');
+        };
+        var preReceiverId = receiverId;
+        receiverId = element.querySelector('.about > .name').textContent;
+        console.log('<<<< toggleAction >>>>>')
+        console.log('receiverId >>> ', receiverId);
+        console.log('preReceiverId >>> ', preReceiverId);
+
+        if(receiverId != preReceiverId && preReceiverId != null)
+            document.getElementById(preReceiverId).classList.remove('active');
+
+        setChatHistory(preReceiverId);
+        document.getElementById('chat-content').innerHTML = "";
+        getChatHistory(receiverId);
+        divideChatSection(receiverId);
+        if(document.getElementById(receiverId).querySelector('.circle') != null) {
+            document.getElementById(receiverId).querySelector('.circle > .staging-count').textContent = "";
+            document.getElementById(receiverId).querySelector('.circle').classList.add('d-none');
+        }
+    }
+
+    // insert all users into online list
+    function getOnlineList(onlineList){
+        var onlineUser =  document.querySelector("#online-user");
+        onlineUser.innerHTML = "";
+        onlineList.forEach(user => {
+            insertOnlineList(user);
+        });
+    }
+
+    // insert online user list
+    function insertOnlineList(user) {
+
+        if(document.getElementById(user) == null) {
+            var onlineUser =  document.querySelector("#online-user");
+
+            var li = document.createElement('li');
+            li.classList.add('clearfix');
+            li.setAttribute('onclick', 'activeToggle(this)');
+            li.setAttribute('id', user);
+
+            var img = document.createElement('img');
+            var src = "starboot/assets/img/reddit-alien-brands.svg";
+            img.setAttribute('src', src);
+            img.setAttribute('alt', 'guest');
+
+            var aboutDiv = document.createElement('div');
+            aboutDiv.classList.add('about');
+            var name = document.createElement('div');
+            name.classList.add('name');
+            name.textContent = user;
+            aboutDiv.appendChild(name);
+
+            var statusDiv = document.createElement('div');
+            statusDiv.classList.add('status');
+            var icon = document.createElement('i');
+            icon.setAttribute('id', 'admin-status-icon');
+            icon.classList.add('fa', 'fa-circle', 'online');
+            var span = document.createElement('span');
+            span.setAttribute('id', 'admin-status-content');
+            span.textContent = 'online';
+            statusDiv.appendChild(icon);
+            statusDiv.appendChild(span);
+
+            aboutDiv.appendChild(statusDiv);
+
+            li.appendChild(img);
+            li.appendChild(aboutDiv);
+
+            var alertDiv = document.createElement('div');
+            alertDiv.classList.add('circle', 'd-flex', 'align-items-center', 'justify-content-center', 'd-none');
+            aspan = document.createElement('span');
+            aspan.classList.add('staging-count');
+            alertDiv.appendChild(aspan);
+            li.appendChild(alertDiv);
+
+            onlineUser.appendChild(li);
+        }
+    };
+
+    // delete outOne from onlineList
+    function deleteOnlieList(outOne) {
+        var element =  document.getElementById(outOne);
+        element.parentNode.removeChild(element);
+    }
+
+    // insert division of receiver
+    function divideChatSection(receiverId){
+        var div = document.createElement('div');
+        div.classList.add('clearfix');
+        var str = receiverId + '님과의 대화 시작 ';
+        var hr = document.createElement('hr');
+
+        div.textContent = str;
+        div.appendChild(hr);
+        var chatContent =  document.querySelector("#chat-content");
+        chatContent.appendChild(div);
+
+        scrollDown();
+    };
+
+    // update admin status
+    function updateAdminStatus(){
+        if(preAdminStatus != adminStatus) {
+            var icon = document.getElementById('admin-status-icon');
+
+            if(adminStatus == "online") {
+                icon.classList.remove('offline');
+                icon.classList.add('online');
+            } else {
+                icon.classList.remove('online');
+                icon.classList.add('offline');
+            }
+            adminStatusContent.innerHTML = adminStatus;
+        }
+    };
+
+    // save chat history
+    function setChatHistory(name){
+        var value =[];
+        document.querySelectorAll('.message-li').forEach(item => {
+
+            var time = item.querySelector('.message-data > .message-data-time').textContent;
+            var message = item.querySelector('.message').textContent;
+            var senderId;
+            var type = item.querySelector('.message').classList[1];
+            if(type == 'my-message'){
+                senderId = myId;
+            } else {
+                senderId = name;
+            }
+
+            data = {
+                "time":time,
+                "message":message,
+                "senderId":senderId
+            }
+            value.push(data);
+
+        })
+
+        sessionStorage.setItem(name, JSON.stringify(value));
+    };
+
+    // insert pre chat history
+    function getChatHistory(name){
+        var data = JSON.parse(sessionStorage.getItem(name));
+
+        if(data != null) {
+            data.forEach(item => {
+                var time = item.time;
+                var message = item.message;
+                var senderId = item.senderId;
+
+                insertMessage(senderId, time, message);
+            })
+        }
+    };
+
+    // scroll down event
+    function scrollDown() {
+        var chatContent =  document.querySelector("#chat-content");
+        chatContent.scrollTop = chatContent.scrollHeight;
+    };
+</script>
+
+<!-- bootstrap function -->
+<script type="text/javascript">
+    $(function() {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+</body>
+</html>
+</body>
+</html>

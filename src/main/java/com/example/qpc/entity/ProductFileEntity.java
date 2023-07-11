@@ -22,4 +22,14 @@ public class ProductFileEntity {
     @ManyToOne
     @JoinColumn(name="product_id")
     private ProductEntity productEntity;
+
+    public static ProductFileEntity toSaveProductFileEntity(ProductEntity savedEntity, String originalFileName, String storedFileName) {
+        ProductFileEntity productFileEntity = new ProductFileEntity();
+        productFileEntity.setProductEntity(savedEntity);
+        productFileEntity.setOriginalFileName(originalFileName);
+        productFileEntity.setStoredFileName(storedFileName);
+        return productFileEntity;
+
+
+    }
 }

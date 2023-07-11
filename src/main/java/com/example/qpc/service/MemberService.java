@@ -12,6 +12,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Member;
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -29,6 +33,7 @@ public class MemberService implements UserDetailsService {
         validateDuplicateMemberId(memberDTO);
         return memberRepository.save(MemberEntity.toEntity(memberDTO));
     }
+
 
     // 회원가입시 이메일 중복 체크
     private void validateDuplicateMemberEmail(MemberDTO memberDTO) {
@@ -68,5 +73,47 @@ public class MemberService implements UserDetailsService {
             return null;
         }
         return MemberDTO.toDTO(memberEntity);
+    }
+
+    public MemberDTO findByMemberEmail(String memberEmail) {
+        MemberEntity memberEntity = memberRepository.findByMemberEmail(memberEmail);
+        if(memberEntity == null) {
+            return null;
+        }else {
+            return MemberDTO.toDTO(memberEntity);
+        }
+    }
+
+    public MemberDTO findByMemberEmailAndMemberId(String memberEmail, String memberId) {
+        MemberEntity memberEntity = memberRepository.findByMemberEmailAndMemberId(memberEmail,memberId);
+        if(memberEntity == null) {
+            return null;
+        }else {
+            return MemberDTO.toDTO(memberEntity);
+        }
+    }
+
+    public MemberDTO findById(Long id) {
+        return MemberDTO.toDTO(memberRepository.findById(id).get());
+    }
+
+    public MemberDTO memberUpdate(MemberDTO memberDTO) {
+        MemberEntity memberEntity = memberRepository.save(MemberEntity.toUpdateEntity(memberDTO));
+        return MemberDTO.toDTO(memberEntity);
+    }
+
+    public void delete(Long id) {
+        memberRepository.deleteById(id);
+    }
+
+    //관리자때 필요한 회원리스트 메서드
+    public List<MemberDTO> findAll() {
+        List<MemberEntity> memberEntityList = memberRepository.findAll();
+        List<MemberDTO> memberDTOList = new ArrayList<>();
+        for (MemberEntity memberEntity: memberEntityList) {
+            memberDTOList.add(MemberDTO.toDTO(memberEntity));
+        }
+        return memberDTOList;
+
     }
 }

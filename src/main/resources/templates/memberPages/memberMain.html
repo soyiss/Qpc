@@ -1,10 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+
+    <th:block th:replace="component/config :: config"></th:block>
+    <th:block th:replace="component/sidebar :: sidebar"></th:block>
 </head>
 <body>
-<h2>로그인 완료</h2>
+
 </body>
+
+<footer>
+    <th:block th:replace="component/memberNav :: memberNav"></th:block>
+</footer>
+
 </html>

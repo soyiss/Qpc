@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <th:block th:replace="component/config :: config"></th:block>
-    <meta name="_csrf" th:content="${_csrf.token}"/> <!-- CSRF 토큰 추가 -->
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/> <!-- CSRF 헤더 이름 추가 -->
+    <meta th:content="${_csrf.token}" name="_csrf">
+    <meta th:content="${_csrf.parameterName}" name="_csrf_parameter_name">
 </head>
 <style>
     .fieldError {
@@ -13,7 +13,7 @@
 <body>
 <div class="container" style="height: 300px"></div>
 <div class="container">
-    <form action="/member/save" method="post" th:object="${memberDTO}">
+    <form th:action="@{/member/save}" method="post" th:object="${memberDTO}">
         <div class="form-floating mb-3">
             <input type="email" class="form-control" id="member-email" name="memberEmail"
                    th:field="*{memberEmail}" placeholder="name@example.com">
@@ -50,7 +50,6 @@
             <label for="member-mobile">전화번호</label>
             <p th:if="${#fields.hasErrors('memberMobile')}" th:errors="*{memberMobile}" class="fieldError"></p>
         </div>
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
         <input type="submit" value="회원가입" class="btn btn-primary">
     </form>
 </div>
@@ -70,21 +69,21 @@
     </div>
 </div>
 <a href="/member/login">로그인창</a>
+<a href="/chat">채팅으로 가는 링크</a>
+
 </body>
 
 <script th:inline="javascript">
     const emailCheck = () => {
-        document.getElementById("email-check").style.display = "block";
-        const email = document.querySelector('input[name="memberEmail"]').value;
         const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-        const csrfParameterName = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-
+        const email = document.querySelector('input[name="memberEmail"]').value;
+        document.getElementById("email-check").style.display = "block";
         axios({
             method: "post",
             url: "/memberSave/mailConfirm",
             headers: {
                 "Content-Type": "application/json",
-                [csrfParameterName]: csrfToken, // CSRF 토큰 추가
+                "X-CSRF-Token": csrfToken
             },
             data: {
                 email: email,
@@ -93,10 +92,9 @@
             alert("이메일로 인증번호가 발송되었습니다.");
             document.querySelector('input[name="code"]').value = res.data;
         }).catch(err => {
-            console.log("실패");
+            console.log(err);
         });
     }
-
 
     const emailFinalCheck = () => {
         const typingCode = document.querySelector('input[name="inputCode"]').value;
