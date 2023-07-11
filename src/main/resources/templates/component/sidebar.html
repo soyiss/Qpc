@@ -2,70 +2,167 @@
 <html lang="en">
 
 <th:block th:fragment="sidebar">
-<head>
+    <head>
+        <style>
+            .slides {
+                display: none;
+            }
+            .active {
+                display: block;
+            }
+
+            .item {
+                display: block;
+                margin-bottom: 10px;
+            }
+            .container {
+                display: flex;
+                align-items: flex-start;
+            }
+            .item-four {
+                width: 100px; /* 이미지 4의 고정 너비 */
+                height: 110px; /* 이미지 비율에 따라 자동 조정 */
+
+            }
+            .item-container {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                margin-right: 10px;
+                margin-left: 10px;
+
+            }
+            .item-container .item {
+                width: 100px; /* 이미지 1, 2, 3의 너비 */
+                height: auto; /* 이미지 비율에 따라 자동 조정 */
+            }
+            .ad-img{
+
+                margin-right: 10px; /* 이미지 4의 왼쪽 여백과 동일한 값 */
+                margin-left: 10px; /* 이미지 4의 왼쪽 여백 */
+            }
+            label {
+                color: white;
+                font-size: 14px;
+            }
 
 
-</head>
-<body>
+        </style>
+    </head>
+    <body>
+    <div id="sidebar" class="side-bar">
+
+        <div class="member-area" style="text-align: center">
+            <ul>
+
+                <a><img src="/img/icon/좌석이동-아이콘.gif" style="width: 20px; height: 20px">자리이동</a>
+                <a><img src="/img/icon/종료-아이콘.png" style="width: 20px; height: 20px">사용종료</a>
+                <button class="toggle-button" onclick="toggleSidebar()">ㅡ</button> <br>
+            </ul>
+
+            <form>
+                <input type="text" placeholder="좌석번호"><button><img src ="/img/icon/충전-아이콘.gif" style="width: 20px; height: 20px"  />요금충전</button> <br>
 
 
-<div id="sidebar" class="side-bar">
+                <label>충전 시간 :  </label> <input> <br>
+                <label> 잔여 시간 : </label> <input> <br>
+                <label> 사용 시간 : </label> <input> <br>
 
-    <div class="member-area">
-<ul>
+            </form> <br>
 
-    <a>자리이동</a>
-    <a>사용종료</a>
-    <button class="toggle-button" onclick="toggleSidebar()">ㅡ</button> <br>
-</ul>
+            <form>
+                <button> <img src ="/img/icon/채팅-아이콘.gif" style="width: 20px; height: 20px"  />채팅</button>
+                <button><img src ="/img/icon/호출-아이콘.gif" style="width: 20px; height: 20px"  />호출</button>
+                <button><img src ="/img/icon/회원정보-아이콘.gif" style="width: 20px; height: 20px"  />회원정보</button>
+                <button><img src ="/img/icon/주문-아이콘.gif" style="width: 20px; height: 20px"  />먹거리</button> <br>
 
-    <form>
-        <input type="text" placeholder="좌석번호">
-        <button>요금충전</button> <br>
+            </form> <br>
 
+        </div>
 
-        충전 시간 : <input> <br>
-        잔여 시간 : <input> <br>
-        사용 시간 : <input> <br>
-    </form> <br>
+        <div class="ad-area" style="margin-right: 10px">
+            <div class="container">
+                <div class="item-container">
+                    <div style="border: 1px solid black; margin-bottom: 10px; text-align: center; border-radius: 10px; box-shadow: 2px 2px 5px grey;">
+                        <img class="item" src="/img/오버워치-아이콘.png" alt="Image 1" style="height: 30px;">
+                        <label>오버워치</label>
+                    </div>
 
-    <form>
-        <button>채팅</button>
-        <button>호출</button>
-        <button>회원정보</button>
-        <button>먹거리</button> <br>
+                    <div style="border: 1px solid black; margin-bottom: 10px; text-align: center; border-radius: 10px; box-shadow: 2px 2px 5px grey;">
+                        <img class="item" src="/img/발로란트-아이콘.png" alt="Image 2" style="height: 30px;">
+                        <label>발로란트</label>
+                    </div>
 
+                    <div style="border: 1px solid black; margin-bottom: 10px; text-align: center; border-radius: 10px; box-shadow: 2px 2px 5px grey;">
+                        <img class="item" src="/img/배그-아이콘.png" alt="Image 3" style="height: 30px;">
+                        <label>배틀그라운드</label>
+                    </div>
 
-    </form> <br>
+                </div>
 
-</div>
-
-
-<div class="ad-area">
-    <h2>광고고고고고고고고</h2>
-</div>
-
-
-
-</div>
-
-
-
-<script>
-    function toggleSidebar() {
-
-        var sideBar = document.querySelector('.side-bar');
-        var adArea = document.querySelector('.ad-area');
+                <div class="ad-img">
+                    <a href="https://sa.nexon.com/main/index.aspx"> <img class="slides active" src="/img/광고-서든.png" alt="Image 1" style="width: 200px; height: 200px;border-radius: 10px;"> </a>
+                    <a href="https://fifaonline4.nexon.com/main/index"> <img class="slides" src="/img/광고-피파.png" alt="Image 2" style="width: 200px; height: 200px;border-radius: 10px;"> </a>
+                </div>
 
 
-        sideBar.classList.toggle('minimized');
-        adArea.classList.toggle('minimized');
+
+                <div class="item-container">
+
+                    <div style="border: 1px solid black; margin-bottom: 10px; text-align: center; border-radius: 10px; box-shadow: 2px 2px 5px grey;">
+                        <img class="item" src="/img/리그오브레전드-아이콘.png" alt="Image 5" style="height: 30px;">
+                        <label>리그오브레전드</label>
+                    </div>
+
+                    <div style="border: 1px solid black; margin-bottom: 10px; text-align: center; border-radius: 10px; box-shadow: 2px 2px 5px grey;">
+                        <img class="item" src="/img/서든어택-아이콘.png" alt="Image 6" style="height: 30px;">
+                        <label>서든어택</label>
+                    </div>
+
+                    <div style="border: 1px solid black; margin-bottom: 10px; text-align: center; border-radius: 10px; box-shadow: 2px 2px 5px grey;">
+                        <img class="item" src="/img/메이플스토리-아이콘.png" alt="Image 7" style="height: 30px;">
+                        <label>메이플스토리</label>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+
+            var sideBar = document.querySelector('.side-bar');
+            var adArea = document.querySelector('.ad-area');
 
 
-    }
-</script>
+            sideBar.classList.toggle('minimized');
+            adArea.classList.toggle('minimized');
 
-</body>
+        }
+
+        // 자동 슬라이드쇼
+        // 3초마다 전환됨
+        var slideIndex = 0;
+        carousel();
+        function carousel() {
+            var i;
+            var slides = document.getElementsByClassName("slides");
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            slideIndex++;
+            if (slideIndex > slides.length) {slideIndex = 1}
+            slides[slideIndex-1].style.display = "block";
+            setTimeout(carousel, 3000); // 변경 시간(밀리초)
+        }
+
+
+    </script>
+
+    </body>
 
 </th:block>
 </html>
