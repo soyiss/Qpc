@@ -1,21 +1,21 @@
 #sidebar {
     position: fixed;
-    top: 50px;
-    right: 50px;
-    height: 600px;
-    width: 600px;
+    top: 10px;
+    right: 10px;
+    height: 300px;
+    width: 500px;
     background-color: #333;
-    padding: 30px;
+    padding: 20px;
 }
 
 #sidebar ul {
     list-style: none;
-    margin: 0;
+    margin: 0 auto;
     padding: 0;
 }
 
 #sidebar li {
-    margin: 0;
+    margin: 0 auto;
     padding: 0;
     display: block;
 }
@@ -31,7 +31,7 @@
 
 
 #sidebar a:hover {
-    background-color: #444;
+    background-color: #333;
 }
 
 #main {
@@ -43,11 +43,23 @@
     cursor: pointer;
 }
 
+.member-area {
+    margin: 0 auto;
+}
+
 .ad-area {
     display: block;
-    background-color: #bc0bc9;
-    padding: 10px;
+    background-color: #333;
+    padding: 5px;
     transition: display 0.3s ease-in-out;
+    width: 500px;
+    position: fixed;
+    right: 0.01px;
+
+
+
+
+
 }
 
 .ad-area.minimized {
@@ -56,11 +68,10 @@
 
 #sidebar.minimized {
     position: fixed;
-    top: 50px;
-    right: 50px;
-    height: 300px;
-    width: 600px;
+    top: 10px;
+    height: 250px;
+    width: 500px;
     background-color: #333;
-    padding: 30px;
+    padding: 20px;
 }
 
