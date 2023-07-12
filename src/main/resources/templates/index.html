@@ -1,77 +1,343 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <th:block th:replace="component/config :: config"></th:block>
     <meta th:content="${_csrf.token}" name="_csrf">
     <meta th:content="${_csrf.parameterName}" name="_csrf_parameter_name">
+    <!-- iamport.payment.js -->
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+    <style>
+
+        .fieldError {
+            color: #bd2130;
+        }
+        .error {
+            color: #bd2130;
+        }
+        /* 모달창을 구성하는 스타일 */
+        .modal {
+            display: none; /* 초기에는 모달창 숨김 */
+            position: fixed; /* 스크롤 내릴 때 위치 고정 */
+            z-index: 9999; /* 수정: 모달창의 z-index 값을 높은 값으로 설정 */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* 모달창을 스크롤 가능하게 함 */
+            background-color: rgba(0, 0, 0, 0.4); /* 모달창 배경 투명도 조절 */
+        }
+
+        /* 모달창 내부 컨텐츠 표시 스타일 */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            z-index: 9999; /* 수정: 내부 컨텐츠의 z-index 값을 높은 값으로 설정 */
+        }
+
+
+        /* 모달창 내부 X 버튼 스타일 */
+        .modal-close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        /* X 버튼 호버 스타일 */
+        .modal-close:hover,
+        .modal-close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* find, save 버튼 스타일 */
+        button {
+            padding: 10px;
+            background-color: #262525;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 50px;
+            left: 0;
+            height: 200px;
+            background-color: gray;
+            width: 100%;
+            padding: 30px;
+
+
+        }
+
+        .find-area {
+            margin: 0 auto;
+        }
+
+    </style>
 </head>
-<style>
-    .fieldError {
-        color: #bd2130;
-    }
-</style>
 <body>
-<div class="container" style="height: 300px"></div>
-<div class="container">
-    <form th:action="@{/member/save}" method="post" th:object="${memberDTO}">
-        <div class="form-floating mb-3">
-            <input type="email" class="form-control" id="member-email" name="memberEmail"
-                   th:field="*{memberEmail}" placeholder="name@example.com">
-            <label for="member-email">이메일 주소</label>
-            <p th:if="${#fields.hasErrors('memberEmail')}" th:errors="*{memberEmail}" class="fieldError"></p>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="member-id" name="memberId"
-                   th:field="*{memberId}" placeholder="memberId">
-            <label for="member-id">아이디</label>
-            <p th:if="${#fields.hasErrors('memberId')}" th:errors="*{memberId}" class="fieldError"></p>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="password" class="form-control" id="member-password" name="memberPassword"
-                   th:field="*{memberPassword}" placeholder="memberPassword">
-            <label for="member-password">비밀번호</label>
-            <p th:if="${#fields.hasErrors('memberPassword')}" th:errors="*{memberPassword}" class="fieldError"></p>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="member-name" name="memberName"
-                   th:field="*{memberName}" placeholder="memberName">
-            <label for="member-name">이름</label>
-            <p th:if="${#fields.hasErrors('memberName')}" th:errors="*{memberName}" class="fieldError"></p>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="date" class="form-control" id="member-birth" name="memberBirth"
-                   th:field="*{memberBirth}" placeholder="memberBirth">
-            <label for="member-birth">생년월일</label>
-            <p th:if="${#fields.hasErrors('memberBirth')}" th:errors="*{memberBirth}" class="fieldError"></p>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="member-mobile" name="memberMobile"
-                   th:field="*{memberMobile}" placeholder="memberMobile">
-            <label for="member-mobile">전화번호</label>
-            <p th:if="${#fields.hasErrors('memberMobile')}" th:errors="*{memberMobile}" class="fieldError"></p>
-        </div>
-        <input type="submit" value="회원가입" class="btn btn-primary">
-    </form>
+<div class="container" style="height: 70%;">
+    <img class="w-100 h-100" th:src="@{/img/testMain.png}" alt="Image 404 Error">
 </div>
-<div class="container">
-    <button class="btn btn-primary" onclick="emailCheck()">이메일 체크</button>
-    <div id="email-check" style="display: none">
-        <div class="row">
-            <div class="col">
-                <input type="text" class="form-control" name="inputCode" placeholder="인증번호 입력">
-                <input type="hidden" name="code">
-                <h5 id="input-code-bottom"></h5>
-            </div>
-            <div class="col">
-                <button class="form-control" onclick="emailFinalCheck()">인증번호 확인</button>
+
+<!--회원가입 모달창-->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <p>회원가입</p>
+        <div class="container">
+            <form th:action="@{/member/save}" method="post" th:object="${memberDTO}">
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="member-email" name="memberEmail"
+                           th:field="*{memberEmail}" placeholder="name@example.com">
+                    <label for="member-email">이메일 주소</label>
+                    <p th:if="${#fields.hasErrors('memberEmail')}" th:errors="*{memberEmail}" class="fieldError"></p>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="member-id" name="memberId"
+                           th:field="*{memberId}" placeholder="memberId">
+                    <label for="member-id">아이디</label>
+                    <p th:if="${#fields.hasErrors('memberId')}" th:errors="*{memberId}" class="fieldError"></p>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="member-password" name="memberPassword"
+                           th:field="*{memberPassword}" placeholder="memberPassword">
+                    <label for="member-password">비밀번호</label>
+                    <p th:if="${#fields.hasErrors('memberPassword')}" th:errors="*{memberPassword}" class="fieldError"></p>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="member-name" name="memberName"
+                           th:field="*{memberName}" placeholder="memberName">
+                    <label for="member-name">이름</label>
+                    <p th:if="${#fields.hasErrors('memberName')}" th:errors="*{memberName}" class="fieldError"></p>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="date" class="form-control" id="member-birth" name="memberBirth"
+                           th:field="*{memberBirth}" placeholder="memberBirth">
+                    <label for="member-birth">생년월일</label>
+                    <p th:if="${#fields.hasErrors('memberBirth')}" th:errors="*{memberBirth}" class="fieldError"></p>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="member-mobile" name="memberMobile"
+                           th:field="*{memberMobile}" placeholder="memberMobile">
+                    <label for="member-mobile">전화번호</label>
+                    <p th:if="${#fields.hasErrors('memberMobile')}" th:errors="*{memberMobile}" class="fieldError"></p>
+                </div>
+                <input type="submit" value="회원가입" class="btn btn-primary">
+            </form>
+        </div>
+
+        <div class="container">
+            <button class="btn btn-primary" onclick="emailCheck()">이메일 체크</button>
+            <div id="email-check" style="display: none">
+                <div class="row">
+                    <div class="col">
+                        <input type="text" class="form-control" name="inputCode" placeholder="인증번호 입력">
+                        <input type="hidden" name="code">
+                        <h5 id="input-code-bottom"></h5>
+                    </div>
+                    <div class="col">
+                        <button class="form-control" onclick="emailFinalCheck()">인증번호 확인</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<a href="/member/login">로그인창</a>
-<a href="/chat">채팅으로 가는 링크</a>
+
+
+<div id="idFindModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <p>아이디/비밀번호 찾기</p>
+    </div>
+</div>
+
+
+<div id="pwFindModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <p>비밀번호 찾기</p>
+    </div>
+</div>
+
+
+
+
+
+<!-- 아이디 찾기 모달창 -->
+<div id="idFindModal2" class="modal">
+    <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <p>아이디 찾기</p>
+        <input type="text" placeholder="이메일"> <button>이메일 인증</button> <br>
+        <input type="text" placeholder="인증번호 입력"> <button>인증번호 확인</button>
+    </div>
+</div>
+
+<!-- 비밀번호 찾기 모달창 -->
+<div id="pwFindModal2" class="modal">
+    <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <p>비밀번호 찾기</p>
+        <input type="text" placeholder="이메일"> <button>이메일 인증</button> <br>
+        <input type="text" placeholder="아이디"> <button>아이디 확인</button> <br>
+
+    </div>
+</div>
+
+
+<!-- 아이디 확인 모달 -->
+<div class="modal fade" id="payReload" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pay-reload">요금 충전을 위한 계정 확인</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="member-check"
+                           name="checkResult" placeholder="회원체크를 위한 아이디나 이름을 입력해주세요">
+                    <label for="member-check">아이디 입력</label>
+                    <p th:if="${findByIdErrorMsg}" class="error" th:text="${findByIdErrorMsg}"></p>
+                </div>
+                <button class="btn btn-primary" onclick="memberCheck()">회원 확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--    요금충전 버튼 모달 -->
+<div class="modal fade" id="payReloadButton" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">시간 선택</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p style="font-weight: bold">카카오페이 현재 사용가능</p>
+                <div class="row">
+                    <button class="col-6 btn btn-primary" onclick="selectTime('50', '1000')">50분 1000원</button>
+                    <button class="col-6 btn btn-primary" onclick="selectTime('100', '2000')">1시간40분 2000원</button>
+                    <button class="col-6 btn btn-primary" onclick="selectTime('150', '3000')">2시간30분 3000원</button>
+                    <button class="col-6 btn btn-primary" onclick="selectTime('300', '5000')">5시간 5000원</button>
+                    <button class="col-6 btn btn-primary" onclick="selectTime('420', '7000')">7시간 7000원</button>
+                    <button class="col-6 btn btn-primary" onclick="selectTime('660', '10000')">11시간 10000원</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 </body>
+
+<footer>
+
+    <div style="text-align: center">
+
+        <form th:action="@{/member/login}" method="post" th:object="${memberDTO}">
+
+            <input type="text" id="member-id" name="memberId"
+                   th:field="*{memberId}" placeholder="memberId">
+
+
+
+            <input type="password" id="member-password" name="memberPassword"
+                   th:field="*{memberPassword}" placeholder="memberPassword">
+
+
+            <p th:if="${loginErrorMsg}" class="error" th:text="${loginErrorMsg}"></p>
+            <!--  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
+            <button type="submit">로그인</button>
+        </form>
+
+        <button type="button" data-bs-toggle="modal" data-bs-target="#payReload">요금충전</button>
+
+
+        <div class="find-area">
+            <button id="btnSave">회원가입</button>
+            <button id="btnFind">아이디/비밀번호 찾기</button>
+        </div>
+
+    </div>
+</footer>
+
+
+<!-- javascript 코드 -->
+<script>
+    // 모달창 가져오기
+    var modal = document.getElementById("myModal");
+    var idFindModal = document.getElementById("idFindModal");
+    var pwFindModal = document.getElementById("pwFindModal");
+
+    // 모달창을 띄우는 버튼 가져오기
+    var btnFind = document.getElementById("btnFind");
+    var btnSave = document.getElementById("btnSave");
+
+    // X 버튼 가져오기
+    var spanClose = document.getElementsByClassName("modal-close")[0];
+
+    // 버튼 클릭시 모달창 띄우기
+    btnFind.onclick = function() {
+        idFindModal.style.display = "block";
+    }
+    btnSave.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // X 버튼 클릭시 모달창 닫기
+    spanClose.onclick = function() {
+        modal.style.display = "none";
+        idFindModal.style.display = "none";
+        pwFindModal.style.display = "none";
+    }
+
+    // 모달창 외부 클릭시 모달창 닫기
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        } else if (event.target == idFindModal) {
+            idFindModal.style.display = "none";
+        } else if (event.target == pwFindModal) {
+            pwFindModal.style.display = "none";
+        }
+    }
+
+    // 아이디찾기, 비밀번호찾기 버튼 클릭시 모달창 바꾸기
+    var btnFindId = document.createElement("button");
+    btnFindId.innerHTML = "아이디 찾기";
+    btnFindId.onclick = function() {
+        idFindModal.style.display = "none";
+        modal.style.display = "none";
+        document.getElementById("idFindModal2").style.display = "block";
+    }
+
+    var btnFindPw = document.createElement("button");
+    btnFindPw.innerHTML = "비밀번호 찾기";
+    btnFindPw.onclick = function() {
+        idFindModal.style.display = "none";
+        modal.style.display = "none";
+        document.getElementById("pwFindModal2").style.display = "block";
+    }
+
+    idFindModal.getElementsByClassName("modal-content")[0].appendChild(btnFindId);
+    idFindModal.getElementsByClassName("modal-content")[0].appendChild(btnFindPw);
+
+</script>
+
 
 <script th:inline="javascript">
     const emailCheck = () => {
@@ -117,6 +383,108 @@
         }
     });
 
-
 </script>
+
+<script th:inline="javascript">
+    //로그인 실패시 에러 메시지 출력
+    $(document).ready(function(){
+        const errorMessage = [[${errorMessage}]];
+        if(errorMessage != null){
+            alert(errorMessage);
+        }
+    });
+</script>
+
+<script th:inline="javascript">
+
+    const memberCheck = () => {
+        const typingKeyword = document.querySelector('input[name="checkResult"]').value;
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+
+        axios({
+            method: "post",
+            url: "/payment/findById",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-Token": csrfToken
+            },
+            data: {
+                keyword: typingKeyword
+            }
+        }).then(res => {
+            console.log(res.data);
+
+            const payReload = document.querySelector('#payReload');
+            const payReloadModal = bootstrap.Modal.getInstance(payReload);
+            payReloadModal.hide();
+
+            const payReloadButton = document.querySelector('#payReloadButton');
+            const payReloadButtonModal = new bootstrap.Modal(payReloadButton);
+            payReloadButtonModal.show();
+            document.getElementById("member-id").value = res.data;
+        }).catch(err => {
+            alert(typingKeyword + "이라는 회원은 없습니다");
+        })
+    }
+
+    const selectTime = (time, price) => {
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        console.log('Selected time:', time);
+        console.log('Selected price:', price);
+        const memberId = document.querySelector('input[name="checkResult"]').value;
+        var IMP = window.IMP;
+        IMP.init('imp35682308');
+        var money = price;
+        console.log(money);
+
+        IMP.request_pay({
+            pg: 'kakaopay',
+            merchant_uid: 'merchant_' + new Date().getTime(),
+            name: 'Q PC Room '+time+'분 '+price+'원',
+            amount: money,
+            buyer_email: 'iamport@siot.do',
+            buyer_name: 'Q PC Room',
+            buyer_tel: '010-1234-5678',
+            buyer_addr: '인천광역시 부평구',
+            buyer_postcode: '123-456'
+        }, function (rsp) {
+            console.log(rsp);
+            if (rsp.success) {
+                var msg = '결제가 완료되었습니다.';
+                msg += '고유ID : ' + rsp.imp_uid;
+                msg += '상점 거래ID : ' + rsp.merchant_uid;
+                msg += '결제 금액 : ' + rsp.paid_amount;
+                msg += '카드 승인번호 : ' + rsp.apply_num;
+                $.ajax({
+                    type: "post",
+                    url: "/payment/memberCharge",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        amount: money,
+                        time: time,
+                        memberId: document.getElementById("member-id").value
+                    }),
+                    headers: {
+                        "X-CSRF-TOKEN": csrfToken  // csrfToken은 CSRF 토큰 값으로 대체해야 합니다.
+                    }
+                }).then(res => {
+                    alert(JSON.stringify(res));
+                }).catch(err => {
+                    alert(err);
+                });
+            } else {
+                var msg = '결제에 실패하였습니다.';
+                msg += '에러내용 : ' + rsp.error_msg;
+            }
+            alert(msg);
+            document.location.href="/"; //alert창 확인 후 이동할 url 설정
+        });
+    };
+</script>
+
+
+
+
+
+
 </html>
