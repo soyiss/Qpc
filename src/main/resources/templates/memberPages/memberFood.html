@@ -3,22 +3,38 @@
 <head>
   <th:block th:replace="component/config :: config"></th:block>
 
+  <style>
+    .flex-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .cart_table {
+      margin-right: 20px;
+    }
+  </style>
 </head>
 
-
 <body>
-
 <div align="center">
   <h3>[먹거리 주문]</h3>
 
+  <div class="button_wrap">
+    <button>식사류</button>
+    <button>튀김</button>
+    <button>간식</button>
+    <button>음료</button>
+    <button>세트메뉴</button>
+  </div> <br>
 
-  <div id="food-form" style="display: flex;">
-    <table border="1">
+  <div id="food-form" style="display: flex; justify-content: center; align-items: center; border: 1px solid black">
+    <table border="1" style="margin-right: 20px">
       <tr align='center'>
         <td>
           <table>
             <tr align='center'>
-              <img src ="../resources/static/img/오르비스항구.png"  width='200px' height='200px' />
+              <img src ="../resources/static/img/오르비스항구.png"  width='150px' height='150px' />
             </tr>
             <tr align='center'>
               <td>
@@ -30,21 +46,25 @@
                 <b>\1000원</b>
               </td>
             </tr>
+
             <tr align='center'>
               <td align="right">
+                <img src ="../resources/static/img/icon/장바구니-아이콘.png"  width='25px' height='25px' />
                 <input type='button' value='담기'>
               </td>
             </tr>
           </table>
         </td>
+      </tr>
+
     </table>
 
-    <table border="1">
+    <table border="1" style="margin-right: 20px">
       <tr align='center'>
         <td>
           <table>
             <tr align='center'>
-              <img src ="../resources/static/img/오르비스항구.png"  width='200px' height='200px' />
+              <img src ="../resources/static/img/춘식이고고.gif"  width='150px' height='150px' />
             </tr>
             <tr align='center'>
               <td>
@@ -58,11 +78,13 @@
             </tr>
             <tr align='center'>
               <td align="right">
+                <img src ="../resources/static/img/icon/장바구니-아이콘.png"  width='25px' height='25px' />
                 <input type='button' value='담기'>
               </td>
             </tr>
           </table>
         </td>
+      </tr>
     </table>
 
     <table border="1">
@@ -70,7 +92,7 @@
         <td>
           <table>
             <tr align='center'>
-              <img src ="../resources/static/img/navImg/디스코드.jpg"  width='200px' height='200px' />
+              <img src ="../resources/static/img/navImg/디스코드.jpg"  width='150px' height='150px' />
             </tr>
             <tr align='center'>
               <td>
@@ -84,45 +106,69 @@
             </tr>
             <tr align='center'>
               <td align="right">
+                <img src ="../resources/static/img/icon/장바구니-아이콘.png"  width='25px' height='25px' />
                 <input type='button' value='담기'>
               </td>
             </tr>
           </table>
         </td>
+      </tr>
     </table>
-
-
-
 
   </div>
 </div>
 
 
-<form>
-  <label>주문목록</label>
+<form style="border: 1px solid black ;">
+
+  <h3 style="text-align: center">장바구니</h3>
+  <div class="flex-container">
+
+    <div class="cart_table">
+      <!-- 장바구니 리스트 -->
+      <table class="subject_table">
+        <tbody>
+        <tr>
+          <th><input type="checkbox" class="individual_cart_checkbox input_size_20" checked="checked"></th>
+          <th>상품명</th>
+          <th>가격</th>
+          <th>수량</th>
+        </tr>
+        <tr>
+          <td class="td_width_1 cart_info_td"><input type="checkbox" class="individual_cart_checkbox input_size_20" checked="checked"></td>
+          <td class="td_width_2">
+            <div>상품명</div>
+          </td>
+          <td class="td_width_3">
+            <div>가격</div>
+          </td>
+          <td class="td_width_4 price_td">
+            <div class="table_text_align_center quantity_div">
+              <button class="quantity_btn plus_btn">+</button>
+              <input type="text" value="수량">
+              <button class="quantity_btn minus_btn">-</button>
+            </div>
+
+          </td>
+          <td class="td_width_4 table_text_align_center">
+            <button class="delete_btn">X</button>
+          </td>
+        </tr>
+
+        </tbody>
+      </table>
+    </div>
 
 
-
-
-
-
+    <!-- 구매 버튼 영역 -->
+    <div class="content_btn_section">
+      <input type="text" placeholder="총금액">
+      <h4>요청 사항</h4>
+      <input type="search" id="btnFoodRequest" placeholder="요청사항을 적어주세요." value="" style="margin: 0;"> <br>
+      <button>결제하기</button>
+    </div>
+  </div>
 </form>
 
-
-<input type="text" placeholder="총금액">
-<h4>요청 사항</h4>
-<input type="search" id="btnFoodRequest" placeholder="요청사항을 적어주세요." value=""> <br>
-<button>결제하기</button>
-
-
-
-
-
-
-
-
-
 </body>
-
-
 </html>
