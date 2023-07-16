@@ -23,8 +23,6 @@ import javax.sql.DataSource;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     protected MemberService memberService;
-    @Autowired
-    private DataSource dataSource;
 
 
     // 첫 잠금 해제
@@ -35,15 +33,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 // 이 주소를 받는 곳에만 모든곳에서 접근가능하도록 설정
                 .authorizeRequests()
-                // 회원가입, 로그인, 메일보내기는 Role_GUEST 사람만 사용가능하도록 설정
-//                .antMatchers("/member/save", "/member/login", "/member/login/error", "/memberSave/mailConfirm").access("hasRole('ROLE_GUEST')")
-                .antMatchers("/member/save", "/member/login", "/member/login/error", "/memberSave/mailConfirm","/test").permitAll()
+                // 회원가입, 로그인, 메일보내기는 로그인되지 않은 사람만 사용가능하도록 설정
+                .antMatchers("/member/save", "/member/login", "/member/login/error", "/memberSave/mailConfirm").anonymous()
                 // 요금결제에 대한 메소드 모든곳에서 사용가능하도록 설정
                 .antMatchers("/payment/**").permitAll()
                 .antMatchers(HttpMethod.POST,"/payment/**").permitAll()
                 .antMatchers(HttpMethod.POST,"/member/login").permitAll()
                 // Role_MEMBER 인 사람은 /member/** 메소드 사용가능하도록 설정
-                .antMatchers("/member/**").access("hasRole('ROLE_MEMBER')")
+                .antMatchers("/member/**").permitAll()
                 .antMatchers("/css/**", "/js/**","/img/**").permitAll()
                 // 다른곳은 로그인 해야 갈수 있도록 설정
                 .anyRequest().authenticated()
@@ -81,12 +78,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(memberService).passwordEncoder(passwordEncoder());
     }
 
-//    @Override
-//    public void configure(WebSecurity web) throws Exception {
-//        // CSS, JS, IMG 등 정적 리소스에 대한 인증 및 권한 부여 필터를 건너뛰게한다.
-//        web.ignoring()
-//                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-//    }
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        // CSS, JS, IMG 등 정적 리소스에 대한 인증 및 권한 부여 필터를 건너뛰게한다.
+        web.ignoring()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
 
 
     // 인증을 수행하기 위한 인터페이스
