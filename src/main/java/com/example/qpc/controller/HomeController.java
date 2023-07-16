@@ -13,6 +13,16 @@ public class HomeController {
     public String index(HttpServletRequest request,Model model) {
         // model에 담아서 form 준비
         model.addAttribute("memberDTO", new MemberDTO());
+        return "testIndex";
+        // testIndex = 신욱
+        // Indextest = 유진
+        // index = 나중에 합칠것
+    }
+
+    @GetMapping("/payment/index")
+    public String indexing(Model model){
+        model.addAttribute("memberDTO", new MemberDTO());
         return "index";
+
     }
 }

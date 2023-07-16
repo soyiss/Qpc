@@ -14,8 +14,8 @@
     <img class="w-100 h-100" th:src="@{/img/testMain.png}" alt="Image 404 Error">
 </div>
 <div class="container mt-4">
-    <button class="btn btn-primary">로그인</button>
-    <button class="btn btn-primary">회원가입</button>
+    <button class="btn btn-primary" onclick="loginForm()">로그인</button>
+    <button class="btn btn-primary" onclick="sign()">회원가입</button>
     <!-- 요금 충전 버튼 -->
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#payReload">
         요금 충전
@@ -149,8 +149,17 @@
                 msg += '에러내용 : ' + rsp.error_msg;
             }
             alert(msg);
-            document.location.href="/"; //alert창 확인 후 이동할 url 설정
+            document.location.href="/";
         });
     };
+
+    const loginForm = () => {
+        location.href="/member/login";
+    }
+
+    const sign = () => {
+        location.href="/payment/index";
+    }
+
 </script>
 </html>
