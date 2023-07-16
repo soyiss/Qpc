@@ -4,6 +4,8 @@ import com.example.qpc.dto.MemberDTO;
 import com.example.qpc.entity.MemberEntity;
 import com.example.qpc.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -50,22 +52,6 @@ public class MemberService implements UserDetailsService {
             throw new IllegalStateException("이미 가입된 회원입니다.");
         }
     }
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        MemberEntity memberEntity = memberRepository.findByMemberEmail(email);
-
-        if(memberEntity == null) {
-            throw new UsernameNotFoundException(email);
-        }
-
-        return User.builder()
-                .username(memberEntity.getMemberId())
-                .password(memberEntity.getMemberPassword())
-                .roles(memberEntity.getRole().toString())
-                .build();
-    }
-
 
     public MemberDTO findByMemberId(String memberId) {
         MemberEntity memberEntity = memberRepository.findByMemberId(memberId);
@@ -115,5 +101,10 @@ public class MemberService implements UserDetailsService {
         }
         return memberDTOList;
 
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return null;
     }
 }
