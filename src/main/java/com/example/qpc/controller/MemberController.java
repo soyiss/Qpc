@@ -11,7 +11,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -71,7 +73,8 @@ public class MemberController {
 
     // 로그인 처리
     @PostMapping("/login")
-    public String memberLogin(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
+    public String memberLogin(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model,
+                              @AuthenticationPrincipal User user) {
         System.out.println("memberDTO = " + memberDTO);
         MemberDTO member = memberService.findByMemberId(memberDTO.getMemberId());
         if (member == null) { // 아이디가 맞지 않을때
@@ -81,15 +84,17 @@ public class MemberController {
         if (passwordEncoder.matches(memberDTO.getMemberPassword(), member.getMemberPassword())) {
             // 로그인 성공
             System.out.println("member = " + member);
-            session.setAttribute("loginId", member.getMemberId());
-            return "/memberPages/memberMain";
-
-
+            if (member.getRole() == RoleEntity.ROLE_MEMBER) {
+                return "/memberPages/memberMain";
+            } else if (member.getRole() == RoleEntity.ROLE_ADMIN) {
+                return "/adminPages/adminMain";
+            }
         } else {
             // 비밀번호가 맞지 않을때
             model.addAttribute("loginErrorMsg", "비밀번호를 확인하세요");
             return "/memberLogin";
         }
+        return "redirect:/member/login/error";
     }
 
     // 아이디 찾기
@@ -146,6 +151,11 @@ public class MemberController {
         return "/adminPages/adminMain";
     }
 
+
+    @GetMapping("/memberFood")
+    public String memberFood() {
+        return "/memberPages/memberFood";
+    }
 }
 
 
