@@ -109,7 +109,35 @@
       <span class="modal-close">&times;</span>
       <h3>게임관리</h3>
       <!-- 모달 내용 -->
-      <p>모달 내용을 추가하세요.</p>
+      <div id="section">
+        <table>
+          <tr>
+            <th>id</th>
+            <th>게임 이미지</th>
+            <th>게임 이름</th>
+
+
+          </tr>
+          <c:forEach items="${gameList}" var="game">
+            <tr>
+              <td>${game.id}</td>
+              <td>${game.gameImg}</td>
+              <td>${game.gameName}</td>
+              <td>
+                <button onclick="openModal('gameUpdateModal')">게임 수정</button>
+              </td>
+
+              <td>
+                <button onclick="confirmDelete()">게임 삭제</button>
+
+              </td>
+            </tr>
+          </c:forEach>
+        </table>
+      </div> <br>
+
+      <button onclick="openModal('gameSaveModal')">게임 등록</button> <br>
+
     </div>
   </div>
 
