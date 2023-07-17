@@ -45,16 +45,30 @@ public class MemberController {
             return "/index";
         }
         try {
-            MemberDTO member = MemberDTO.createMember(memberDTO, passwordEncoder);
-            member.setRole(RoleEntity.MEMBER);
-            memberService.saveMember(member);
-            System.out.println(2);
+            if (memberDTO.getFormRole().equals("member")) {
+                MemberDTO member = MemberDTO.createMember(memberDTO, passwordEncoder);
+                member.setRole(RoleEntity.MEMBER);
+                memberService.saveMember(member);
+                System.out.println(2);
+            } else if (memberDTO.getFormRole().equals("admin")) {
+                MemberDTO checkAdmin = memberService.findByRole();
+                if (checkAdmin == null) {
+                    MemberDTO member = MemberDTO.createMember(memberDTO, passwordEncoder);
+                    member.setRole(RoleEntity.ADMIN);
+                    memberService.saveMember(member);
+                    System.out.println(3);
+                } else if (checkAdmin != null) {
+                    model.addAttribute("errorMessage", "관리자가 이미 등록되어 있습니다");
+                    System.out.println(5);
+                    return "/index";
+                }
+            }
         } catch (DuplicateMemberException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            System.out.println(3);
+            System.out.println(6);
             return "/index";
         }
-        System.out.println(4);
+        System.out.println(7);
         return "redirect:/";
     }
 
@@ -163,7 +177,7 @@ public class MemberController {
     }
 
     @GetMapping("/adminMain")
-    public String adminMain(){
+    public String adminMain() {
         return "/adminPages/adminMain";
     }
 
@@ -184,7 +198,6 @@ public class MemberController {
     public String memberFood() {
         return "/memberPages/memberFood";
     }
-
 
 
 }

@@ -131,6 +131,14 @@
                     <label for="member-mobile">전화번호</label>
                     <p th:if="${#fields.hasErrors('memberMobile')}" th:errors="*{memberMobile}" class="fieldError"></p>
                 </div>
+                <div class="form-floating mb-3">
+                    <select name="formRole" id="form-role">
+                        <option value="member">Member</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <label for="member-mobile">권한설정</label>
+                    <p th:if="${#fields.hasErrors('formRole')}" th:errors="*{formRole}" class="fieldError"></p>
+                </div>
                 <input type="submit" value="회원가입" class="btn btn-primary">
             </form>
         </div>

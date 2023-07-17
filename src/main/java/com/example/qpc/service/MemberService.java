@@ -3,6 +3,7 @@ package com.example.qpc.service;
 import com.example.qpc.config.DuplicateMemberException;
 import com.example.qpc.dto.MemberDTO;
 import com.example.qpc.entity.MemberEntity;
+import com.example.qpc.entity.RoleEntity;
 import com.example.qpc.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -117,5 +118,14 @@ public class MemberService implements UserDetailsService {
         }
         return memberDTOList;
 
+    }
+
+    public MemberDTO findByRole() {
+        MemberEntity memberEntity = memberRepository.findByRole(RoleEntity.ADMIN);
+        if(memberEntity != null) {
+            return MemberDTO.toDTO(memberEntity);
+        }else {
+            return null;
+        }
     }
 }

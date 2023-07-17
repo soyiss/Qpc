@@ -14,6 +14,7 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
@@ -48,6 +49,9 @@ public class MemberDTO {
     private String updateAt; //수정시간
 
     private RoleEntity role; // 관리자 권한주는 필드
+
+    @NotNull(message = "권한을 선택해주세요")
+    private String formRole; // 관리자나 멤버 셀렉트로 선택하기 위한 필드
 
 
 

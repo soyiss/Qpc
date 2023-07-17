@@ -1,6 +1,7 @@
 package com.example.qpc.repository;
 
 import com.example.qpc.entity.MemberEntity;
+import com.example.qpc.entity.RoleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberRepository extends JpaRepository<MemberEntity,Long> {
@@ -11,6 +12,8 @@ public interface MemberRepository extends JpaRepository<MemberEntity,Long> {
     MemberEntity findByMemberId(String memberId);
 
     MemberEntity findByMemberEmailAndMemberId(String memberEmail,String memberId);
+
+    MemberEntity findByRole(RoleEntity role);
 
     boolean existsById(Long id);
 
