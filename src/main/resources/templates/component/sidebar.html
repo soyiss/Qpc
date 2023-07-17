@@ -112,21 +112,21 @@
                 <button class="toggle-button" onclick="toggleSidebar()">ㅡ</button> <br>
             </ul>
 
-            <form>
+
                 <input type="text" placeholder="좌석번호">
                 <button><img src="/img/icon/충전-아이콘.gif" style="width: 20px; height: 20px" />요금충전</button> <br>
                 <label>충전 시간 :</label> <input> <br>
                 <label>잔여 시간 :</label> <input> <br>
                 <label>사용 시간 :</label> <input> <br>
-            </form> <br>
 
-            <form>
+
+
                 <button><img src="/img/icon/채팅-아이콘.gif" style="width: 20px; height: 20px" />채팅</button>
                 <button><img src="/img/icon/호출-아이콘.gif" style="width: 20px; height: 20px" />호출</button>
                 <button><img src="/img/icon/회원정보-아이콘.gif" style="width: 20px; height: 20px" />회원정보</button>
                 <button><img src="/img/icon/주문-아이콘.gif" style="width: 20px; height: 20px" />먹거리</button>
                 <button onclick="openModal('modal1')"><img src="/img/icon/주문내역-아이콘.gif" style="width: 20px; height: 20px" />주문내역</button> <br>
-            </form> <br>
+
         </div>
 
         <div class="ad-area" style="margin-right: 10px">
@@ -262,6 +262,10 @@
             }
             slides[slideIndex - 1].style.display = 'block';
             setTimeout(carousel, 3000); // 변경 시간(밀리초)
+        }
+
+        const memberFood = () => {
+            location.href="/member/memberFood";
         }
     </script>
 
