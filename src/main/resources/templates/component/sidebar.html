@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <th:block th:fragment="sidebar">
     <head>
+        <th:block th:replace="component/config :: config"></th:block>
+
         <style>
             .slides {
                 display: none;
@@ -22,7 +23,6 @@
             .item-four {
                 width: 100px; /* 이미지 4의 고정 너비 */
                 height: 110px; /* 이미지 비율에 따라 자동 조정 */
-
             }
             .item-container {
                 display: flex;
@@ -30,14 +30,12 @@
                 align-items: flex-start;
                 margin-right: 10px;
                 margin-left: 10px;
-
             }
             .item-container .item {
                 width: 100px; /* 이미지 1, 2, 3의 너비 */
                 height: auto; /* 이미지 비율에 따라 자동 조정 */
             }
-            .ad-img{
-
+            .ad-img {
                 margin-right: 10px; /* 이미지 4의 왼쪽 여백과 동일한 값 */
                 margin-left: 10px; /* 이미지 4의 왼쪽 여백 */
             }
@@ -46,96 +44,206 @@
                 font-size: 14px;
             }
 
+            /* 모달 스타일 */
+            .modal {
+                display: none; /* 초기에는 모달 숨김 */
+                justify-content: space-between;
+                position: fixed;
+                z-index: 9999;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 0.4);
+            }
 
+            .modal-content-wrapper {
+                display: flex;
+            }
+
+            .modal-content {
+                background-color: #fefefe;
+                margin: auto;
+                padding: 20px;
+                border: 1px solid #888;
+                flex: 1;
+                margin-right: 20px;
+            }
+
+            .modal-close {
+                color: #aaaaaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            .modal-close:hover,
+            .modal-close:focus {
+                color: #000;
+                text-decoration: none;
+            }
+
+            /* 버튼 스타일 */
+            button {
+                padding: 5px;
+                background-color: #262525;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-right: 5px;
+            }
+
+            table {
+                border: 1px solid black;
+            }
         </style>
+
+
     </head>
     <body>
     <div id="sidebar" class="side-bar">
-
         <div class="member-area" style="text-align: center">
             <ul>
-
                 <a><img src="/img/icon/좌석이동-아이콘.gif" style="width: 20px; height: 20px">자리이동</a>
                 <a><img src="/img/icon/종료-아이콘.png" style="width: 20px; height: 20px">사용종료</a>
                 <button class="toggle-button" onclick="toggleSidebar()">ㅡ</button> <br>
             </ul>
 
-                <input type="text" placeholder="좌석번호"><button><img src ="/img/icon/충전-아이콘.gif" style="width: 20px; height: 20px"  />요금충전</button> <br>
+            <form>
+                <input type="text" placeholder="좌석번호">
+                <button><img src="/img/icon/충전-아이콘.gif" style="width: 20px; height: 20px" />요금충전</button> <br>
+                <label>충전 시간 :</label> <input> <br>
+                <label>잔여 시간 :</label> <input> <br>
+                <label>사용 시간 :</label> <input> <br>
+            </form> <br>
 
-
-                <label>충전 시간 :  </label> <input> <br>
-                <label> 잔여 시간 : </label> <input> <br>
-                <label> 사용 시간 : </label> <input> <br>
-
-                <button> <img src ="/img/icon/채팅-아이콘.gif" style="width: 20px; height: 20px"  />채팅</button>
-                <button><img src ="/img/icon/호출-아이콘.gif" style="width: 20px; height: 20px"  />호출</button>
-                <button><img src ="/img/icon/회원정보-아이콘.gif" style="width: 20px; height: 20px"  />회원정보</button>
-                <button onclick="memberFood()"><img src ="/img/icon/주문-아이콘.gif" style="width: 20px; height: 20px"  />먹거리</button> <br>
-
-
+            <form>
+                <button><img src="/img/icon/채팅-아이콘.gif" style="width: 20px; height: 20px" />채팅</button>
+                <button><img src="/img/icon/호출-아이콘.gif" style="width: 20px; height: 20px" />호출</button>
+                <button><img src="/img/icon/회원정보-아이콘.gif" style="width: 20px; height: 20px" />회원정보</button>
+                <button><img src="/img/icon/주문-아이콘.gif" style="width: 20px; height: 20px" />먹거리</button>
+                <button onclick="openModal('modal1')"><img src="/img/icon/주문내역-아이콘.gif" style="width: 20px; height: 20px" />주문내역</button> <br>
+            </form> <br>
         </div>
 
         <div class="ad-area" style="margin-right: 10px">
             <div class="container">
                 <div class="item-container">
                     <div style="border: 1px solid black; margin-bottom: 10px; text-align: center; border-radius: 10px; box-shadow: 2px 2px 5px grey;">
-                        <img class="item" src="/img/오버워치-아이콘.png" alt="Image 1" style="height: 30px;">
-                        <label>오버워치</label>
+                        <a href="https://overwatch.blizzard.com/ko-kr/" target="_blank">
+                            <img class="item" src="/img/오버워치-아이콘.png" alt="Image 1" style="height: 30px;">
+                            <label>오버워치</label>
+                        </a>
                     </div>
 
                     <div style="border: 1px solid black; margin-bottom: 10px; text-align: center; border-radius: 10px; box-shadow: 2px 2px 5px grey;">
-                        <img class="item" src="/img/발로란트-아이콘.png" alt="Image 2" style="height: 30px;">
-                        <label>발로란트</label>
+                        <a href="https://playvalorant.com/ko-kr/" target="_blank">
+                            <img class="item" src="/img/발로란트-아이콘.png" alt="Image 2" style="height: 30px;">
+                            <label>발로란트</label>
+                        </a>
                     </div>
 
                     <div style="border: 1px solid black; margin-bottom: 10px; text-align: center; border-radius: 10px; box-shadow: 2px 2px 5px grey;">
-                        <img class="item" src="/img/배그-아이콘.png" alt="Image 3" style="height: 30px;">
-                        <label>배틀그라운드</label>
+                        <a href="https://pubg.game.daum.net/pubg/index.daum" target="_blank">
+                            <img class="item" src="/img/배그-아이콘.png" alt="Image 3" style="height: 30px;">
+                            <label>배틀그라운드</label>
+                        </a>
                     </div>
-
                 </div>
 
                 <div class="ad-img">
-                    <a href="https://sa.nexon.com/main/index.aspx"> <img class="slides active" src="/img/광고-서든.png" alt="Image 1" style="width: 200px; height: 200px;border-radius: 10px;"> </a>
-                    <a href="https://fifaonline4.nexon.com/main/index"> <img class="slides" src="/img/광고-피파.png" alt="Image 2" style="width: 200px; height: 200px;border-radius: 10px;"> </a>
+                    <a href="https://sa.nexon.com/main/index.aspx" target="_blank">
+                        <img class="slides active" src="/img/광고-서든.png" alt="adImage 1" style="width: 200px; height: 250px;border-radius: 10px;">
+                    </a>
+                    <a href="https://fifaonline4.nexon.com/main/index" target="_blank">
+                        <img class="slides" src="/img/광고-피파.png" alt="adImage 2" style="width: 200px; height: 250px;border-radius: 10px;">
+                    </a>
                 </div>
-
-
 
                 <div class="item-container">
-
                     <div style="border: 1px solid black; margin-bottom: 10px; text-align: center; border-radius: 10px; box-shadow: 2px 2px 5px grey;">
-                        <img class="item" src="/img/리그오브레전드-아이콘.png" alt="Image 5" style="height: 30px;">
-                        <label>리그오브레전드</label>
+                        <a href="https://www.leagueoflegends.com/ko-kr/" target="_blank">
+                            <img class="item" src="/img/리그오브레전드-아이콘.png" alt="Image 5" style="height: 30px;">
+                            <label>리그오브레전드</label>
+                        </a>
                     </div>
 
                     <div style="border: 1px solid black; margin-bottom: 10px; text-align: center; border-radius: 10px; box-shadow: 2px 2px 5px grey;">
-                        <img class="item" src="/img/서든어택-아이콘.png" alt="Image 6" style="height: 30px;">
-                        <label>서든어택</label>
+                        <a href="https://sa.nexon.com/main/index.aspx" target="_blank">
+                            <img class="item" src="/img/서든어택-아이콘.png" alt="Image 6" style="height: 30px;">
+                            <label>서든어택</label>
+                        </a>
                     </div>
 
                     <div style="border: 1px solid black; margin-bottom: 10px; text-align: center; border-radius: 10px; box-shadow: 2px 2px 5px grey;">
-                        <img class="item" src="/img/메이플스토리-아이콘.png" alt="Image 7" style="height: 30px;">
-                        <label>메이플스토리</label>
+                        <a href="https://maplestory.nexon.com/Home/Main" target="_blank">
+                            <img class="item" src="/img/메이플스토리-아이콘.png" alt="Image 7" style="height: 30px;">
+                            <label>메이플스토리</label>
+                        </a>
                     </div>
-
                 </div>
+            </div>
+        </div>
+    </div>
 
+    <div id="modal1" class="modal">
+        <div class="modal-content-wrapper">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeModal('modal1')">&times;</span>
+                <h2>상세주문서</h2>
+                <table>
+                    <tr>
+                        <th>회원ID</th>
+                        <th>좌석번호</th>
+                        <th>주문음식</th>
+                        <th>요청사항</th>
+                        <th>결제금액</th>
+                    </tr>
+                    <tr th:each="cart: ${orderList}">
+                        <td th:text="${order.id}"></td>
+                        <td th:text="${order.orderName}"></td>
+                        <td th:text="${order.orderCount}"></td>
+                        <td th:text="${order.orderPrice}"></td>
+                        <td th:text="${order.orderDate}"></td>
+                    </tr>
+                </table>
+                <img src="/img/Q_PC_Room_Logo.png" style="width: 200px; height: 100px">
             </div>
 
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeModal('modal1')">&times;</span>
+                <h2>주문내역</h2>
+                <table>
+                    <tr>
+                        <th>번호</th>
+                        <th>상품명</th>
+                        <th>수량</th>
+                        <th>금액</th>
+                        <th>주문일자</th>
+                    </tr>
+                    <tr th:each="cart: ${orderList}">
+                        <td th:text="${order.id}"></td>
+                        <td th:text="${order.orderName}"></td>
+                        <td th:text="${order.orderCount}"></td>
+                        <td th:text="${order.orderPrice}"></td>
+                        <td th:text="${order.orderDate}"></td>
+                    </tr>
+                </table>
+                <img src="/img/Q_PC_Room_Logo.png" style="width: 200px; height: 100px">
+            </div>
         </div>
     </div>
 
     <script>
         function toggleSidebar() {
-
             var sideBar = document.querySelector('.side-bar');
             var adArea = document.querySelector('.ad-area');
 
-
             sideBar.classList.toggle('minimized');
             adArea.classList.toggle('minimized');
-
         }
 
         // 자동 슬라이드쇼
@@ -144,24 +252,39 @@
         carousel();
         function carousel() {
             var i;
-            var slides = document.getElementsByClassName("slides");
+            var slides = document.getElementsByClassName('slides');
             for (i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none";
+                slides[i].style.display = 'none';
             }
             slideIndex++;
-            if (slideIndex > slides.length) {slideIndex = 1}
-            slides[slideIndex-1].style.display = "block";
+            if (slideIndex > slides.length) {
+                slideIndex = 1;
+            }
+            slides[slideIndex - 1].style.display = 'block';
             setTimeout(carousel, 3000); // 변경 시간(밀리초)
         }
+    </script>
 
-        const memberFood = () => {
-            location.href="/member/memberFood";
+    <script>
+
+        // modal-content-wrapper의 클릭 이벤트에 event.stopPropagation() 추가
+        document.querySelector('.modal-content-wrapper').addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+
+
+        function openModal(modalId1) {
+            var modal1 = document.getElementById(modalId1);
+            modal1.style.display = 'block';
+            event.preventDefault(); // 폼 제출 동작 막기
         }
 
-
+        function closeModal(modalId) {
+            var modal = document.getElementById(modalId);
+            modal.style.display = 'none';
+        }
     </script>
 
     </body>
-
 </th:block>
 </html>
