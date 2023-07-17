@@ -28,4 +28,8 @@ public class GameEntity {
 
     @OneToMany(mappedBy = "gameEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<GameFileEntity> gameFileEntityList = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name="category_id")
+    private GameCategoryEntity gameCategoryEntity;
 }
