@@ -203,12 +203,18 @@
         text: "카테고리 관리 창입니다.",
         showCancelButton: true,
         confirmButtonText: "게임",
-        cancelButtonText: "상품"
+        cancelButtonText: "상품",
+        allowOutsideClick: false, // alert창 밖을 눌러도 화면고정
+        allowEscapeKey: true // ESC 키를 누르면 꺼짐
       }).then((result) => {
+        if (result.dismiss === Swal.DismissReason.esc) {
+          return; // ESC 키를 클릭 시 종료
+        }
+
         if (result.isConfirmed) {
-          openLink("/GameCategory/game"); //  게임 버튼을 클릭하면 이동할 주소를 입력하세요.
+          openLink("/GameCategory/game");
         } else {
-          openLink("/category/product"); // 상품 버튼을 클릭하면 이동할 주소를 입력하세요.
+          openLink("/category/product"); 
         }
       });
     }
