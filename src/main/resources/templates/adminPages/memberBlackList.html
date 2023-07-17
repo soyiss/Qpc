@@ -3,55 +3,53 @@
 <head>
     <th:block th:replace="component/config :: config"></th:block>
 
+    <th:block th:replace="component/adminNav :: adminNav"></th:block>
+
+
     <meta charset="UTF-8">
     <title>Title</title>
-    <style>
-        .red-text {
-            color: red;
-        }
-    </style>
 </head>
 <body>
 <table>
     <tr>
+        <!--        <th>id</th>-->
         <th> <input type="checkbox" id="check-all"> 전체선택 </th>
-        <!--        <th>회원번호</th>-->
         <th>회원id</th>
         <th>회원이름</th>
         <th>회원생일</th>
         <th></th>
-        <!--        <th></th>-->
-    </tr>
-    <tr th:each="member: ${memberList}" th:if="${member.memberId != 'admin'}">
-        <td>
-            <input type="checkbox" class="member-checkbox" th:data-member-id="${member.memberId}">
-        </td>
-        <td th:text="${member.memberId}" th:classappend="${#lists.contains(blackListMemberIds, member.memberId)} ? 'red-text' : ''"></td>
-        <td th:text="${member.memberName}" th:classappend="${#lists.contains(blackListMemberIds, member.memberId)} ? 'red-text' : ''"></td>
-        <td th:text="${member.memberBirth}" th:classappend="${#lists.contains(blackListMemberIds, member.memberId)} ? 'red-text' : ''"></td>
-        <td>
-            <button th:onclick="member_detail([[${member.memberId}]])">회원정보</button>
-        </td>
-    </tr>
 
+    </tr>
+    <tr th:each="black: ${blackList}">
+        <td>
+            <input type="checkbox" class="member-checkbox" th:data-member-id="${black.id}">
+        </td>
+        <td th:text="${black.id}"></td>
+        <td th:text="${black.memberLoginId}"></td>
+        <td th:text="${black.memberName}"></td>
+        <td th:text="${black.memberBirth}"></td>
+        <!--        <td>-->
+        <!--            <button th:onclick="member_black([[${black.id}]])">블랙풀기</button>-->
+        <!--        </td>-->
+    </tr>
 </table>
 
-
-
-
-<button id="addAllToBlackList">블랙걸기</button>
-<a href="/admin/memberBlackList">블랙리스트 관리</a>
-<a href="/member/adminMain">메인화면</a>
-
+<button id="addAllToBlackList">블랙풀기</button>
+<a href="/admin/memberList">뒤로가기</a>
 </body>
 <script>
-    const member_detail = (memberId) => {
-        location.href = "/admin/memberDetail/" + memberId;
-    }
+    const member_black = (id) => {
+        console.log("id", id);
+        const result = confirm("블랙해제를 하시겠습니까?");
 
-    const member_black = (memberId) => {
-        if(confirm(memberId+"님을 블랙리스트 회원에 추가하시겠습니까?")){
-            location.href = "/admin/addBlack/"+memberId;
+        if (result) {
+            // 확인 버튼을 클릭했을 때 실행되는 코드 블록
+            console.log("사용자가 확인을 클릭했습니다.");
+            location.href = "/admin/blackDelete?id=" + id;
+        } else {
+            // 취소 버튼을 클릭했을 때 실행되는 코드 블록
+            console.log("사용자가 취소를 클릭했습니다.");
+            return;
         }
 
     }
@@ -83,13 +81,12 @@
         }
 
         if (selectedMemberIds.length > 0) {
-            if (confirm(selectedMemberIds.join(', ') + "님(들)을 블랙리스트 회원에 추가하시겠습니까?")) {
-                const memberIdsParam = selectedMemberIds.join('&memberId=');
-                location.href = "/admin/addBlack?memberId=" + memberIdsParam;
+            if (confirm(selectedMemberIds.join(', ') + "님(들)을 블랙해제 하시겠습니까?")) {
+                const id = selectedMemberIds.join('&id=');
+                location.href = "/admin/blackDelete?id=" + id;
             }
         }
     });
-
 
 </script>
 </html>
