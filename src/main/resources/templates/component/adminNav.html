@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <th:block th:fragment="adminNav">
-  <meta charset="UTF-8">
+
 
   <!-- 스위트 얼럿 cdn추가  -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
@@ -14,12 +14,13 @@
 
     #nav {
       text-align: center;
+      margin: 0 auto;
     }
 
     ul {
       display: inline-block;
       list-style: none;
-      margin: 0;
+      margin-top: 10px;
       padding: 0;
     }
 
@@ -34,7 +35,6 @@
 
     a {
       display: block;
-
       text-decoration: none;
     }
 
@@ -42,6 +42,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+
 
     }
 
@@ -62,8 +63,8 @@
 
   <div id="nav">
     <ul>
-      <li>
-        <a href="/" style="color: #4872bb">🕹 Q PC ROOM 🎮</a>
+      <li style="background-color: white; ">
+        <a href="/" style="color: #4872bb">🕹 <img src="/img/Q_PC_Room_Logo.png" style="width: 80px; height: 24px"> 🎮</a>
       </li>
       <li>
         <a>회원관리</a>
@@ -85,114 +86,139 @@
 
   <!-- 회원관리 모달 창 -->
   <div id="memberModal" class="modal">
-    <div class="modal-content">
-      <span class="modal-close">&times;</span>
-      <h3>회원관리</h3>
-      <!-- 모달 내용 -->
-      <p>모달 내용을 추가하세요.</p>
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <span class="modal-close" onclick="closeModal('memberModal')">&times;</span>
+        <h3>회원관리</h3>
+        <!-- 모달 내용 -->
+        <p>모달 내용을 추가하세요.</p>
+      </div>
     </div>
   </div>
 
   <!-- 상품관리 모달 창 -->
   <div id="productModal" class="modal">
-    <div class="modal-content">
-      <span class="modal-close">&times;</span>
-      <h3>상품관리</h3>
-      <!-- 모달 내용 -->
-      <p>모달 내용을 추가하세요.</p>
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <span class="modal-close" onclick="closeModal('productModal')">&times;</span>
+        <h3>상품관리</h3>
+        <!-- 모달 내용 -->
+        <p>모달 내용을 추가하세요.</p>
+      </div>
     </div>
   </div>
 
   <!-- 게임관리 모달 창 -->
   <div id="gameModal" class="modal">
-    <div class="modal-content">
-      <span class="modal-close">&times;</span>
-      <h3>게임관리</h3>
-      <!-- 모달 내용 -->
-      <div id="section">
-        <table>
-          <tr>
-            <th>id</th>
-            <th>게임 이미지</th>
-            <th>게임 이름</th>
-
-
-          </tr>
-          <c:forEach items="${gameList}" var="game">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="margin: 0 auto;padding: 30px;">
+        <span class="modal-close" onclick="closeModal('gameModal')">&times;</span>
+        <h3>게임관리</h3>
+        <!-- 모달 내용 -->
+        <div id="section">
+          <table>
             <tr>
-              <td>${game.id}</td>
-              <td>${game.gameImg}</td>
-              <td>${game.gameName}</td>
-              <td>
-                <button onclick="openModal('gameUpdateModal')">게임 수정</button>
-              </td>
-
-              <td>
-                <button onclick="confirmDelete()">게임 삭제</button>
-
-              </td>
+              <th>id</th>
+              <th>게임 이미지</th>
+              <th>게임 이름</th>
             </tr>
-          </c:forEach>
-        </table>
-      </div> <br>
+            <c:forEach items="${gameList}" var="game">
+              <tr>
+                <td>${game.id}</td>
+                <td>${game.gameImg}</td>
+                <td>${game.gameName}</td>
+                <td>
+                  <button onclick="openModal('gameUpdateModal')">수정</button>
+                </td>
 
-      <button onclick="openModal('gameSaveModal')">게임 등록</button> <br>
-
+                <td>
+                  <button onclick="confirmDelete()">삭제</button>
+                </td>
+              </tr>
+            </c:forEach>
+          </table>
+        </div> <br>
+        <button onclick="openModal('gameSaveModal')" style="text-align: left;">게임 등록</button> <br>
+      </div>
     </div>
   </div>
 
   <!-- 게임 등록 모달 창 -->
-  <div id="gameSaveModal" class="modal" style="margin: 0 auto;padding: 20px;">
-    <div class="modal-content" style="margin: 0 auto; width: 70%">
-      <span class="modal-close" onclick="closeModal('gameSaveModal')">&times;</span>
-      <h3>게임 등록</h3>
-      <!-- 모달 내용 -->
-      <select name="gameCategory" id="">
-        <option value="">선택해주세요</option>
-        <option value="">인기게임</option>
-        <option value="">스포츠/FPS게임</option>
-        <option value="">캐주얼게임</option>
-        <option value="">스팀/CD게임</option>
-      </select> <br>
-      <input type="text" placeholder="게임이름"> <br>
-      <input type="text" placeholder="게임링크"> <br>
-      <input type="text" placeholder="첨부파일"> <button>파일등록</button> <br>
-      <button>게임등록</button> <br>
-
+  <div id="gameSaveModal" class="modal"  style="margin: 0 auto;padding: 20px;">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="margin: 0 auto; width: 80%">
+        <span class="modal-close" onclick="closeModal('gameSaveModal')">&times;</span>
+        <h3>게임 등록</h3>
+        <!-- 모달 내용 -->
+        <form action="/game/save" method="post" id="saveForm" enctype="multipart/form-data">
+          <select name="gameCategory" id="game-save-category" class="form-control">
+            <option value="">선택해주세요</option>
+            <option value="">인기게임</option>
+            <option value="">스포츠/FPS게임</option>
+            <option value="">캐주얼게임</option>
+            <option value="">스팀/CD게임</option>
+          </select> <br>
+          <input type="text" placeholder="게임이름" class="form-control"> <br>
+          <input type="text" placeholder="게임링크" class="form-control"> <br>
+          <input type="file" name="boardFile" class="form-control"> <br>
+          <button style="margin: 0 auto;">게임등록</button>
+        </form> <br>
+      </div>
     </div>
   </div>
-
 
   <!-- 게임 수정 모달 창 -->
   <div id="gameUpdateModal" class="modal" style="margin: 0 auto;padding: 20px;">
-    <div class="modal-content" style="margin: 0 auto; width: 70%">
-      <span class="modal-close" onclick="closeModal('gameUpdateModal')">&times;</span>
-      <h3>게임 수정</h3>
-      <!-- 모달 내용 -->
-      <p>모달 내용을 추가하세요.</p>
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="margin: 0 auto; width: 80%">
+        <span class="modal-close" onclick="closeModal('gameUpdateModal')">&times;</span>
+        <h3>게임 수정</h3>
+        <!-- 모달 내용 -->
+        <form action="/game/update" method="post" id="updateForm" enctype="multipart/form-data">
+          <select name="gameCategory" id="game-update-category" class="form-control">
+            <option value="">선택해주세요</option>
+            <option value="">인기게임</option>
+            <option value="">스포츠/FPS게임</option>
+            <option value="">캐주얼게임</option>
+            <option value="">스팀/CD게임</option>
+          </select> <br>
+          <input type="text" placeholder="게임이름" class="form-control"> <br>
+          <input type="text" placeholder="게임링크" class="form-control"> <br>
+          <input type="file" name="boardFile" class="form-control"> <br>
+          <button style="margin: 0 auto;">게임수정</button>
+        </form> <br>
+
+
+      </div>
     </div>
   </div>
 
-
-  <!-- 카테고리 등록 모달 창 -->
-  <div id="categoryModal" class="modal">
-    <div class="modal-content">
-      <span class="modal-close">&times;</span>
-      <h3>카테고리 관리</h3>
-      <!-- 모달 내용 -->
-      <p>모달 내용을 추가하세요.</p>
-    </div>
-  </div>
+  <!--  &lt;!&ndash; 카테고리 등록 모달 창 &ndash;&gt;-->
+  <!--  <div id="categoryModal" class="modal">-->
+  <!--    <div class="modal-dialog modal-dialog-centered">-->
+  <!--    <div class="modal-content">-->
+  <!--      <span class="modal-close" onclick="closeModal('categoryModal')">&times;</span>-->
+  <!--      <h3>카테고리 관리</h3>-->
+  <!--      &lt;!&ndash; 모달 내용 &ndash;&gt;-->
+  <!--      <p>모달 내용을 추가하세요.</p>-->
+  <!--    </div>-->
+  <!--  </div>-->
+  <!--  </div>-->
 
   <!-- 채팅 모달 창 -->
   <div id="chatModal" class="modal">
-    <div class="modal-content">
-      <span class="modal-close">&times;</span>
-      <h3>채팅</h3>
-      <!-- 모달 내용 -->
-      <p>모달 내용을 추가하세요.</p>
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <span class="modal-close" onclick="closeModal('chatModal')">&times;</span>
+        <h3>채팅</h3>
+        <!-- 모달 내용 -->
+        <p>모달 내용을 추가하세요.</p>
+      </div>
     </div>
   </div>
+
+
+
 
 
 
@@ -277,7 +303,7 @@
         if (result.isConfirmed) {
           openLink("/GameCategory/game");
         } else {
-          openLink("/category/product"); 
+          openLink("/category/product");
         }
       });
     }
