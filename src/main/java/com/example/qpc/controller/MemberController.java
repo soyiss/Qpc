@@ -1,6 +1,7 @@
 package com.example.qpc.controller;
 
 
+import com.example.qpc.config.DuplicateMemberException;
 import com.example.qpc.dto.MemberDTO;
 import com.example.qpc.entity.RoleEntity;
 import com.example.qpc.service.MemberService;
@@ -11,9 +12,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.Collection;
 
 @Controller
 @RequiredArgsConstructor
@@ -44,10 +46,10 @@ public class MemberController {
         }
         try {
             MemberDTO member = MemberDTO.createMember(memberDTO, passwordEncoder);
-            member.setRole(RoleEntity.ROLE_MEMBER);
+            member.setRole(RoleEntity.MEMBER);
             memberService.saveMember(member);
             System.out.println(2);
-        } catch (IllegalStateException e) {
+        } catch (DuplicateMemberException e) {
             model.addAttribute("errorMessage", e.getMessage());
             System.out.println(3);
             return "/index";
@@ -73,28 +75,42 @@ public class MemberController {
 
     // 로그인 처리
     @PostMapping("/login")
-    public String memberLogin(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model,
-                              @AuthenticationPrincipal User user) {
-        System.out.println("memberDTO = " + memberDTO);
-        MemberDTO member = memberService.findByMemberId(memberDTO.getMemberId());
-        if (member == null) { // 아이디가 맞지 않을때
-            model.addAttribute("loginErrorMsg", "아이디를 확인하세요");
-            return "/memberLogin";
-        }
-        if (passwordEncoder.matches(memberDTO.getMemberPassword(), member.getMemberPassword())) {
-            // 로그인 성공
-            System.out.println("member = " + member);
-            if (member.getRole() == RoleEntity.ROLE_MEMBER) {
-                return "/memberPages/memberMain";
-            } else if (member.getRole() == RoleEntity.ROLE_ADMIN) {
-                return "/adminPages/adminMain";
+    public String memberLogin(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
+        try {
+            // 인증 토큰 생성
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    memberDTO.getMemberId(), memberDTO.getMemberPassword());
+            // 인증 매니저를 사용하여 인증 수행
+            Authentication authentication = authenticationManager.authenticate(authToken);
+            // SecurityContextHolder에 인증 객체 설정
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // 권한 확인
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof UserDetails) {
+                UserDetails userDetails = (UserDetails) principal;
+                System.out.println("사용자의 아이디: " + userDetails.getUsername());
+                System.out.println("사용자의 패스워드: " + userDetails.getPassword());
+                // 나머지 사용자 정보 출력
+                System.out.println("사용자의 활성화 여부: " + userDetails.isEnabled());
+                System.out.println("계정 만료 여부: " + userDetails.isAccountNonExpired());
+                System.out.println("계정 잠김 여부: " + userDetails.isAccountNonLocked());
+                System.out.println("패스워드 만료 여부: " + userDetails.isCredentialsNonExpired());
+                Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+                System.out.println("사용자의 권한 목록:");
+                for (GrantedAuthority authority : authorities) {
+                    System.out.println(authority.getAuthority());
+                }
             }
-        } else {
-            // 비밀번호가 맞지 않을때
-            model.addAttribute("loginErrorMsg", "비밀번호를 확인하세요");
+
+            // 인증이 성공하면 로그인 처리
+            return "/memberPages/memberMain";
+        } catch (AuthenticationException e) {
+            // 인증 실패 시 에러 처리
+            System.out.println(e);
+            model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인하세요.");
             return "/memberLogin";
         }
-        return "redirect:/member/login/error";
     }
 
     // 아이디 찾기
@@ -152,10 +168,25 @@ public class MemberController {
     }
 
 
+    @GetMapping("/memberlogintest")
+    public String memberlogintest(Model model) {
+        model.addAttribute("memberDTO", new MemberDTO());
+        return "/memberLogin";
+    }
+
+    @GetMapping("/membersignuptest")
+    public String membersignuptest(Model model) {
+        model.addAttribute("memberDTO", new MemberDTO());
+        return "/index";
+    }
+
     @GetMapping("/memberFood")
     public String memberFood() {
         return "/memberPages/memberFood";
     }
+
+
+
 }
 
 
