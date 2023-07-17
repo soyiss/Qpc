@@ -141,6 +141,34 @@
     </div>
   </div>
 
+  <!-- 게임 등록 모달 창 -->
+  <div id="gameSaveModal" class="modal" style="margin: 0 auto;padding: 20px;">
+    <div class="modal-content" style="margin: 0 auto; width: 70%">
+      <span class="modal-close" onclick="closeModal('gameSaveModal')">&times;</span>
+      <h3>게임 등록</h3>
+      <!-- 모달 내용 -->
+      <select name="gameCategory" id="">
+        <option value="">선택해주세요</option>
+        <option value="">인기게임</option>
+        <option value="">스포츠/FPS게임</option>
+        <option value="">캐주얼게임</option>
+        <option value="">스팀/CD게임</option>
+      </select> <br>
+      <input type="text" placeholder="게임이름"> <br>
+      <input type="text" placeholder="게임링크"> <br>
+      <input type="text" placeholder="첨부파일"> <button>파일등록</button> <br>
+      <button>게임등록</button> <br>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
   <!-- 카테고리 등록 모달 창 -->
   <div id="categoryModal" class="modal">
     <div class="modal-content">
@@ -160,6 +188,8 @@
       <p>모달 내용을 추가하세요.</p>
     </div>
   </div>
+
+
 
   <script>
     // 모달 열기
