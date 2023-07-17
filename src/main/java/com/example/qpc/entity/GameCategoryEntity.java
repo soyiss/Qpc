@@ -19,7 +19,7 @@ public class GameCategoryEntity {
     private Long id;
 
     @Column(length = 10,nullable = false)
-    private String GameCategoryName;
+    private String gameCategoryName;
 
     @OneToMany(mappedBy = "gameCategoryEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<GameEntity> gameEntityList = new ArrayList<>();
