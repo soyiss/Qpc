@@ -19,7 +19,7 @@ public class CategoryController {
 
     @GetMapping()
     public String Category(){
-        return "/categories/gameCategoryForm";
+        return "/categories/productCategoryForm";
     }
 
     @PostMapping()
