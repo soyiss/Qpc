@@ -34,9 +34,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 // 이 주소를 받는 곳에만 모든곳에서 접근가능하도록 설정
                 .authorizeRequests()
-                .antMatchers("/member/save", "/member/login", "/member/login/error", "/memberSave/mailConfirm","/test").anonymous()
+                .antMatchers("/member/save", "/member/login", "/member/login/error", "/memberSave/mailConfirm","/test","/index").anonymous()
                 .antMatchers("/payment/**").permitAll()
                 .antMatchers("/member/**").hasRole("MEMBER")
+                .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST,"/payment/**").permitAll()
                 .antMatchers(HttpMethod.POST,"/member/login").permitAll()
                 .antMatchers("/css/**", "/js/**","/img/**").permitAll()
