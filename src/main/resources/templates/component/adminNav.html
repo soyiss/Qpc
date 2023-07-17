@@ -3,6 +3,10 @@
 <th:block th:fragment="adminNav">
   <meta charset="UTF-8">
 
+  <!-- 스위트 얼럿 cdn추가  -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
   <style>
     body {
       background-color: #4b5359;
@@ -71,7 +75,7 @@
         <a>게임관리</a>
       </li>
       <li>
-        <a>카테고리 등록</a>
+        <a onclick="category()">카테고리 관리</a>
       </li>
       <li>
         <a>채팅</a>
@@ -109,11 +113,11 @@
     </div>
   </div>
 
-  <!-- 상품 카테고리 등록 모달 창 -->
+  <!-- 카테고리 등록 모달 창 -->
   <div id="categoryModal" class="modal">
     <div class="modal-content">
       <span class="modal-close">&times;</span>
-      <h3>상품 카테고리 등록</h3>
+      <h3>카테고리 관리</h3>
       <!-- 모달 내용 -->
       <p>모달 내용을 추가하세요.</p>
     </div>
@@ -178,15 +182,37 @@
       openModal("gameModal");
     });
 
-    var categoryLink = document.querySelector("#nav li:nth-child(5) a");
-    categoryLink.addEventListener("click", function() {
-      openModal("categoryModal");
-    });
+    // 카테고리 모달 사용 안함(바뀔수도,,)
+    // var categoryLink = document.querySelector("#nav li:nth-child(5) a");
+    // categoryLink.addEventListener("click", function() {
+    //   openModal("categoryModal");
+    // });
 
     var chatLink = document.querySelector("#nav li:nth-child(6) a");
     chatLink.addEventListener("click", function() {
       openModal("chatModal");
     });
+
+    function openLink(url) {
+      window.location.href = url; // 해당 주소로 이동합니다.
+    }
+
+    function category() {
+      Swal.fire({
+        title: "카테고리",
+        text: "카테고리 관리 창입니다.",
+        showCancelButton: true,
+        confirmButtonText: "게임",
+        cancelButtonText: "상품"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          openLink("/GameCategory/game"); //  게임 버튼을 클릭하면 이동할 주소를 입력하세요.
+        } else {
+          openLink("/category/product"); // 상품 버튼을 클릭하면 이동할 주소를 입력하세요.
+        }
+      });
+    }
+
   </script>
 </th:block>
 </html>
