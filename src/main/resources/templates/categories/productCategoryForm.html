@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:replace="component/config :: config"></th:block>
+</head>
+<body>
+<h1>상품 카테고리관리</h1>
+<div id="categorySave">
+    <input type="text" name="categoryName" id="categoryName">
+    <button onclick ="category_save()">카테고리저장</button>
+</div>
+<div id="category-list">
+    <table class="table">
+        <tr>
+            <th>id</th>
+            <th>categoryName</th>
+            <th></th>
+            <th></th>
+
+        </tr>
+        <tr th:each="category: ${categoryList}">
+            <td th:text="${category.id}"></td>
+            <td th:text="${category.categoryName}"></td>
+        </tr>
+        </tr>
+    </table>
+</div>
+<a href="/member/adminMain">메인화면</a>
+</body>
+<script th:inline="javascript">
+    const category_save = () => {
+
+        const categoryName = document.querySelector('input[name="categoryName"]').value;
+
+        axios({
+            method: "post",
+            url: "/category",
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+            , data: {
+                categoryName: categoryName
+            }
+        }).then(res => {
+            console.log("res", res);
+            console.log("카테고리 목록", res.data);
+            document.querySelector('input[name="categoryName"]').value = "";
+            fetchCategoryList();
+        }).catch(err => {
+            alert("카테고리 저장 실패!");
+            console.log("err", err);
+        });
+
+    }
+
+    //카테고리 목록을 다시 가져오고 업데이트하는 fetchCategoryList() 함수를 호출
+    const fetchCategoryList = () => {
+        axios({
+            method: "get",
+            url: "/category/findAll"
+        }).then(res => {
+            console.log("카테고리 목록: ", res.data);
+            category_list(res.data);
+        }).catch(err => {
+            console.log("카테고리 목록 불러오기 실패: ", err);
+        });
+    }
+    const category_list = (categoryDTO1) => {
+        console.log("카테고리 목록 함수", categoryDTO1);
+        const resultArea = document.querySelector("#category-list");
+        let output = "        <table class=\"table\">\n" +
+            "            <tr>\n" +
+            "                <th>id</th>\n" +
+            "                <th>categoryName</th>\n" +
+            "                <th></th>\n" +
+            "                <th></th>\n" +
+            "            </tr>";
+        for (let i in categoryDTO1) {
+            output += "<tr>\n" +
+                "                <td>" + categoryDTO1[i].id + "</td>\n" +
+                "                <td>" + categoryDTO1[i].categoryName + "</td>\n" +
+                "                <td><button onclick=\"category_delete('" + categoryDTO1[i].id + "')\">삭제</button></td>\n" +
+                "                <td><button onclick=\"category_updateForm('" + categoryDTO1[i].id + "')\">수정</button></td>\n" +
+                "            </tr>";
+        }
+        output += "</table>";
+        resultArea.innerHTML = output;
+    }
+
+    // 페이지 로딩 후에 카테고리 목록 요청하기
+    fetchCategoryList();
+    const category_updateForm = (id) => {
+        axios({
+            method: "get",
+            url: "/category/update/" + id
+        }).then(res => {
+            const category = res.data;
+            console.log("가져온 아이디:",id);
+            console.log("가져온 카테고리:",res.data);
+            const updatedCategoryName = prompt('수정할 카테고리이름',category.categoryName);
+            if (updatedCategoryName !== null) {
+                console.log('사용자 입력:', updatedCategoryName);
+                category_update(id,updatedCategoryName);
+            } else {
+                console.log('사용자가 취소를 선택했습니다.');
+                return; // 함수 종료
+            }
+        }).catch(err => {
+            alert("카테고리 수정 화면을 못가져옴!");
+        });
+
+    }
+
+    const category_update = (id, updatedCategoryName) => {
+        axios({
+            method: "put",
+            url: "/category/" + id,
+            data: JSON.stringify({ categoryName: updatedCategoryName }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => {
+            fetchCategoryList();
+        }).catch(err => {
+            alert("카테고리 수정 실패!");
+        });
+
+    }
+
+    const category_delete = (id) => {
+        axios({
+            method: "delete",
+            url: "/category/" + id
+        }).then(res => {
+            fetchCategoryList();
+        }).catch(err => {
+            alert("카테고리 삭제 실패!");
+        });
+
+    }
+
+</script>
+</html>
