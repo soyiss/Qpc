@@ -43,7 +43,6 @@
       justify-content: space-between;
       align-items: center;
 
-
     }
 
     .modal-body {
@@ -86,7 +85,7 @@
 
   <!-- 회원관리 모달 창 -->
   <div id="memberModal" class="modal">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <span class="modal-close" onclick="closeModal('memberModal')">&times;</span>
         <h3>회원관리</h3>
@@ -98,24 +97,50 @@
 
   <!-- 상품관리 모달 창 -->
   <div id="productModal" class="modal">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <span class="modal-close" onclick="closeModal('productModal')">&times;</span>
         <h3>상품관리</h3>
         <!-- 모달 내용 -->
-        <p>모달 내용을 추가하세요.</p>
+        <div id="section" class="product-section">
+          <table>
+            <tr>
+              <th>id</th>
+              <th>상품 이름</th>
+              <th>상품 가격</th>
+              <th>상품 개수</th>
+            </tr>
+            <c:forEach items="${productList}" var="product">
+              <tr>
+                <td>${product.id}</td>
+                <td>${product.productName}</td>
+                <td>${product.productPrice}</td>
+                <td>${product.productCount}</td>
+                <td>
+                  <button onclick="openModal('productDetailModal')">조회</button>
+                </td>
+
+                <td>
+                  <button onclick="productDelete()">삭제</button>
+                </td>
+              </tr>
+            </c:forEach>
+          </table>
+        </div> <br>
+        <button onclick="openModal('productSaveModal')" style="text-align: left;">상품 등록</button> <br>
+
       </div>
     </div>
   </div>
 
   <!-- 게임관리 모달 창 -->
   <div id="gameModal" class="modal">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content" style="margin: 0 auto;padding: 30px;">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content" style="margin: 0 auto;">
         <span class="modal-close" onclick="closeModal('gameModal')">&times;</span>
         <h3>게임관리</h3>
         <!-- 모달 내용 -->
-        <div id="section">
+        <div id="section" class="game-section">
           <table>
             <tr>
               <th>id</th>
@@ -132,7 +157,7 @@
                 </td>
 
                 <td>
-                  <button onclick="confirmDelete()">삭제</button>
+                  <button onclick="gameDelete()">삭제</button>
                 </td>
               </tr>
             </c:forEach>
@@ -207,7 +232,7 @@
 
   <!-- 채팅 모달 창 -->
   <div id="chatModal" class="modal">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <span class="modal-close" onclick="closeModal('chatModal')">&times;</span>
         <h3>채팅</h3>
@@ -308,7 +333,7 @@
       });
     }
 
-    function confirmDelete() {
+    function gameDelete() {
       Swal.fire({
         title: "게임 삭제",
         text: "게임을 삭제하시겠습니까?",
