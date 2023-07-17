@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <th:block th:replace="component/config :: config"></th:block>
-    <meta th:content="${_csrf.token}" name="_csrf">
-    <meta th:content="${_csrf.parameterName}" name="_csrf_parameter_name">
+<!--    <meta th:content="${_csrf.token}" name="_csrf">-->
+<!--    <meta th:content="${_csrf.parameterName}" name="_csrf_parameter_name">-->
     <!-- iamport.payment.js -->
     <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
 </head>
 
 <body>
-<input type="text" id="member-id" name="memberId">
+<input type="hidden" id="member-id" name="memberId">
 <div class="container" style="height: 70%;">
     <img class="w-100 h-100" th:src="@{/img/testMain.png}" alt="Image 404 Error">
 </div>
@@ -71,14 +71,14 @@
 
     const memberCheck = () => {
         const typingKeyword = document.querySelector('input[name="checkResult"]').value;
-        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        // const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
 
         axios({
             method: "post",
             url: "/payment/findById",
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRF-Token": csrfToken
+                // "X-CSRF-Token": csrfToken
             },
             data: {
                 keyword: typingKeyword
@@ -100,10 +100,9 @@
     }
 
     const selectTime = (time, price) => {
-        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        // const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
         console.log('Selected time:', time);
         console.log('Selected price:', price);
-        const memberId = document.querySelector('input[name="checkResult"]').value;
         var IMP = window.IMP;
         IMP.init('imp35682308');
         var money = price;
@@ -136,9 +135,9 @@
                         time: time,
                         memberId: document.getElementById("member-id").value
                     }),
-                    headers: {
-                        "X-CSRF-TOKEN": csrfToken  // csrfToken은 CSRF 토큰 값으로 대체해야 합니다.
-                    }
+                    // headers: {
+                    //     "X-CSRF-TOKEN": csrfToken  // csrfToken은 CSRF 토큰 값으로 대체해야 합니다.
+                    // }
                 }).then(res => {
                     alert(JSON.stringify(res));
                 }).catch(err => {
@@ -158,7 +157,7 @@
     }
 
     const sign = () => {
-        location.href="/payment/index";
+        location.href="/index";
     }
 
 </script>

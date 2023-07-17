@@ -1,11 +1,11 @@
 package com.example.qpc.service;
 
+import com.example.qpc.config.DuplicateMemberException;
 import com.example.qpc.dto.MemberDTO;
 import com.example.qpc.entity.MemberEntity;
+import com.example.qpc.entity.RoleEntity;
 import com.example.qpc.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,7 +30,7 @@ public class MemberService implements UserDetailsService {
 
     // 회원가입 코드
     public MemberEntity saveMember(MemberDTO memberDTO) {
-        // 회원가입시 이메일 , 아이디 중복 체크
+        // 회원가입시 중복체크
         validateDuplicateMemberEmail(memberDTO);
         validateDuplicateMemberId(memberDTO);
         return memberRepository.save(MemberEntity.toEntity(memberDTO));
@@ -40,18 +40,35 @@ public class MemberService implements UserDetailsService {
     // 회원가입시 이메일 중복 체크
     private void validateDuplicateMemberEmail(MemberDTO memberDTO) {
         MemberEntity findMemberEntity = memberRepository.findByMemberEmail(memberDTO.getMemberEmail());
-        if(findMemberEntity != null) {
-            throw new IllegalStateException("이미 가입된 회원입니다.");
+        if (findMemberEntity != null) {
+            throw new DuplicateMemberException("이미 가입된 이메일입니다.");
         }
     }
 
     // 회원가입시 아이디 중복 체크
     private void validateDuplicateMemberId(MemberDTO memberDTO) {
         MemberEntity findMemberEntity = memberRepository.findByMemberId(memberDTO.getMemberId());
-        if(findMemberEntity != null) {
-            throw new IllegalStateException("이미 가입된 회원입니다.");
+        if (findMemberEntity != null) {
+            throw new DuplicateMemberException("이미 가입된 아이디입니다.");
         }
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        MemberEntity memberEntity = memberRepository.findByMemberId(username);
+
+        if (memberEntity == null) {
+            throw new UsernameNotFoundException("User not found: " + username);
+        }
+
+        // 사용자 정보를 UserDetails 구현체로 반환
+        return User.builder()
+                .username(memberEntity.getMemberId())
+                .password(memberEntity.getMemberPassword())
+                .roles(memberEntity.getRole().toString())
+                .build();
+    }
+
 
     public MemberDTO findByMemberId(String memberId) {
         MemberEntity memberEntity = memberRepository.findByMemberId(memberId);
@@ -103,8 +120,12 @@ public class MemberService implements UserDetailsService {
 
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+    public MemberDTO findByRole() {
+        MemberEntity memberEntity = memberRepository.findByRole(RoleEntity.ADMIN);
+        if(memberEntity != null) {
+            return MemberDTO.toDTO(memberEntity);
+        }else {
+            return null;
+        }
     }
 }
