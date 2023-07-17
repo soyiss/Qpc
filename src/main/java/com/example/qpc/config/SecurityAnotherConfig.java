@@ -20,9 +20,15 @@ public class SecurityAnotherConfig extends WebSecurityConfigurerAdapter {
     // 테스트용 아이디 설정
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        String password = passwordEncoder.encode("1234");
-        auth.inMemoryAuthentication().withUser("member").password(password).roles("MEMBER");
-        auth.inMemoryAuthentication().withUser("admin").password(password).roles("MEMBER","ADMIN");
+        auth.inMemoryAuthentication()
+                .withUser("member")
+                .password(passwordEncoder.encode("1234"))
+                .roles("MEMBER");
+
+        auth.inMemoryAuthentication()
+                .withUser("admin")
+                .password(passwordEncoder.encode("1234"))
+                .roles("ADMIN");
     }
 
 
