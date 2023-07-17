@@ -9,7 +9,7 @@
 </head>
 
 <body>
-<input type="text" id="member-id" name="memberId">
+<input type="hidden" id="member-id" name="memberId">
 <div class="container" style="height: 70%;">
     <img class="w-100 h-100" th:src="@{/img/testMain.png}" alt="Image 404 Error">
 </div>
@@ -157,7 +157,7 @@
     }
 
     const sign = () => {
-        location.href="/payment/index";
+        location.href="/index";
     }
 
 </script>

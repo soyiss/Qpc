@@ -19,7 +19,7 @@ public class HomeController {
         // index = 나중에 합칠것
     }
 
-    @GetMapping("/payment/index")
+    @GetMapping("/index")
     public String indexing(Model model){
         model.addAttribute("memberDTO", new MemberDTO());
         return "index";
