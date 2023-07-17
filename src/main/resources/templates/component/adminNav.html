@@ -3,32 +3,190 @@
 <th:block th:fragment="adminNav">
   <meta charset="UTF-8">
 
-  <div id="nav">
+  <style>
+    body {
+      background-color: #4b5359;
+    }
 
+    #nav {
+      text-align: center;
+    }
+
+    ul {
+      display: inline-block;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      display: inline-block;
+      margin-right: 15px;
+    }
+
+    li:last-child {
+      margin-right: 0;
+    }
+
+    a {
+      display: block;
+
+      text-decoration: none;
+    }
+
+    .modal-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+    }
+
+    .modal-body {
+      flex-grow: 1;
+      text-align: left;
+    }
+
+    .modal-close {
+
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+
+  </style>
+
+  <div id="nav">
     <ul>
       <li>
-        <a href="/" style="color: #4872bb"> 🕹 Q PC ROOM 🎮 </a>
+        <a href="/" style="color: #4872bb">🕹 Q PC ROOM 🎮</a>
       </li>
-
       <li>
         <a>회원관리</a>
       </li>
-
       <li>
         <a>상품관리</a>
       </li>
-
       <li>
         <a>게임관리</a>
       </li>
-
+      <li>
+        <a>카테고리 등록</a>
+      </li>
       <li>
         <a>채팅</a>
       </li>
-
     </ul>
-
-
   </div>
+
+  <!-- 회원관리 모달 창 -->
+  <div id="memberModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <h3>회원관리</h3>
+      <!-- 모달 내용 -->
+      <p>모달 내용을 추가하세요.</p>
+    </div>
+  </div>
+
+  <!-- 상품관리 모달 창 -->
+  <div id="productModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <h3>상품관리</h3>
+      <!-- 모달 내용 -->
+      <p>모달 내용을 추가하세요.</p>
+    </div>
+  </div>
+
+  <!-- 게임관리 모달 창 -->
+  <div id="gameModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <h3>게임관리</h3>
+      <!-- 모달 내용 -->
+      <p>모달 내용을 추가하세요.</p>
+    </div>
+  </div>
+
+  <!-- 상품 카테고리 등록 모달 창 -->
+  <div id="categoryModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <h3>상품 카테고리 등록</h3>
+      <!-- 모달 내용 -->
+      <p>모달 내용을 추가하세요.</p>
+    </div>
+  </div>
+
+  <!-- 채팅 모달 창 -->
+  <div id="chatModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <h3>채팅</h3>
+      <!-- 모달 내용 -->
+      <p>모달 내용을 추가하세요.</p>
+    </div>
+  </div>
+
+  <script>
+    // 모달 열기
+    function openModal(modalId) {
+      var modal = document.getElementById(modalId);
+      modal.classList.add('show');
+    }
+
+    // 모달 닫기
+    function closeModal(modalId) {
+      var modal = document.getElementById(modalId);
+      modal.classList.remove('show');
+    }
+
+    // 링크 클릭 시 모달 열기
+    var links = document.querySelectorAll("#nav li a");
+    links.forEach(function(link) {
+      link.addEventListener("click", function(event) {
+        event.preventDefault();
+        var modalId = this.textContent.toLowerCase() + "Modal";
+        openModal(modalId);
+      });
+    });
+
+    // 각 모달의 닫기 버튼 이벤트 처리
+    var closeButtons = document.querySelectorAll(".modal-close");
+    closeButtons.forEach(function(button) {
+      button.addEventListener("click", function(event) {
+        event.preventDefault();
+        var modalId = this.parentNode.parentNode.getAttribute("id");
+        closeModal(modalId);
+      });
+    });
+
+    // 각 링크 클릭 시 모달 열기
+    var memberLink = document.querySelector("#nav li:nth-child(2) a");
+    memberLink.addEventListener("click", function() {
+      openModal("memberModal");
+    });
+
+    var productLink = document.querySelector("#nav li:nth-child(3) a");
+    productLink.addEventListener("click", function() {
+      openModal("productModal");
+    });
+
+    var gameLink = document.querySelector("#nav li:nth-child(4) a");
+    gameLink.addEventListener("click", function() {
+      openModal("gameModal");
+    });
+
+    var categoryLink = document.querySelector("#nav li:nth-child(5) a");
+    categoryLink.addEventListener("click", function() {
+      openModal("categoryModal");
+    });
+
+    var chatLink = document.querySelector("#nav li:nth-child(6) a");
+    chatLink.addEventListener("click", function() {
+      openModal("chatModal");
+    });
+  </script>
 </th:block>
 </html>
