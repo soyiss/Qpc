@@ -25,7 +25,10 @@ public class CategoryController {
     @PostMapping()
     public ResponseEntity categorySave(@ModelAttribute CategoryDTO categoryDTO) {
         System.out.println("categoryDTO = " + categoryDTO);
-        categoryService.save(categoryDTO);
+        Long savedId = categoryService.save(categoryDTO);
+        categoryDTO.setId(savedId);
+        System.out.println("categoryDTO2 = " + categoryDTO);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

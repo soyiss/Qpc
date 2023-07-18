@@ -26,7 +26,9 @@ public class CategoryEntity {
 
     public static CategoryEntity toSaveEntity(CategoryDTO categoryDTO) {
         CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setId(categoryDTO.getId()); // 주석 해제하여 id 값을 설정합니다.
         categoryEntity.setCategoryName(categoryDTO.getCategoryName());
+        // 추가로 설정해야 할 필드가 있다면 여기에 추가합니다.
         return categoryEntity;
     }
 
@@ -34,6 +36,11 @@ public class CategoryEntity {
         CategoryEntity categoryEntity = new CategoryEntity();
         categoryEntity.setId(categoryDTO.getId());
         categoryEntity.setCategoryName(categoryDTO.getCategoryName());
+        return categoryEntity;
+    }
+    public static CategoryEntity toEntity(Long categoryId) {
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setId(categoryId);
         return categoryEntity;
     }
 
