@@ -3,7 +3,9 @@ package com.example.qpc.controller;
 
 import com.example.qpc.config.DuplicateMemberException;
 import com.example.qpc.dto.MemberDTO;
+import com.example.qpc.entity.BlackListEntity;
 import com.example.qpc.entity.RoleEntity;
+import com.example.qpc.repository.AdminRepository;
 import com.example.qpc.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,6 +36,7 @@ public class MemberController {
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final AdminRepository adminRepository;
 
     // 일반유저 회원가입
     @PostMapping("/save")
@@ -117,6 +120,7 @@ public class MemberController {
                 }
             }
 
+
             // 인증이 성공하면 로그인 처리
             return "/memberPages/memberMain";
         } catch (AuthenticationException e) {
@@ -198,6 +202,8 @@ public class MemberController {
     public String memberFood() {
         return "/memberPages/memberFood";
     }
+    @GetMapping("/memberMain")
+    public String memberMain(){return "/memberPages/memberMain";}
 
 
 }
