@@ -20,9 +20,36 @@ public class ProductDTO {
     private int productCount;
     private int fileAttached;
     private Long categoryId;
+    private String categoryName;
+
     private Long memberId;
 
     private MultipartFile productFile;
+    private String originalFileName;
+    private String storedFileName;
+
+    private String uploadPath; // 파일 업로드 경로
+
+    // 파일 경로 생성 메서드 추가
+    public String getProductImagePath() {
+        if (fileAttached == 1) {
+            return uploadPath + storedFileName;
+        } else {
+            return null;
+        }
+    }
+    public void setUploadPath(String uploadPath) {
+        this.uploadPath = uploadPath;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+
+    }
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
 
     public static ProductDTO toDTO(ProductEntity productEntity) {
         ProductDTO productDTO = new ProductDTO();
@@ -51,5 +78,6 @@ public class ProductDTO {
         return productDTO;
 
     }
+
 
 }
