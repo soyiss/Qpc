@@ -108,7 +108,7 @@
         <div class="member-area" style="text-align: center">
             <ul>
                 <a><img src="/img/icon/좌석이동-아이콘.gif" style="width: 20px; height: 20px">자리이동</a>
-                <a><img src="/img/icon/종료-아이콘.png" style="width: 20px; height: 20px">사용종료</a>
+                <a onclick="logout()"><img src="/img/icon/종료-아이콘.png" style="width: 20px; height: 20px">사용종료</a>
                 <button class="toggle-button" onclick="toggleSidebar()">ㅡ</button> <br>
             </ul>
 
@@ -283,6 +283,10 @@
         function closeModal(modalId) {
             var modal = document.getElementById(modalId);
             modal.style.display = 'none';
+        }
+
+        const logout = () => {
+            location.href="/logout";
         }
     </script>
 

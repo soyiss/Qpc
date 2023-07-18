@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 로그인되어 있지 않다면 redirect로 로그인창으로 */
                 // 로그인 페이지 URL 설정
                 .formLogin()
-                .loginPage("/memberLogin")                 // HTML명
+                .loginPage("/index")                 // HTML명
                 .usernameParameter("memberId")
                 .passwordParameter("memberPassword")
                 .defaultSuccessUrl("/memberPages/memberMain")
