@@ -28,6 +28,7 @@ public class ProductController {
         model.addAttribute("categories", categories);
         return "/productPages/ProductSave";
     }
+
     // 상품등록처리
     @PostMapping("/save")
     public String saveProduct(@ModelAttribute ProductDTO productDTO) throws IOException {
@@ -42,5 +43,34 @@ public class ProductController {
         return "redirect:/";
     }
 
+    // 카테고리
+    @GetMapping
+    public List<ProductDTO> getAllProducts() {
+        return productService.getAllProducts();
+    }
+
+    // 상품리스트 화면 이동
+    @GetMapping("/list")
+    public String productList(Model model) {
+        List<ProductDTO> productDTOList = productService.findAll();
+        if (productDTOList != null) {
+            System.out.println("productList = " + productDTOList);
+        }
+        model.addAttribute("productList", productDTOList);
+        return "productPages/ProductList";
+    }
+
+    // 상품 상세 조회 화면 이동
+    @GetMapping("/{id}")
+    public String ProductDetail(@PathVariable("id") Long id, Model model) {
+        System.out.println("id = " + id);
+
+        ProductDTO productDTO = productService.findByProductId(id);
+        System.out.println("productDTO12 = " + productDTO);
+
+        model.addAttribute("product", productDTO);
+
+        return "productPages/ProductDetail";
+    }
 
 }

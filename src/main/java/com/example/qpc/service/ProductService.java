@@ -67,4 +67,48 @@ public class ProductService {
     public List<CategoryEntity> getAllCategories() {
         return categoryRepository.findAll();
     }
+
+    public List<ProductDTO> getAllProducts() {
+        List<ProductEntity> products = productRepository.findAll();
+        List<ProductDTO> productDTOs = new ArrayList<>();
+
+        for (ProductEntity product : products) {
+            ProductDTO productDTO = new ProductDTO();
+            // 기존 코드 유지
+
+            // 카테고리 이름 설정
+            productDTO.setCategoryName(product.getCategoryEntity().getCategoryName());
+
+            productDTOs.add(productDTO);
+        }
+
+        return productDTOs;
+    }
+
+    @Transactional
+    public List<ProductDTO> findAll() {
+        List<ProductEntity> productEntityList = productRepository.findAll();
+        List<ProductDTO> productDTOList = new ArrayList<>();
+        productEntityList.forEach(productEntity -> {
+            productDTOList.add(ProductDTO.toDTO(productEntity));
+        });
+        return productDTOList;
+
+    }
+
+    @Transactional
+    public ProductDTO findByProductId(Long id) {
+        ProductEntity productEntity = productRepository.findById(id).orElseThrow(() -> new NoSuchElementException());
+        String uploadPath = "D:\\springboot_img\\"; // 실제 업로드 경로로 수정해야 합니다.
+
+        ProductDTO productDTO = ProductDTO.toDTO(productEntity);
+
+        // 카테고리 정보가 있는 경우 카테고리 이름을 설정합니다
+        CategoryEntity categoryEntity = productEntity.getCategoryEntity();
+        if (categoryEntity != null) {
+            productDTO.setCategoryName(categoryEntity.getCategoryName());
+        }
+
+        return productDTO;
+    }
 }
