@@ -2,8 +2,8 @@
 <html>
 <head>
     <th:block th:replace="component/config :: config"></th:block>
-<!--    <meta th:content="${_csrf.token}" name="_csrf">-->
-<!--    <meta th:content="${_csrf.parameterName}" name="_csrf_parameter_name">-->
+    <!--    <meta th:content="${_csrf.token}" name="_csrf">-->
+    <!--    <meta th:content="${_csrf.parameterName}" name="_csrf_parameter_name">-->
     <!-- iamport.payment.js -->
     <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
     <style>
@@ -11,9 +11,11 @@
         .fieldError {
             color: #bd2130;
         }
+
         .error {
             color: #bd2130;
         }
+
         /* 모달창을 구성하는 스타일 */
         .modal {
             display: none; /* 초기에는 모달창 숨김 */
@@ -56,7 +58,7 @@
 
         /* find, save 버튼 스타일 */
         button {
-            padding: 10px;
+            padding: 25px;
             background-color: #262525;
             color: white;
             border: none;
@@ -66,10 +68,9 @@
         }
 
         footer {
-            position: fixed;
             bottom: 50px;
             left: 0;
-            height: 200px;
+            height: 20vh;
             background-color: gray;
             width: 100%;
             padding: 30px;
@@ -84,76 +85,83 @@
     </style>
 </head>
 <body>
-<div class="container" style="height: 70%;">
+<div class="container" style="height: 80vh;">
     <img class="w-100 h-100" th:src="@{/img/testMain.png}" alt="Image 404 Error">
 </div>
 
 <!--회원가입 모달창-->
 <div id="myModal" class="modal">
-    <div class="modal-content">
-        <span class="modal-close">&times;</span>
-        <p>회원가입</p>
-        <div class="container">
-            <form th:action="@{/member/save}" method="post" th:object="${memberDTO}">
-                <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="member-email" name="memberEmail"
-                           th:field="*{memberEmail}" placeholder="name@example.com">
-                    <label for="member-email">이메일 주소</label>
-                    <p th:if="${#fields.hasErrors('memberEmail')}" th:errors="*{memberEmail}" class="fieldError"></p>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="member-id" name="memberId"
-                           th:field="*{memberId}" placeholder="memberId">
-                    <label for="member-id">아이디</label>
-                    <p th:if="${#fields.hasErrors('memberId')}" th:errors="*{memberId}" class="fieldError"></p>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="member-password" name="memberPassword"
-                           th:field="*{memberPassword}" placeholder="memberPassword">
-                    <label for="member-password">비밀번호</label>
-                    <p th:if="${#fields.hasErrors('memberPassword')}" th:errors="*{memberPassword}" class="fieldError"></p>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="member-name" name="memberName"
-                           th:field="*{memberName}" placeholder="memberName">
-                    <label for="member-name">이름</label>
-                    <p th:if="${#fields.hasErrors('memberName')}" th:errors="*{memberName}" class="fieldError"></p>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="date" class="form-control" id="member-birth" name="memberBirth"
-                           th:field="*{memberBirth}" placeholder="memberBirth">
-                    <label for="member-birth">생년월일</label>
-                    <p th:if="${#fields.hasErrors('memberBirth')}" th:errors="*{memberBirth}" class="fieldError"></p>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="member-mobile" name="memberMobile"
-                           th:field="*{memberMobile}" placeholder="memberMobile">
-                    <label for="member-mobile">전화번호</label>
-                    <p th:if="${#fields.hasErrors('memberMobile')}" th:errors="*{memberMobile}" class="fieldError"></p>
-                </div>
-                <div class="form-floating mb-3">
-                    <select name="formRole" id="form-role">
-                        <option value="member">Member</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                    <label for="member-mobile">권한설정</label>
-                    <p th:if="${#fields.hasErrors('formRole')}" th:errors="*{formRole}" class="fieldError"></p>
-                </div>
-                <input type="submit" value="회원가입" class="btn btn-primary">
-            </form>
-        </div>
-
-        <div class="container">
-            <button class="btn btn-primary" onclick="emailCheck()">이메일 체크</button>
-            <div id="email-check" style="display: none">
-                <div class="row">
-                    <div class="col">
-                        <input type="text" class="form-control" name="inputCode" placeholder="인증번호 입력">
-                        <input type="hidden" name="code">
-                        <h5 id="input-code-bottom"></h5>
+    <div class="modal-dialog modal-dialog-centered" style="max-height: 80vh; overflow-y: auto;">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <p style="text-align: center">회원가입</p>
+            <div class="container">
+                <form th:action="@{/member/save}" method="post" th:object="${memberDTO}">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="member-email" name="memberEmail"
+                               th:field="*{memberEmail}" placeholder="name@example.com">
+                        <label for="member-email">이메일 주소</label>
+                        <p th:if="${#fields.hasErrors('memberEmail')}" th:errors="*{memberEmail}"
+                           class="fieldError"></p>
                     </div>
-                    <div class="col">
-                        <button class="form-control" onclick="emailFinalCheck()">인증번호 확인</button>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="member-id" name="memberId"
+                               th:field="*{memberId}" placeholder="memberId">
+                        <label for="member-id">아이디</label>
+                        <p th:if="${#fields.hasErrors('memberId')}" th:errors="*{memberId}" class="fieldError"></p>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="member-password" name="memberPassword"
+                               th:field="*{memberPassword}" placeholder="memberPassword">
+                        <label for="member-password">비밀번호</label>
+                        <p th:if="${#fields.hasErrors('memberPassword')}" th:errors="*{memberPassword}"
+                           class="fieldError"></p>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="member-name" name="memberName"
+                               th:field="*{memberName}" placeholder="memberName">
+                        <label for="member-name">이름</label>
+                        <p th:if="${#fields.hasErrors('memberName')}" th:errors="*{memberName}" class="fieldError"></p>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control" id="member-birth" name="memberBirth"
+                               th:field="*{memberBirth}" placeholder="memberBirth">
+                        <label for="member-birth">생년월일</label>
+                        <p th:if="${#fields.hasErrors('memberBirth')}" th:errors="*{memberBirth}"
+                           class="fieldError"></p>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="member-mobile" name="memberMobile"
+                               th:field="*{memberMobile}" placeholder="memberMobile">
+                        <label for="member-mobile">전화번호</label>
+                        <p th:if="${#fields.hasErrors('memberMobile')}" th:errors="*{memberMobile}"
+                           class="fieldError"></p>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <label for="form-role">권한설정</label>
+                        <select name="formRole" id="form-role" class="form-control">
+                            <option value="member">Member</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                        <p th:if="${#fields.hasErrors('formRole')}" th:errors="*{formRole}"
+                           class="fieldError"></p>
+                    </div>
+                    <input type="submit" value="회원가입" class="btn btn-primary">
+                </form>
+            </div>
+
+            <div class="container">
+                <button class="btn btn-primary" onclick="emailCheck()">이메일 체크</button>
+                <div id="email-check" style="display: none">
+                    <div class="row">
+                        <div class="col">
+                            <input type="text" class="form-control" name="inputCode" placeholder="인증번호 입력">
+                            <input type="hidden" name="code">
+                            <h5 id="input-code-bottom"></h5>
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-primary" onclick="emailFinalCheck()">인증번호 확인</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -178,16 +186,16 @@
 </div>
 
 
-
-
-
 <!-- 아이디 찾기 모달창 -->
 <div id="idFindModal2" class="modal">
     <div class="modal-content">
         <span class="modal-close">&times;</span>
         <p>아이디 찾기</p>
-        <input type="text" placeholder="이메일"> <button>이메일 인증</button> <br>
-        <input type="text" placeholder="인증번호 입력"> <button>인증번호 확인</button>
+        <input type="text" placeholder="이메일">
+        <button>이메일 인증</button>
+        <br>
+        <input type="text" placeholder="인증번호 입력">
+        <button>인증번호 확인</button>
     </div>
 </div>
 
@@ -196,8 +204,12 @@
     <div class="modal-content">
         <span class="modal-close">&times;</span>
         <p>비밀번호 찾기</p>
-        <input type="text" placeholder="이메일"> <button>이메일 인증</button> <br>
-        <input type="text" placeholder="아이디"> <button>아이디 확인</button> <br>
+        <input type="text" placeholder="이메일">
+        <button>이메일 인증</button>
+        <br>
+        <input type="text" placeholder="아이디">
+        <button>아이디 확인</button>
+        <br>
 
     </div>
 </div>
@@ -248,38 +260,44 @@
 </div>
 
 
-
-
 </body>
 
 <footer>
-
     <div style="text-align: center">
-
-        <form th:action="@{/member/login}" method="post" th:object="${memberDTO}">
-
-            <input type="text" id="member-id" name="memberId"
-                   th:field="*{memberId}" placeholder="memberId">
-
-
-
-            <input type="password" id="member-password" name="memberPassword"
-                   th:field="*{memberPassword}" placeholder="memberPassword">
-
-
-            <p th:if="${loginErrorMsg}" class="error" th:text="${loginErrorMsg}"></p>
-            <!--  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
-            <button type="submit">로그인</button>
-        </form>
-
-        <button type="button" data-bs-toggle="modal" data-bs-target="#payReload">요금충전</button>
-
-
-        <div class="find-area">
-            <button id="btnSave">회원가입</button>
-            <button id="btnFind">아이디/비밀번호 찾기</button>
+        <div class="row text-center justify-content-center">
+            <div class="col-6">
+                <form th:action="@{/member/login}" method="post" th:object="${memberDTO}">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="form-group">
+                                <input type="text" id="member-id" class="form-control" name="memberId"
+                                       th:field="*{memberId}" placeholder="아이디 입력">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="member-password" class="form-control" name="memberPassword"
+                                       th:field="*{memberPassword}" placeholder="비밀번호 입력">
+                            </div>
+                            <div class="form-group">
+                                <p th:if="${loginErrorMsg}" class="error" th:text="${loginErrorMsg}"></p>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <!--  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
+                            <button type="submit">로그인</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-2">
+                <button type="button" data-bs-toggle="modal" data-bs-target="#payReload">요금충전</button>
+            </div>
+            <div class="col-4">
+                <div class="find-area">
+                    <button id="btnSave">회원가입</button>
+                    <button id="btnFind">아이디/비밀번호 찾기</button>
+                </div>
+            </div>
         </div>
-
     </div>
 </footer>
 
@@ -299,22 +317,22 @@
     var spanClose = document.getElementsByClassName("modal-close")[0];
 
     // 버튼 클릭시 모달창 띄우기
-    btnFind.onclick = function() {
+    btnFind.onclick = function () {
         idFindModal.style.display = "block";
     }
-    btnSave.onclick = function() {
+    btnSave.onclick = function () {
         modal.style.display = "block";
     }
 
     // X 버튼 클릭시 모달창 닫기
-    spanClose.onclick = function() {
+    spanClose.onclick = function () {
         modal.style.display = "none";
         idFindModal.style.display = "none";
         pwFindModal.style.display = "none";
     }
 
     // 모달창 외부 클릭시 모달창 닫기
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
         } else if (event.target == idFindModal) {
@@ -327,7 +345,7 @@
     // 아이디찾기, 비밀번호찾기 버튼 클릭시 모달창 바꾸기
     var btnFindId = document.createElement("button");
     btnFindId.innerHTML = "아이디 찾기";
-    btnFindId.onclick = function() {
+    btnFindId.onclick = function () {
         idFindModal.style.display = "none";
         modal.style.display = "none";
         document.getElementById("idFindModal2").style.display = "block";
@@ -335,7 +353,7 @@
 
     var btnFindPw = document.createElement("button");
     btnFindPw.innerHTML = "비밀번호 찾기";
-    btnFindPw.onclick = function() {
+    btnFindPw.onclick = function () {
         idFindModal.style.display = "none";
         modal.style.display = "none";
         document.getElementById("pwFindModal2").style.display = "block";
@@ -349,7 +367,6 @@
 
 <script th:inline="javascript">
     const emailCheck = () => {
-        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
         const email = document.querySelector('input[name="memberEmail"]').value;
         document.getElementById("email-check").style.display = "block";
         axios({
@@ -357,7 +374,6 @@
             url: "/memberSave/mailConfirm",
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRF-Token": csrfToken
             },
             data: {
                 email: email,
@@ -375,18 +391,18 @@
         const trueCode = document.querySelector('input[name="code"]').value;
         const result = document.getElementById("input-code-bottom");
 
-        if(typingCode == trueCode) {
+        if (typingCode == trueCode) {
             result.innerText = "인증완료";
-            result.style.color="green";
-        }else {
+            result.style.color = "green";
+        } else {
             result.innerText = "인증코드 불일치";
-            result.style.color="red";
+            result.style.color = "red";
         }
     }
     //회원가입 실패시 에러 메시지 출력
-    $(document).ready(function(){
+    $(document).ready(function () {
         const errorMessage = [[${errorMessage}]];
-        if(errorMessage != null){
+        if (errorMessage != null) {
             alert(errorMessage);
         }
     });
@@ -395,9 +411,9 @@
 
 <script th:inline="javascript">
     //로그인 실패시 에러 메시지 출력
-    $(document).ready(function(){
+    $(document).ready(function () {
         const errorMessage = [[${errorMessage}]];
-        if(errorMessage != null){
+        if (errorMessage != null) {
             alert(errorMessage);
         }
     });
@@ -448,7 +464,7 @@
         IMP.request_pay({
             pg: 'kakaopay',
             merchant_uid: 'merchant_' + new Date().getTime(),
-            name: 'Q PC Room '+time+'분 '+price+'원',
+            name: 'Q PC Room ' + time + '분 ' + price + '원',
             amount: money,
             buyer_email: 'iamport@siot.do',
             buyer_name: 'Q PC Room',
@@ -485,14 +501,10 @@
                 msg += '에러내용 : ' + rsp.error_msg;
             }
             alert(msg);
-            document.location.href="/"; //alert창 확인 후 이동할 url 설정
+            document.location.href = "/"; //alert창 확인 후 이동할 url 설정
         });
     };
 </script>
-
-
-
-
 
 
 </html>
