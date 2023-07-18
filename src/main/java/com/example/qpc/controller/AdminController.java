@@ -17,6 +17,11 @@ import java.util.List;
 public class AdminController {
     private final MemberService memberService;
 
+    @GetMapping("/adminMain")
+    public String adminMain() {
+        return "/adminPages/adminMain";
+    }
+
     //회원리스트
     @GetMapping("/memberList")
     public String findMemberList(Model model){
