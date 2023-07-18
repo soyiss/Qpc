@@ -90,7 +90,6 @@
         <span class="modal-close" onclick="closeModal('memberModal')">&times;</span>
         <h3>회원관리</h3>
         <!-- 모달 내용 -->
-        <p>모달 내용을 추가하세요.</p>
       </div>
     </div>
   </div>
@@ -102,7 +101,7 @@
         <span class="modal-close" onclick="closeModal('productModal')">&times;</span>
         <h3>상품관리</h3>
         <!-- 모달 내용 -->
-        <div id="section" class="product-section">
+        <div id="product-section">
           <table>
             <tr>
               <th>id</th>
@@ -110,7 +109,7 @@
               <th>상품 가격</th>
               <th>상품 개수</th>
             </tr>
-            <c:forEach items="${productList}" var="product">
+            <th:each items="${productList}" var="product">
               <tr>
                 <td>${product.id}</td>
                 <td>${product.productName}</td>
@@ -124,7 +123,7 @@
                   <button onclick="productDelete()">삭제</button>
                 </td>
               </tr>
-            </c:forEach>
+            </th:each>
           </table>
         </div> <br>
         <button onclick="openModal('productSaveModal')" style="text-align: left;">상품 등록</button> <br>
@@ -205,14 +204,14 @@
         <span class="modal-close" onclick="closeModal('gameModal')">&times;</span>
         <h3>게임관리</h3>
         <!-- 모달 내용 -->
-        <div id="section" class="game-section">
+        <div id="game-section">
           <table>
             <tr>
               <th>id</th>
               <th>게임 이미지</th>
               <th>게임 이름</th>
             </tr>
-            <c:forEach items="${gameList}" var="game">
+            <th:each items="${gameList}" var="game">
               <tr>
                 <td>${game.id}</td>
                 <td>${game.gameImg}</td>
@@ -225,7 +224,7 @@
                   <button onclick="gameDelete()">삭제</button>
                 </td>
               </tr>
-            </c:forEach>
+            </th:each>
           </table>
         </div> <br>
         <button onclick="openModal('gameSaveModal')" style="text-align: left;">게임 등록</button> <br>
@@ -437,9 +436,11 @@
       });
     }
 
+
     const blackList = () => {
       location.href="/admin/memberList"
     }
+
 
   </script>
 </th:block>
