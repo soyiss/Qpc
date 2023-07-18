@@ -18,9 +18,10 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public void save(CategoryDTO categoryDTO) {
+    public Long save(CategoryDTO categoryDTO) {
         CategoryEntity categoryEntity = CategoryEntity.toSaveEntity(categoryDTO);
         categoryRepository.save(categoryEntity);
+        return categoryEntity.getId();
     }
 
     public List<CategoryDTO> findAll() {
@@ -45,5 +46,16 @@ public class CategoryService {
 
     public void delete(Long id) {
         categoryRepository.deleteById(id);
+    }
+
+    // 다빈추가
+    public Long findCategoryIdByName(String categoryName) {
+        CategoryEntity categoryEntity = categoryRepository.findByCategoryName(categoryName);
+        if (categoryEntity != null) {
+            return categoryEntity.getId();
+        } else {
+            // 해당 이름의 카테고리가 존재하지 않는 경우 처리
+            throw new NoSuchElementException("이름이 " + categoryName + "인 카테고리를 찾을 수 없습니다.");
+        }
     }
 }

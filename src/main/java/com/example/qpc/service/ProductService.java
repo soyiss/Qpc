@@ -1,8 +1,10 @@
 package com.example.qpc.service;
 
 import com.example.qpc.dto.ProductDTO;
+import com.example.qpc.entity.CategoryEntity;
 import com.example.qpc.entity.ProductEntity;
 import com.example.qpc.entity.ProductFileEntity;
+import com.example.qpc.repository.CategoryRepository;
 import com.example.qpc.repository.ProductFileRepository;
 import com.example.qpc.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductFileRepository productFileRepository;
+    private final CategoryRepository categoryRepository;
 
     public Long save(ProductDTO productDTO) throws IOException {
         if (productDTO.getProductFile() == null || productDTO.getProductFile().isEmpty()) {
@@ -31,19 +34,29 @@ public class ProductService {
         } else {
             // 파일 있음
             // 1. Product 테이블에 데이터 먼저 저장
-            ProductEntity productEntity = ProductEntity.toSaveEntity(productDTO);
+            ProductEntity productEntity = ProductEntity.toSaveEntityWithFile(productDTO);
+
+            // 2. 카테고리 저장 및 설정
+            Long categoryId = productDTO.getCategoryId();
+            if (categoryId != null) {
+                CategoryEntity categoryEntity = categoryRepository.findById(categoryId).orElse(null);
+                productEntity.setCategoryEntity(categoryEntity);
+            }
+
             ProductEntity savedEntity = productRepository.save(productEntity);
 
-            // 2. 업로드된 파일 정보를 받아서 각각 ProductFileEntity로 변환 후 product_file_table에 저장
+            // 3. 업로드된 파일 정보를 받아서 각각 ProductFileEntity로 변환 후 product_file_table에 저장
             MultipartFile file = productDTO.getProductFile();
             String originalFileName = file.getOriginalFilename();
             String storedFileName = System.currentTimeMillis() + "_" + originalFileName;
             String savePath = "D:\\springboot_img\\" + storedFileName;
             file.transferTo(new File(savePath));
 
-            // 3. ProductFileEntity로 변환 후 저장
-            ProductFileEntity productFileEntity =
-                    ProductFileEntity.toSaveProductFileEntity(savedEntity, originalFileName, storedFileName);
+            // 4. ProductFileEntity로 변환 후 저장
+            ProductFileEntity productFileEntity = new ProductFileEntity();
+            productFileEntity.setOriginalFileName(originalFileName);
+            productFileEntity.setStoredFileName(storedFileName);
+            productFileEntity.setProductEntity(savedEntity);
             productFileRepository.save(productFileEntity);
 
             return savedEntity.getId();
@@ -51,5 +64,7 @@ public class ProductService {
     }
 
 
-
+    public List<CategoryEntity> getAllCategories() {
+        return categoryRepository.findAll();
+    }
 }

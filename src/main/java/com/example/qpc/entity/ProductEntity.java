@@ -57,4 +57,17 @@ public class ProductEntity {
         return productEntity;
 
     }
+
+    public static ProductEntity toSaveEntityWithFile(ProductDTO productDTO) {
+        ProductEntity productEntity = new ProductEntity();
+        CategoryEntity categoryEntity = new CategoryEntity();
+        productEntity.setId(productDTO.getId());
+        productEntity.setProductName(productDTO.getProductName());
+        productEntity.setProductPrice(productDTO.getProductPrice());
+        productEntity.setProductCount(productDTO.getProductCount());
+
+        productEntity.setFileAttached(1);
+
+        return productEntity;
+    }
 }
