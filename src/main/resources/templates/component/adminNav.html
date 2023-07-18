@@ -167,9 +167,9 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content" style="margin: 0 auto; width: 80%">
         <span class="modal-close" onclick="closeModal('productUpdateModal')">&times;</span>
-        <h3>상품 수정</h3>
+        <button onclick="closeModal('productUpdateModal')">상품목록</button>
+        <h3>상품 조회</h3>
         <!-- 모달 내용 -->
-        <button style="text-align: right;">상품목록</button>
         <form action="/product/update" method="post" id="productUpdateForm" enctype="multipart/form-data">
           <select name="productCategory" id="product-update-category" class="form-control">
             <option value="">선택해주세요</option>
