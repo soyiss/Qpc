@@ -35,6 +35,7 @@ public class ProductService {
             // 파일 있음
             // 1. Product 테이블에 데이터 먼저 저장
             ProductEntity productEntity = ProductEntity.toSaveEntityWithFile(productDTO);
+            ProductEntity savedEntity = productRepository.save(productEntity);
 
             // 2. 카테고리 저장 및 설정
             Long categoryId = productDTO.getCategoryId();
@@ -43,20 +44,17 @@ public class ProductService {
                 productEntity.setCategoryEntity(categoryEntity);
             }
 
-            ProductEntity savedEntity = productRepository.save(productEntity);
 
-            // 3. 업로드된 파일 정보를 받아서 각각 ProductFileEntity로 변환 후 product_file_table에 저장
-            MultipartFile file = productDTO.getProductFile();
-            String originalFileName = file.getOriginalFilename();
+            // 3. 파일이름 꺼내고, 저장용 이름 만들고 파일 로컬에 저장
+
+//            MultipartFile file = productDTO.getProductFile();
+            String originalFileName = productDTO.getOriginalFileName();
             String storedFileName = System.currentTimeMillis() + "_" + originalFileName;
             String savePath = "D:\\springboot_img\\" + storedFileName;
-            file.transferTo(new File(savePath));
+            productDTO.getProductFile().transferTo(new File(savePath));
 
             // 4. ProductFileEntity로 변환 후 저장
-            ProductFileEntity productFileEntity = new ProductFileEntity();
-            productFileEntity.setOriginalFileName(originalFileName);
-            productFileEntity.setStoredFileName(storedFileName);
-            productFileEntity.setProductEntity(savedEntity);
+            ProductFileEntity productFileEntity = ProductFileEntity.toSaveProductFileEntity(savedEntity, originalFileName, storedFileName);
             productFileRepository.save(productFileEntity);
 
             return savedEntity.getId();
