@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/admin")
 public class AdminController {
     private final MemberService memberService;
+    private final AdminService adminService;
 
 
     @GetMapping("/adminMain")
