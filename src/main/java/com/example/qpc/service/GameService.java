@@ -73,4 +73,18 @@ public class GameService {
         return gameCategoryRepository.findAll();
 
     }
+
+    public List<GameDTO> findAll() {
+        List<GameEntity> gameEntityList = gameRepository.findAll();
+        List<GameDTO> gameDTOList = new ArrayList<>();
+        gameEntityList.forEach(gameEntity -> {
+            gameDTOList.add(GameDTO.toDTO(gameEntity));
+        });
+        return gameDTOList;
+    }
+
+
+    public void delete(Long id) {
+        gameRepository.deleteById(id);
+    }
 }

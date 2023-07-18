@@ -45,6 +45,22 @@ public class GameController {
         return "redirect:/";
     }
 
+    @GetMapping("/list")
+    public String gameList(Model model){
+        List<GameDTO> gameDTOList = gameService.findAll();
+        System.out.println("id1 " + gameDTOList);
+        model.addAttribute("gameDTOList",gameDTOList);
+        System.out.println("gameDTOList12 = " + gameDTOList);
+        return "gamePages/GameList";
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Long id) {
+        System.out.println("id = " + id);
+        gameService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 
 
