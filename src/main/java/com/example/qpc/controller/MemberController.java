@@ -94,40 +94,26 @@ public class MemberController {
     @PostMapping("/login")
     public String memberLogin(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
         try {
+            MemberDTO member = memberService.findByMemberId(memberDTO.getMemberId());
+
+            // 블랙리스트 검사
+            BlackListEntity blackListEntity = adminRepository.findByMemberLoginId(member.getMemberId());
+            if (blackListEntity != null) {
+                model.addAttribute("loginErrorMsg", "이 회원은 블랙리스트에 있으므로 로그인 할 수 없습니다.");
+                return "/memberLogin";
+            }
+
             // 인증 토큰 생성
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     memberDTO.getMemberId(), memberDTO.getMemberPassword());
+
             // 인증 매니저를 사용하여 인증 수행
             Authentication authentication = authenticationManager.authenticate(authToken);
+
             // SecurityContextHolder에 인증 객체 설정
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            MemberDTO member = memberService.findByMemberId(memberDTO.getMemberId());
-
-            // 권한 확인
-            Object principal = authentication.getPrincipal();
-            if (principal instanceof UserDetails) {
-                UserDetails userDetails = (UserDetails) principal;
-                System.out.println("사용자의 아이디: " + userDetails.getUsername());
-                System.out.println("사용자의 패스워드: " + userDetails.getPassword());
-                // 나머지 사용자 정보 출력
-                System.out.println("사용자의 활성화 여부: " + userDetails.isEnabled());
-                System.out.println("계정 만료 여부: " + userDetails.isAccountNonExpired());
-                System.out.println("계정 잠김 여부: " + userDetails.isAccountNonLocked());
-                System.out.println("패스워드 만료 여부: " + userDetails.isCredentialsNonExpired());
-                Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
-                System.out.println("사용자의 권한 목록:");
-                for (GrantedAuthority authority : authorities) {
-                    System.out.println(authority.getAuthority());
-                }
-            }
-            // 블랙리스트 검사를 위한 Repository 조회
-            BlackListEntity blackListEntity = adminRepository.findByMemberLoginId(member.getMemberId());
-            // 블랙리스트에 회원이 있을 경우 로그인을 차단
-            if (blackListEntity != null) {
-//            model.addAttribute("loginErrorMsg", "이 회원은 블랙리스트에 있으므로 로그인 할 수 없습니다.");
-                return "/memberPages/memberLoginBlack";
-            }
+            // 인증 성공 시 처리
             if (member.getRole().equals(RoleEntity.MEMBER)) {
                 // 인증이 성공하면 로그인 처리
                 return "/memberPages/memberMain";
@@ -143,6 +129,7 @@ public class MemberController {
         }
         return "/memberLogin";
     }
+
 
 
     // 아이디 찾기
