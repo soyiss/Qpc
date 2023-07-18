@@ -117,7 +117,7 @@
                 <td>${product.productPrice}</td>
                 <td>${product.productCount}</td>
                 <td>
-                  <button onclick="openModal('productDetailModal')">조회</button>
+                  <button onclick="openModal('productUpdateModal')">조회</button>
                 </td>
 
                 <td>
@@ -132,7 +132,6 @@
       </div>
     </div>
   </div>
-
 
   <!-- 상품 등록 모달 창 -->
   <div id="productSaveModal" class="modal"  style="margin: 0 auto;padding: 20px;">
@@ -154,7 +153,7 @@
           <input type="text" placeholder="상품가격" class="form-control"> <br>
           <input type="text" placeholder="상품개수" class="form-control"> <br>
 
-          <input type="file" name="boardFile" class="form-control"> <br>
+          <input type="file" name="productFile" class="form-control"> <br>
           <button style="margin: 0 auto;">상품등록</button>
         </form> <br>
       </div>
@@ -162,7 +161,7 @@
   </div>
 
 
-  <!-- 상품 수정 모달 창 -->
+  <!-- 상품 조회-수정 모달 창 -->
   <div id="productUpdateModal" class="modal" style="margin: 0 auto;padding: 20px;">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content" style="margin: 0 auto; width: 80%">
@@ -170,6 +169,14 @@
         <button onclick="closeModal('productUpdateModal')">상품목록</button>
         <h3>상품 조회</h3>
         <!-- 모달 내용 -->
+
+        <!--        <tr th:if="${product.fileAttached == 1}">-->
+        <th>상품이미지</th>
+        <!--          <td th:each="fileName: ${product.storedFileName}">-->
+        <img th:src="@{|/upload/${fileName}}" alt="">
+        </td>
+        </tr>
+
         <form action="/product/update" method="post" id="productUpdateForm" enctype="multipart/form-data">
           <select name="productCategory" id="product-update-category" class="form-control">
             <option value="">선택해주세요</option>
@@ -183,7 +190,7 @@
           <input type="text" placeholder="상품가격" class="form-control"> <br>
           <input type="text" placeholder="상품개수" class="form-control"> <br>
           <input type="file" name="productFile" class="form-control"> <br>
-          <button style="margin: 0 auto;">상품수정</button>
+          <input type="submit" style="margin: 0 auto;" value="상품수정">
         </form> <br>
       </div>
     </div>
@@ -243,7 +250,7 @@
           </select> <br>
           <input type="text" placeholder="게임이름" class="form-control"> <br>
           <input type="text" placeholder="게임링크" class="form-control"> <br>
-          <input type="file" name="boardFile" class="form-control"> <br>
+          <input type="file" name="gameFile" class="form-control"> <br>
           <button style="margin: 0 auto;">게임등록</button>
         </form> <br>
       </div>
@@ -257,6 +264,13 @@
         <span class="modal-close" onclick="closeModal('gameUpdateModal')">&times;</span>
         <h3>게임 수정</h3>
         <!-- 모달 내용 -->
+        <!--        <tr th:if="${game.fileAttached == 1}">-->
+        <th>게임이미지</th>
+        <!--          <td th:each="fileName: ${game.storedFileName}">-->
+        <img th:src="@{|/upload/${fileName}}" alt="">
+        </td>
+        </tr>
+
         <form action="/game/update" method="post" id="gameUpdateForm" enctype="multipart/form-data">
           <select name="gameCategory" id="game-update-category" class="form-control">
             <option value="">선택해주세요</option>
@@ -267,10 +281,9 @@
           </select> <br>
           <input type="text" placeholder="게임이름" class="form-control"> <br>
           <input type="text" placeholder="게임링크" class="form-control"> <br>
-          <input type="file" name="boardFile" class="form-control"> <br>
-          <button style="margin: 0 auto;">게임수정</button>
+          <input type="file" name="gameFile" class="form-control"> <br>
+          <input type="submit" style="margin: 0 auto;" value="게임수정">
         </form> <br>
-
       </div>
     </div>
   </div>
