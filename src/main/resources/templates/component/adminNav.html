@@ -162,9 +162,32 @@
   </div>
 
 
-
-
-
+  <!-- 상품 수정 모달 창 -->
+  <div id="productUpdateModal" class="modal" style="margin: 0 auto;padding: 20px;">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="margin: 0 auto; width: 80%">
+        <span class="modal-close" onclick="closeModal('productUpdateModal')">&times;</span>
+        <h3>상품 수정</h3>
+        <!-- 모달 내용 -->
+        <button style="text-align: right;">상품목록</button>
+        <form action="/product/update" method="post" id="productUpdateForm" enctype="multipart/form-data">
+          <select name="productCategory" id="product-update-category" class="form-control">
+            <option value="">선택해주세요</option>
+            <option value="">식사류</option>
+            <option value="">튀김</option>
+            <option value="">간식</option>
+            <option value="">음료</option>
+            <option value="">세트메뉴</option>
+          </select> <br>
+          <input type="text" placeholder="상품이름" class="form-control"> <br>
+          <input type="text" placeholder="상품가격" class="form-control"> <br>
+          <input type="text" placeholder="상품개수" class="form-control"> <br>
+          <input type="file" name="productFile" class="form-control"> <br>
+          <button style="margin: 0 auto;">상품수정</button>
+        </form> <br>
+      </div>
+    </div>
+  </div>
 
 
 
