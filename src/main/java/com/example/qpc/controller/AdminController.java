@@ -2,6 +2,7 @@ package com.example.qpc.controller;
 
 import com.example.qpc.dto.BlackListDTO;
 import com.example.qpc.dto.MemberDTO;
+import com.example.qpc.entity.RoleEntity;
 import com.example.qpc.service.AdminService;
 import com.example.qpc.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +57,7 @@ public class AdminController {
     //회원수정
     @PutMapping("/{id}")
     public ResponseEntity update(@RequestBody MemberDTO memberDTO) {
+        memberDTO.setRole(RoleEntity.MEMBER);
         memberService.memberUpdate(memberDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -99,6 +101,16 @@ public class AdminController {
         if (!existingBlackListMembers.isEmpty()) {
             String existingMembers = String.join(", ", existingBlackListMembers);
             System.out.println("이미 블랙리스트에 존재하는 회원: " + existingMembers);
+        }
+
+        return "redirect:/admin/memberBlackList";
+    }
+    @GetMapping("/blackDelete")
+    public String blackDelete(@RequestParam("id") List<Long> ids) {
+        System.out.println("블랙풀기 id = " + ids);
+
+        for (Long id : ids) {
+            adminService.delete(id);
         }
 
         return "redirect:/admin/memberBlackList";
