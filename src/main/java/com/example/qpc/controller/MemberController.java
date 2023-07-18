@@ -76,18 +76,18 @@ public class MemberController {
     }
 
     // 로그인 창으로 이동
-    @GetMapping("/login")
-    public String memberLoginForm(Model model) {
-        model.addAttribute("memberDTO", new MemberDTO());
-        return "/memberLogin";
-    }
+//    @GetMapping("/login")
+//    public String memberLoginForm(Model model) {
+//        model.addAttribute("memberDTO", new MemberDTO());
+//        return "/memberLogin";
+//    }
 
     // 로그인 에러
     @GetMapping("/login/error")
     public String loginError(Model model) {
         model.addAttribute("memberDTO", new MemberDTO());
         model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인해주세요.");
-        return "/memberLogin";
+        return "/index";
     }
 
     // 로그인 처리
@@ -95,12 +95,15 @@ public class MemberController {
     public String memberLogin(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
         try {
             MemberDTO member = memberService.findByMemberId(memberDTO.getMemberId());
-
+            if (member == null) {
+                model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인하세요.");
+                return "/index";
+            }
             // 블랙리스트 검사
             BlackListEntity blackListEntity = adminRepository.findByMemberLoginId(member.getMemberId());
             if (blackListEntity != null) {
                 model.addAttribute("loginErrorMsg", "이 회원은 블랙리스트에 있으므로 로그인 할 수 없습니다.");
-                return "/memberLogin";
+                return "/index";
             }
 
             // 인증 토큰 생성
@@ -125,9 +128,9 @@ public class MemberController {
             // 인증 실패 시 에러 처리
             System.out.println(e);
             model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인하세요.");
-            return "/memberLogin";
+            return "/index";
         }
-        return "/memberLogin";
+        return "/index";
     }
 
 
