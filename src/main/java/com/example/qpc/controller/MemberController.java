@@ -102,6 +102,8 @@ public class MemberController {
             // SecurityContextHolder에 인증 객체 설정
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+            MemberDTO member = memberService.findByMemberId(memberDTO.getMemberId());
+
             // 권한 확인
             Object principal = authentication.getPrincipal();
             if (principal instanceof UserDetails) {
@@ -120,16 +122,22 @@ public class MemberController {
                 }
             }
 
+            if (member.getRole().equals(RoleEntity.MEMBER)) {
+                // 인증이 성공하면 로그인 처리
+                return "/memberPages/memberMain";
+            } else if (member.getRole().equals(RoleEntity.ADMIN)) {
+                return "redirect:/admin/adminMain";
+            }
 
-            // 인증이 성공하면 로그인 처리
-            return "/memberPages/memberMain";
         } catch (AuthenticationException e) {
             // 인증 실패 시 에러 처리
             System.out.println(e);
             model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인하세요.");
             return "/memberLogin";
         }
+        return "/memberLogin";
     }
+
 
     // 아이디 찾기
     @PostMapping("/findById/email_check")
@@ -180,10 +188,7 @@ public class MemberController {
         return "redirect:/member/mypage" + id;
     }
 
-    @GetMapping("/adminMain")
-    public String adminMain() {
-        return "/adminPages/adminMain";
-    }
+
 
 
     @GetMapping("/memberlogintest")
@@ -204,6 +209,8 @@ public class MemberController {
     }
     @GetMapping("/memberMain")
     public String memberMain(){return "/memberPages/memberMain";}
+
+
 
 
 }

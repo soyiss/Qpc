@@ -21,7 +21,12 @@ import java.util.stream.Collectors;
 public class AdminController {
     private final MemberService memberService;
 
-    private final AdminService adminService;
+
+    @GetMapping("/adminMain")
+    public String adminMain() {
+        return "/adminPages/adminMain";
+    }
+
 
     //회원리스트
     @GetMapping("/memberList")
