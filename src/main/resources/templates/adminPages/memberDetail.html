@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:replace="component/config :: config"></th:block>
+</head>
+<body>
+<form action="/admin/memberUpdate" method="post" id="summitForm">
+    <input type="hidden" name="id" th:value="${member.id}"> <br>
+    id<input type="text" name="memberId" th:value="${member.memberId}" placeholder="아이디" readonly> <br>
+    pw<input type="text" name="memberPassword" th:value="${member.memberPassword}" placeholder="비밀번호"> <br>
+    name<input type="text" name="memberName" th:value="${member.memberName}" placeholder="이름"> <br>
+    email<input type="text" name="memberEmail" th:value="${member.memberEmail}" placeholder="이메일" readonly> <br>
+    birth<input type="date" name="memberBirth" th:value="${member.memberBirth}" placeholder="생년월일"> <br>
+    mobile<input type="text" name="memberMobile" th:value="${member.memberMobile}" placeholder="전화번호"> <br>
+    <input type="button" value="회원수정" th:onclick="member_update()">
+    <input type="button" value="회원삭제" th:onclick="member_delete([[${member.id}]])">
+</form>
+<a href="/admin/memberList">회원목록</a>
+</body>
+<script th:inline="javascript">
+    const member_update = () => {
+
+        const id = document.querySelector('input[name="id"]').value;
+        const memberId = document.querySelector('input[name="memberId"]').value;
+        const memberPassword = document.querySelector('input[name="memberPassword"]').value;
+        const memberName = document.querySelector('input[name="memberName"]').value;
+        const memberEmail = document.querySelector('input[name="memberEmail"]').value;
+        const memberBirth = document.querySelector('input[name="memberBirth"]').value;
+        const memberMobile = document.querySelector('input[name="memberMobile"]').value;
+
+            axios({
+                method: "put",
+                url: "/admin/" + id,
+                data:{
+                    id: id,
+                    memberId:memberId,
+                    memberPassword: memberPassword,
+                    memberName: memberName,
+                    memberEmail: memberEmail,
+                    memberBirth: memberBirth,
+                    memberMobile:memberMobile
+                }
+            }).then(res => {
+                alert("회원정보 수정 완료!");
+                location.href="redirect:/admin/memberDetail";
+            }).catch(err => {
+                alert("회원정보 수정 실패!");
+            });
+
+    }
+
+    const member_delete = (id) => {
+        if (confirm("정말로 회원을 삭제하시겠습니까?")) {
+            fetch('/admin/' + id, {
+                method: 'DELETE'
+            }).then(response => {
+                if (response.ok) {
+                    alert('회원이 성공적으로 삭제되었습니다.');
+                    window.location.href = "/admin/memberList";
+                } else {
+                    alert('회원 삭제에 실패했습니다.');
+                }
+            });
+        }
+    }
+
+
+</script>
+</html>
