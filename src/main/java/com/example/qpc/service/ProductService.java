@@ -64,27 +64,6 @@ public class ProductService {
     }
 
 
-    public List<CategoryEntity> getAllCategories() {
-        return categoryRepository.findAll();
-    }
-
-    public List<ProductDTO> getAllProducts() {
-        List<ProductEntity> products = productRepository.findAll();
-        List<ProductDTO> productDTOs = new ArrayList<>();
-
-        for (ProductEntity product : products) {
-            ProductDTO productDTO = new ProductDTO();
-            // 기존 코드 유지
-
-            // 카테고리 이름 설정
-            productDTO.setCategoryName(product.getCategoryEntity().getCategoryName());
-
-            productDTOs.add(productDTO);
-        }
-
-        return productDTOs;
-    }
-
     @Transactional
     public List<ProductDTO> findAll() {
         List<ProductEntity> productEntityList = productRepository.findAll();
@@ -110,5 +89,38 @@ public class ProductService {
         }
 
         return productDTO;
+    }
+
+    public ProductDTO productUpdate(ProductDTO productDTO) {
+        System.out.println("productDTO = " + productDTO);
+        ProductEntity productEntity = productRepository.save(ProductEntity.toUpdateEntity(productDTO));
+        return ProductDTO.toDTO(productEntity);
+    }
+
+
+    public void delete(Long id) {
+        productRepository.deleteById(id);
+
+    }
+
+    public List<CategoryEntity> getAllCategories() {
+        return categoryRepository.findAll();
+
+    }
+    public List<ProductDTO> getAllProducts() {
+        List<ProductEntity> products = productRepository.findAll();
+        List<ProductDTO> productDTOs = new ArrayList<>();
+
+        for (ProductEntity product : products) {
+            ProductDTO productDTO = new ProductDTO();
+            // 기존 코드 유지
+
+            // 카테고리 이름 설정
+            productDTO.setCategoryName(product.getCategoryEntity().getCategoryName());
+
+            productDTOs.add(productDTO);
+        }
+
+        return productDTOs;
     }
 }

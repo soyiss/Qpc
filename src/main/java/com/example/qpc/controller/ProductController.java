@@ -5,6 +5,8 @@ import com.example.qpc.entity.CategoryEntity;
 import com.example.qpc.service.CategoryService;
 import com.example.qpc.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -72,5 +74,23 @@ public class ProductController {
 
         return "productPages/ProductDetail";
     }
+
+    // 상품 수정 처리
+    @PutMapping("/{id}")
+    public ResponseEntity update(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
+        productDTO.setId(id);
+        System.out.println("productDTO = " + productDTO);
+        productService.productUpdate(productDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    // 상품 삭제 처리
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Long id) {
+        System.out.println("id2 = " + id);
+        productService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 }
