@@ -121,7 +121,13 @@ public class MemberController {
                     System.out.println(authority.getAuthority());
                 }
             }
-
+            // 블랙리스트 검사를 위한 Repository 조회
+            BlackListEntity blackListEntity = adminRepository.findByMemberLoginId(member.getMemberId());
+            // 블랙리스트에 회원이 있을 경우 로그인을 차단
+            if (blackListEntity != null) {
+//            model.addAttribute("loginErrorMsg", "이 회원은 블랙리스트에 있으므로 로그인 할 수 없습니다.");
+                return "/memberPages/memberLoginBlack";
+            }
             if (member.getRole().equals(RoleEntity.MEMBER)) {
                 // 인증이 성공하면 로그인 처리
                 return "/memberPages/memberMain";
