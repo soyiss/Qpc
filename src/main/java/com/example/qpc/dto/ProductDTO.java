@@ -1,5 +1,6 @@
 package com.example.qpc.dto;
 
+import com.example.qpc.entity.CategoryEntity;
 import com.example.qpc.entity.ProductEntity;
 import com.example.qpc.entity.ProductFileEntity;
 import lombok.AllArgsConstructor;
@@ -53,30 +54,30 @@ public class ProductDTO {
 
     public static ProductDTO toDTO(ProductEntity productEntity) {
         ProductDTO productDTO = new ProductDTO();
-        ProductFileDTO productFileDTO = new ProductFileDTO();
+
         productDTO.setId(productEntity.getId());
         productDTO.setProductName(productEntity.getProductName());
-        productDTO.setProductCount(productEntity.getProductCount());
         productDTO.setProductPrice(productEntity.getProductPrice());
+        productDTO.setProductCount(productEntity.getProductCount());
+        productDTO.setFileAttached(productEntity.getFileAttached());
 
-        if (productEntity.getFileAttached() == 1) {
+        // 파일 여부에 따른 코드 추가
+        if (productEntity.getFileAttached() ==1) {
             productDTO.setFileAttached(1);
-            // 파일 이름을 담을 리스트 객체 선언
-            List<String> originalFileNameList = new ArrayList<>();
-            List<String> storedFileNameList = new ArrayList<>();
-            // 첨부파일에 각각 접근
-            for (ProductFileEntity productFileEntity : productEntity.getProductFileEntityList()) {
-                originalFileNameList.add(productFileEntity.getOriginalFileName());
-                storedFileNameList.add(productFileEntity.getStoredFileName());
-            }
-            productFileDTO.setOriginalFileName(originalFileNameList);
-            productFileDTO.setStoredFileName(storedFileNameList);
+            productDTO.setOriginalFileName(productEntity.getProductFileEntityList().get(0).getOriginalFileName());
+            productDTO.setStoredFileName(productEntity.getProductFileEntityList().get(0).getStoredFileName());
         } else {
             productDTO.setFileAttached(0);
         }
 
-        return productDTO;
+        // 카테고리 설정
+        CategoryEntity categoryEntity = productEntity.getCategoryEntity();
+        if (categoryEntity != null) {
+            productDTO.setCategoryName(categoryEntity.getCategoryName());
+            productDTO.setCategoryId(categoryEntity.getId());
+        }
 
+        return productDTO;
     }
 
 
