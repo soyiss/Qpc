@@ -1,5 +1,6 @@
 package com.example.qpc.entity;
 
+import com.example.qpc.dto.GameDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,4 +33,34 @@ public class GameEntity {
     @ManyToOne
     @JoinColumn(name="category_id")
     private GameCategoryEntity gameCategoryEntity;
+
+    public static GameEntity toSaveEntity(GameDTO gameDTO) {
+        GameEntity gameEntity = new GameEntity();
+        gameEntity.setGameName(gameDTO.getGameName());
+        gameEntity.setGameLink(gameDTO.getGameLink());
+
+        // 게임 카테고리 정보 설정
+        GameCategoryEntity gameCategoryEntity = new GameCategoryEntity();
+        gameCategoryEntity.setId(gameDTO.getGameCategoryId());
+        gameEntity.setGameCategoryEntity(gameCategoryEntity);
+
+        gameEntity.setFileAttached(0);
+
+        return gameEntity;
+    }
+
+
+    public static GameEntity toSaveEntityWithFile(GameDTO gameDTO) {
+        GameEntity gameEntity = new GameEntity();
+        gameEntity.setGameName(gameDTO.getGameName());
+        gameEntity.setGameLink(gameDTO.getGameLink());
+        gameEntity.setFileAttached(1);
+        return gameEntity;
+
+    }
+
+
+    public GameCategoryEntity getGameCategoryEntity() {
+        return gameCategoryEntity;
+    }
 }

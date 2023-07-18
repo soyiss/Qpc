@@ -49,4 +49,14 @@ public class GameCategoryService {
         GameCategoryEntity gameCategoryEntity = GameCategoryEntity.toUpdateEntity(gameCategoryDTO);
         gameCategoryRepository.save(gameCategoryEntity);
     }
+
+    public Long findGameCategoryIdByName(String gameCategoryName) {
+        GameCategoryEntity gameCategoryEntity = gameCategoryRepository.findGameCategoryIdByGameCategoryName(gameCategoryName);
+        if (gameCategoryEntity != null) {
+            return gameCategoryEntity.getId();
+        } else {
+            // 해당 이름의 카테고리가 존재하지 않는 경우 처리
+            throw new NoSuchElementException("이름이 " + gameCategoryName + "인 카테고리를 찾을 수 없습니다.");
+        }
+    }
 }
