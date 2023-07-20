@@ -34,31 +34,30 @@ public class GameService {
 
 
     public Long save(GameDTO gameDTO) throws IOException {
-        // 게임 카테고리 정보 가져오기
-        Long gameCategoryId = gameDTO.getGameCategoryId();
-        GameCategoryEntity gameCategoryEntity = null;
-        if (gameCategoryId != null) {
-            gameCategoryEntity = gameCategoryRepository.findById(gameCategoryId).orElse(null);
-        }
-
-        if (gameDTO.getGameFile() == null || gameDTO.getGameFile().isEmpty()) {
+        if (gameDTO.getGameFile().isEmpty()) {
             // 파일 없음
             GameEntity gameEntity = GameEntity.toSaveEntity(gameDTO);
-            gameEntity.setGameCategoryEntity(gameCategoryEntity);
             return gameRepository.save(gameEntity).getId();
         } else {
             // 파일 있음
-            // 1. GameEntity에 데이터 저장
+            // 1. Game 에 데이터 저장
             GameEntity gameEntity = GameEntity.toSaveEntityWithFile(gameDTO);
-            gameEntity.setGameCategoryEntity(gameCategoryEntity);
             GameEntity savedEntity = gameRepository.save(gameEntity);
 
-            // 2. 업로드된 파일 정보를 받아서 GameFileEntity로 변환 후 저장
-            MultipartFile file = gameDTO.getGameFile();
-            String originalFileName = file.getOriginalFilename();
+            // 2. 카테고리 저장 및 설정
+            Long gameCategoryId = gameDTO.getGameCategoryId();
+            if(gameCategoryId != null){
+                GameCategoryEntity gameCategoryEntity = gameCategoryRepository.findById(gameCategoryId).orElse(null);
+                gameEntity.setGameCategoryEntity(gameCategoryEntity);
+
+
+            }
+
+            // 2. 파일이름 꺼내고, 저장용 이름 만들고 파일 로컬에 저장
+            String originalFileName = gameDTO.getGameFile().getOriginalFilename();
             String storedFileName = System.currentTimeMillis() + "_" + originalFileName;
             String savePath = "D:\\springboot_img\\" + storedFileName;
-            file.transferTo(new File(savePath));
+            gameDTO.getGameFile().transferTo(new File(savePath));
 
             // 3. GameFileEntity로 변환 후 저장
             GameFileEntity gameFileEntity = GameFileEntity.toSaveGameFileEntity(savedEntity, originalFileName, storedFileName);

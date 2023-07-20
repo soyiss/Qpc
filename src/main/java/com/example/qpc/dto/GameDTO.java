@@ -49,40 +49,28 @@ public class GameDTO {
 
     public static GameDTO toDTO(GameEntity gameEntity) {
         GameDTO gameDTO = new GameDTO();
-        gameDTO.setUploadPath("D:/Springboot_img/");  // uploadPath 필드에 값을 설정
 
         gameDTO.setId(gameEntity.getId());
         gameDTO.setGameName(gameEntity.getGameName());
         gameDTO.setGameLink(gameEntity.getGameLink());
+        gameDTO.setFileAttached(gameEntity.getFileAttached());
 
-        GameCategoryEntity gameCategoryEntity = gameEntity.getGameCategoryEntity();
-        if (gameCategoryEntity != null && gameCategoryEntity.getGameCategoryName() != null) {
-            gameDTO.setGameCategoryId(gameCategoryEntity.getId()); // gameCategoryId 필드에 GameCategoryEntity의 id를 설정
-            gameDTO.setGameCategoryName(gameCategoryEntity.getGameCategoryName());
-        } else {
-            gameDTO.setGameCategoryId(null);
-            gameDTO.setGameCategoryName(null);
-        }
-
-        // 파일 첨부 여부 확인
-        if (gameEntity.getFileAttached() == 1) {
+        // 파일 여부에 따른 코드 추가
+        if(gameEntity.getFileAttached() ==1){
             gameDTO.setFileAttached(1);
-
-            gameDTO.setUploadPath("D:/Springboot_img/");  // uploadPath 필드에 값을 설정
-
-            List<GameFileEntity> gameFileEntityList = gameEntity.getGameFileEntityList();
-            if (gameFileEntityList != null && !gameFileEntityList.isEmpty()) {
-                GameFileEntity gameFileEntity = gameFileEntityList.get(0);
-
-                // Create GameFileDTO to store file names
-                GameFileDTO gameFileDTO = new GameFileDTO();
-                gameFileDTO.setId(gameFileEntity.getId());  // id 값 설정 추가
-                gameFileDTO.setOriginalFileName(gameFileEntity.getOriginalFileName());
-                gameFileDTO.setStoredFileName(gameFileEntity.getStoredFileName());
-            }
+            gameDTO.setOriginalFileName(gameEntity.getGameFileEntityList().get(0).getOriginalFileName());
+            gameDTO.setStoredFileName(gameEntity.getGameFileEntityList().get(0).getStoredFileName());
         } else {
             gameDTO.setFileAttached(0);
         }
+        // 카테고리 설정
+
+        GameCategoryEntity gameCategoryEntity =gameEntity.getGameCategoryEntity();
+        if (gameCategoryEntity != null){
+            gameDTO.setGameCategoryName(gameCategoryEntity.getGameCategoryName());
+            gameDTO.setGameCategoryId(gameCategoryEntity.getId());
+        }
+
 
         return gameDTO;
     }
