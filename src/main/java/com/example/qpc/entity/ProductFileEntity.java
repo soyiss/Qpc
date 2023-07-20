@@ -28,8 +28,7 @@ public class ProductFileEntity {
         productFileEntity.setProductEntity(savedEntity);
         productFileEntity.setOriginalFileName(originalFileName);
         productFileEntity.setStoredFileName(storedFileName);
+
         return productFileEntity;
-
-
     }
 }

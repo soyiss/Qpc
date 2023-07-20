@@ -40,6 +40,8 @@ public class ProductController {
 
         // 상품을 저장합니다.
         productService.save(productDTO);
+        System.out.println("categoryId = " + categoryId);
+        System.out.println("productDTO = " + productDTO);
 
         // 상품 등록 후에 홈 화면이나 다른 페이지로 리다이렉트합니다.
         return "redirect:/";
