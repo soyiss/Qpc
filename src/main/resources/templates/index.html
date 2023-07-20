@@ -146,7 +146,7 @@
                         <p th:if="${#fields.hasErrors('formRole')}" th:errors="*{formRole}"
                            class="fieldError"></p>
                     </div>
-                    <input type="submit" value="회원가입" class="btn btn-primary">
+                    <input type="submit" value="회원가입" id="signSubmit" disabled="disabled" class="btn btn-primary">
                 </form>
             </div>
 
@@ -392,6 +392,7 @@
         const result = document.getElementById("input-code-bottom");
 
         if (typingCode == trueCode) {
+            document.getElementById("signSubmit").disabled=false;
             result.innerText = "인증완료";
             result.style.color = "green";
         } else {
