@@ -34,7 +34,7 @@ public class GameController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute GameDTO gameDTO) throws IOException {
+    public String saveGame(@ModelAttribute GameDTO gameDTO) throws IOException {
         // 게임 카테고리 이름을 기반으로 카테고리 ID를 가져옵니다.
         Long gameCategoryId = gameCategoryService.findGameCategoryIdByName(gameDTO.getGameCategoryName());
         // 게임 카테고리 ID를 설정합니다.

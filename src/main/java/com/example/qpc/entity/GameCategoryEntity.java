@@ -38,4 +38,9 @@ public class GameCategoryEntity {
         return gameCategoryEntity;
     }
 
+    public static GameCategoryEntity toGameEntity(Long gameCategoryId) {
+        GameCategoryEntity gameCategoryEntity = new GameCategoryEntity();
+        gameCategoryEntity.setId(gameCategoryId);
+        return gameCategoryEntity;
+    }
 }
