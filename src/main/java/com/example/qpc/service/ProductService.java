@@ -27,7 +27,7 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
 
     public Long save(ProductDTO productDTO) throws IOException {
-        if (productDTO.getProductFile() == null || productDTO.getProductFile().isEmpty()) {
+        if (productDTO.getProductFile().isEmpty()) {
             // 파일 없음
             ProductEntity productEntity = ProductEntity.toSaveEntity(productDTO);
             return productRepository.save(productEntity).getId();
@@ -44,11 +44,8 @@ public class ProductService {
                 productEntity.setCategoryEntity(categoryEntity);
             }
 
-
             // 3. 파일이름 꺼내고, 저장용 이름 만들고 파일 로컬에 저장
-
-//            MultipartFile file = productDTO.getProductFile();
-            String originalFileName = productDTO.getOriginalFileName();
+            String originalFileName = productDTO.getProductFile().getOriginalFilename();
             String storedFileName = System.currentTimeMillis() + "_" + originalFileName;
             String savePath = "D:\\springboot_img\\" + storedFileName;
             productDTO.getProductFile().transferTo(new File(savePath));
