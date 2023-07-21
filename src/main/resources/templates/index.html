@@ -175,7 +175,7 @@
 <div id="idFindModal" class="modal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <span class="modal-close">&times;</span>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             <p>아이디/비밀번호 찾기</p>
         </div>
     </div>
@@ -185,7 +185,7 @@
 <div id="pwFindModal" class="modal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <span class="modal-close">&times;</span>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             <p>비밀번호 찾기</p>
         </div>
     </div>
@@ -196,7 +196,7 @@
 <div id="idFindModal2" class="modal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <span class="modal-close">&times;</span>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             <p style="text-align: center">아이디 찾기</p>
             <input class="form-control" id="id-find-email" name="idFindEmail" type="email" placeholder="이메일">
             <button onclick="emailCheck(document.getElementById('id-find-email').value)">이메일 인증</button>
@@ -207,11 +207,20 @@
     </div>
 </div>
 
+<div id="idFindResultModal" class="modal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <p style="text-align: center; align-items: center" id="idFindResultId"></p>
+        </div>
+    </div>
+</div>
+
 <!-- 비밀번호 찾기 모달창 -->
 <div id="pwFindModal2" class="modal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <span class="modal-close">&times;</span>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             <p style="text-align: center">비밀번호 찾기</p>
             <input class="form-control" name="pwFindEmail" type="email" placeholder="이메일">
             <button onclick="emailCheck(document.querySelector('input[name=pwFindEmail]').value)">이메일 인증</button>
@@ -313,10 +322,19 @@
 
 <!-- javascript 코드 -->
 <script>
-    // 모달창 가져오기
+    // 모든 모달창 닫기 함수
+    function closeAllModals() {
+        var modals = document.getElementsByClassName("modal");
+        for (var i = 0; i < modals.length; i++) {
+            modals[i].style.display = "none";
+        }
+    }
+
+    // 모든 모달창 가져오기
     var modal = document.getElementById("myModal");
     var idFindModal = document.getElementById("idFindModal");
     var pwFindModal = document.getElementById("pwFindModal");
+    var idResultModal = document.getElementById("idFindResultModal");
 
     // 모달창을 띄우는 버튼 가져오기
     var btnFind = document.getElementById("btnFind");
@@ -328,28 +346,22 @@
     // 버튼 클릭시 모달창 띄우기
     btnFind.onclick = function () {
         idFindModal.style.display = "block";
-    }
+    };
     btnSave.onclick = function () {
         modal.style.display = "block";
-    }
+    };
 
     // X 버튼 클릭시 모달창 닫기
     spanClose.onclick = function () {
-        modal.style.display = "none";
-        idFindModal.style.display = "none";
-        pwFindModal.style.display = "none";
-    }
+        closeAllModals(); // 모든 모달창 닫기 함수 호출
+    };
 
     // 모달창 외부 클릭시 모달창 닫기
     window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        } else if (event.target == idFindModal) {
-            idFindModal.style.display = "none";
-        } else if (event.target == pwFindModal) {
-            pwFindModal.style.display = "none";
+        if (event.target == modal || event.target == idFindModal || event.target == pwFindModal) {
+            closeAllModals(); // 모든 모달창 닫기 함수 호출
         }
-    }
+    };
 
     // 아이디찾기, 비밀번호찾기 버튼 클릭시 모달창 바꾸기
     var btnFindId = document.createElement("button");
@@ -423,14 +435,15 @@
 
         if (typingCode == trueCode) {
             alert("인증완료");
-            console.log(email);
             // 다음 모달 띄우기
             axios.get("/member/findById/email_check", {
                 params: {
                     memberEmail: email,
                 }
             }).then(res => {
-                alert(res.data); // 서버 응답의 데이터를 확인하려면 res.data를 사용합니다.
+                idFindModal.style.display = "none";
+                idResultModal.style.display = "block";
+                document.getElementById("idFindResultId").innerText="회원님의 아이디는 "+ res.data+"입니다.";
             }).catch(err => {
                 result.innerText=err.data;
             });
