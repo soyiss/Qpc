@@ -136,11 +136,13 @@ public class MemberController {
 
 
     // 아이디 찾기
-    @PostMapping("/findById/email_check")
-    public ResponseEntity memberEmailCheck(@RequestBody MemberDTO memberDTO) {
-        MemberDTO member = memberService.findByMemberEmail(memberDTO.getMemberEmail());
+    @GetMapping("/findById/email_check")
+    public ResponseEntity memberEmailCheck(@RequestParam String memberEmail) {
+        System.out.println("memberEmail = " + memberEmail);
+        MemberDTO member = memberService.findByMemberEmail(memberEmail);
+        System.out.println("member = " + member);
         if (member == null) {
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+            return new ResponseEntity<>("이메일을 가진 유저가 존재하지 않습니다",HttpStatus.CONFLICT);
         } else {
             return new ResponseEntity<>(member.getMemberId(), HttpStatus.OK);
         }
