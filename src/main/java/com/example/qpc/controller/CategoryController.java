@@ -17,7 +17,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @GetMapping()
+    @GetMapping("/product")
     public String Category(){
         return "/categories/productCategoryForm";
     }
