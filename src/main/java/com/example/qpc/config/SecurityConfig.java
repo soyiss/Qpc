@@ -35,6 +35,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 이 주소를 받는 곳에만 모든곳에서 접근가능하도록 설정
                 .authorizeRequests()
                 .antMatchers("/member/save", "/member/login", "/member/login/error", "/memberSave/mailConfirm","/test","/index").anonymous()
+                .antMatchers("/member/findById/email_check").permitAll()
+                .antMatchers("/category/**").permitAll()
+                .antMatchers("/chat/**").permitAll()
+                .antMatchers("/GameCategory/**").permitAll()
+                .antMatchers("/game/**").permitAll()
+                .antMatchers("/product/**").permitAll()
                 .antMatchers("/payment/**").permitAll()
                 .antMatchers("/member/**").hasRole("MEMBER")
                 .antMatchers("/admin/**").hasRole("ADMIN")
