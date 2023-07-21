@@ -85,6 +85,7 @@
     </style>
 </head>
 <body>
+<input type="hidden" name="code">
 <div class="container" style="height: 80vh;">
     <img class="w-100 h-100" th:src="@{/img/testMain.png}" alt="Image 404 Error">
 </div>
@@ -151,12 +152,13 @@
             </div>
 
             <div class="container">
-                <button class="btn btn-primary" onclick="emailCheck()">이메일 체크</button>
+                <button class="btn btn-primary"
+                        onclick="emailCheck(document.querySelector('input[name=memberEmail]').value)">이메일 체크
+                </button>
                 <div id="email-check" style="display: none">
                     <div class="row">
                         <div class="col">
                             <input type="text" class="form-control" name="inputCode" placeholder="인증번호 입력">
-                            <input type="hidden" name="code">
                             <h5 id="input-code-bottom"></h5>
                         </div>
                         <div class="col">
@@ -171,46 +173,53 @@
 
 
 <div id="idFindModal" class="modal">
-    <div class="modal-content">
-        <span class="modal-close">&times;</span>
-        <p>아이디/비밀번호 찾기</p>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <p>아이디/비밀번호 찾기</p>
+        </div>
     </div>
 </div>
 
 
 <div id="pwFindModal" class="modal">
-    <div class="modal-content">
-        <span class="modal-close">&times;</span>
-        <p>비밀번호 찾기</p>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <p>비밀번호 찾기</p>
+        </div>
     </div>
 </div>
 
 
 <!-- 아이디 찾기 모달창 -->
 <div id="idFindModal2" class="modal">
-    <div class="modal-content">
-        <span class="modal-close">&times;</span>
-        <p>아이디 찾기</p>
-        <input type="text" placeholder="이메일">
-        <button>이메일 인증</button>
-        <br>
-        <input type="text" placeholder="인증번호 입력">
-        <button>인증번호 확인</button>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <p style="text-align: center">아이디 찾기</p>
+            <input class="form-control" id="id-find-email" name="idFindEmail" type="email" placeholder="이메일">
+            <button onclick="emailCheck(document.getElementById('id-find-email').value)">이메일 인증</button>
+            <input class="form-control" name="idFindEmailCode" type="text" placeholder="인증번호 입력">
+            <button onclick="idFindEmailFinalCheck()">인증번호 확인</button>
+            <h5 id="idFind-code-bottom"></h5>
+        </div>
     </div>
 </div>
 
 <!-- 비밀번호 찾기 모달창 -->
 <div id="pwFindModal2" class="modal">
-    <div class="modal-content">
-        <span class="modal-close">&times;</span>
-        <p>비밀번호 찾기</p>
-        <input type="text" placeholder="이메일">
-        <button>이메일 인증</button>
-        <br>
-        <input type="text" placeholder="아이디">
-        <button>아이디 확인</button>
-        <br>
-
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <p style="text-align: center">비밀번호 찾기</p>
+            <input class="form-control" name="pwFindEmail" type="email" placeholder="이메일">
+            <button onclick="emailCheck(document.querySelector('input[name=pwFindEmail]').value)">이메일 인증</button>
+            <input class="form-control" name="pwFindEmailCode" type="text" placeholder="인증번호 입력">
+            <h5 id="pwFind-code-bottom"></h5>
+            <input class="form-control" type="text" placeholder="아이디">
+            <button onclick="pwFindEmailFinalCheck()">비밀번호 찾기</button>
+        </div>
     </div>
 </div>
 
@@ -366,24 +375,30 @@
 
 
 <script th:inline="javascript">
-    const emailCheck = () => {
-        const email = document.querySelector('input[name="memberEmail"]').value;
+    const emailCheck = (email) => {
         document.getElementById("email-check").style.display = "block";
-        axios({
-            method: "post",
-            url: "/memberSave/mailConfirm",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            data: {
-                email: email,
-            }
-        }).then(res => {
-            alert("이메일로 인증번호가 발송되었습니다.");
-            document.querySelector('input[name="code"]').value = res.data;
-        }).catch(err => {
-            console.log(err);
-        });
+        const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+        if (email.length === 0) {
+            alert("이메일을 입력해주세요")
+        } else if (!emailPattern.test(email)) {
+            alert("유효한 이메일 주소를 입력해주세요");
+        } else {
+            axios({
+                method: "post",
+                url: "/memberSave/mailConfirm",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                data: {
+                    email: email,
+                }
+            }).then(res => {
+                alert("이메일로 인증번호가 발송되었습니다.");
+                document.querySelector('input[name="code"]').value = res.data;
+            }).catch(err => {
+                console.log(err);
+            });
+        }
     }
 
     const emailFinalCheck = () => {
@@ -394,6 +409,47 @@
         if (typingCode == trueCode) {
             result.innerText = "인증완료";
             result.style.color = "green";
+        } else {
+            result.innerText = "인증코드 불일치";
+            result.style.color = "red";
+        }
+    }
+
+    const idFindEmailFinalCheck = () => {
+        const email = document.querySelector('input[name="idFindEmail"]').value;
+        const typingCode = document.querySelector('input[name="idFindEmailCode"]').value;
+        const trueCode = document.querySelector('input[name="code"]').value;
+        const result = document.getElementById("idFind-code-bottom");
+
+        if (typingCode == trueCode) {
+            alert("인증완료");
+            console.log(email);
+            // 다음 모달 띄우기
+            axios.get("/member/findById/email_check", {
+                params: {
+                    memberEmail: email,
+                }
+            }).then(res => {
+                alert(res.data); // 서버 응답의 데이터를 확인하려면 res.data를 사용합니다.
+            }).catch(err => {
+                result.innerText=err.data;
+            });
+        } else {
+            result.innerText = "인증코드 불일치";
+            result.style.color = "red";
+        }
+    }
+
+
+    const pwFindEmailFinalCheck = () => {
+        const typingCode = document.querySelector('input[name="pwFindEmailCode"]').value;
+        const trueCode = document.querySelector('input[name="code"]').value;
+        const result = document.getElementById("pwFind-code-bottom");
+
+        if (typingCode == trueCode) {
+            result.innerText = "인증완료";
+            result.style.color = "green";
+            // 다음 모델 띄우기
         } else {
             result.innerText = "인증코드 불일치";
             result.style.color = "red";
@@ -417,6 +473,8 @@
             alert(errorMessage);
         }
     });
+
+
 </script>
 
 <script th:inline="javascript">
