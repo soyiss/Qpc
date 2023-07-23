@@ -15,6 +15,53 @@
         .error {
             color: #bd2130;
         }
+        @font-face {
+            font-family: 'Tmon';
+            font-weight: normal;
+            font-style: normal;
+            src: url('https://cdn.jsdelivr.net/gh/webfontworld/tmon/Tmon.eot');
+        url('https://cdn.jsdelivr.net/gh/webfontworld/tmon/Tmon.woff2') format('woff2'),
+        url('https://cdn.jsdelivr.net/gh/webfontworld/tmon/Tmon.woff') format('woff'),
+        url('https://cdn.jsdelivr.net/gh/webfontworld/tmon/Tmon.ttf') format("truetype");
+            font-display: swap;
+        }
+        body {
+            background-color: #e3f2fd;
+        }
+        svg {
+            font-family: 'Tmon';
+            font-size: 140px;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            text-transform: uppercase;
+            animation: stroke 5s 10 alternate;
+            fill: rgba(72,138,204,1);
+        }
+        @keyframes stroke {
+            0% {
+                stroke-dashoffset: 25%;
+                stroke-dasharray: 0 50%;
+                fill: rgba(72,138,204,0);
+                stroke: rgba(54,95,160,1);
+                stroke-width: 2;
+            }
+            70% {
+                fill: rgba(72,138,204,0);
+                stroke: rgba(54,95,160,1);
+            }
+            80% {
+                fill: rgba(72,138,204,0);
+                stroke: rgba(54,95,160,1);
+            }
+            100% {
+                stroke-dashoffset: -25%;
+                stroke-dasharray: 50% 0;
+                fill: rgba(72,138,204,1);
+                stroke: rgba(54,95,160,0);
+                stroke-width: 0;
+            }
+        }
 
         /* 모달창을 구성하는 스타일 */
         .modal {
@@ -86,8 +133,17 @@
 </head>
 <body>
 <input type="hidden" name="code">
-<div class="container" style="height: 80vh;">
-    <img class="w-100 h-100" th:src="@{/img/testMain.png}" alt="Image 404 Error">
+<div class="container" style="position: relative;width: 100%; height: 80vh;">
+    <img class="w-100 h-100" th:src="@{/img/testMain.png}" alt="Image 404 Error"
+         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain;">
+
+
+    <svg viewBox="0 0 1800 800"
+         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+        <text x="30%" y="50%" dy="30px" text-anchor="middle" font-family="Cursive">Q</text>
+        <text x="55%" y="50%" dy="30px" text-anchor="middle" font-family="Cursive"> PC ROOM</text>
+        <!-- SVG 효과 코드 -->
+    </svg>
 </div>
 
 <!--회원가입 모달창-->
@@ -175,7 +231,7 @@
 <div id="idFindModal" class="modal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <span class="modal-close">&times;</span>
             <p>아이디/비밀번호 찾기</p>
         </div>
     </div>
@@ -185,7 +241,7 @@
 <div id="pwFindModal" class="modal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <span class="modal-close">&times;</span>
             <p>비밀번호 찾기</p>
         </div>
     </div>
@@ -196,7 +252,7 @@
 <div id="idFindModal2" class="modal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <span class="modal-close">&times;</span>
             <p style="text-align: center">아이디 찾기</p>
             <input class="form-control" id="id-find-email" name="idFindEmail" type="email" placeholder="이메일">
             <button onclick="emailCheck(document.getElementById('id-find-email').value)">이메일 인증</button>
@@ -210,7 +266,7 @@
 <div id="idFindResultModal" class="modal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <span class="modal-close">&times;</span>
             <p style="text-align: center; align-items: center" id="idFindResultId"></p>
         </div>
     </div>
@@ -220,7 +276,7 @@
 <div id="pwFindModal2" class="modal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <span class="modal-close" onclick="document.querySelector('#pwFindModal2').style.display = 'none'">&times;</span> <!-- here -->
             <p style="text-align: center">비밀번호 찾기</p>
             <input class="form-control" name="pwFindEmail" type="email" placeholder="이메일">
             <button onclick="emailCheck(document.querySelector('input[name=pwFindEmail]').value)">이메일 인증</button>
@@ -335,6 +391,8 @@
     var idFindModal = document.getElementById("idFindModal");
     var pwFindModal = document.getElementById("pwFindModal");
     var idResultModal = document.getElementById("idFindResultModal");
+    var idFindModal2 = document.getElementById("idFindModal2");
+    var pwFindModal2 = document.getElementById("pwFindModal2");
 
     // 모달창을 띄우는 버튼 가져오기
     var btnFind = document.getElementById("btnFind");
@@ -352,7 +410,7 @@
     };
 
     // X 버튼 클릭시 모달창 닫기
-    spanClose.onclick = function () {
+    spanClose.onclick = function (event) {
         closeAllModals(); // 모든 모달창 닫기 함수 호출
     };
 
@@ -382,6 +440,32 @@
 
     idFindModal.getElementsByClassName("modal-content")[0].appendChild(btnFindId);
     idFindModal.getElementsByClassName("modal-content")[0].appendChild(btnFindPw);
+
+
+    // X 버튼 가져오기
+    var spanCloseIdFind = document.getElementsByClassName("modal-close")[1];
+    var spanClosePwFind = document.getElementsByClassName("modal-close")[2];
+    var spanCloseIdFind2 = document.getElementsByClassName("modal-close")[3];
+    var spanClosePwFind2 = document.getElementsByClassName("modal-close")[4];
+
+
+    // X 버튼 클릭시 모달창 닫기
+    spanCloseIdFind.onclick = function (event) {
+        idFindModal.style.display = "none";
+    };
+    spanClosePwFind.onclick = function (event) {
+        pwFindModal.style.display = "none";
+    };
+    spanCloseIdFind2.onclick = function (event) {
+        idFindModal2.style.display = "none";
+    };
+    spanClosePwFind2.onclick = function (event) {
+        pwFindModal2.style.display = "none";
+    };
+
+
+
+
 
 </script>
 
