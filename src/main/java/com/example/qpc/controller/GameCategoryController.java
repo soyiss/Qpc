@@ -1,11 +1,13 @@
 package com.example.qpc.controller;
 
+import com.example.qpc.dto.CategoryDTO;
 import com.example.qpc.dto.GameCategoryDTO;
 import com.example.qpc.service.GameCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +19,9 @@ public class GameCategoryController {
     private final GameCategoryService gameCategoryService;
 
     @GetMapping("/game")
-    public String GameCategory(){
+    public String GameCategory(Model model){
+        List<GameCategoryDTO> categoryDTOList = gameCategoryService.findAll();
+        model.addAttribute("categoryList",categoryDTOList);
         return "/categories/gameCategoryForm";
     }
 

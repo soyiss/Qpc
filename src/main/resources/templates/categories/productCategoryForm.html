@@ -10,20 +10,24 @@
     <button onclick ="category_save()">카테고리저장</button>
 </div>
 <div id="category-list">
-    <table class="table">
-        <tr>
-            <th>id</th>
-            <th>categoryName</th>
-            <th></th>
-            <th></th>
+    <th:block th:if="${#lists.isEmpty(categoryList)}">
+        <p>카테고리가 아직 등록되지 않았습니다</p>
+    </th:block>
+    <th:block th:unless="${#lists.isEmpty(categoryList)}">
+        <table class="table">
+            <tr>
+                <th>id</th>
+                <th>categoryName</th>
+                <th>수정</th>
+                <th>삭제</th>
+            </tr>
+            <tr th:each="category: ${categoryList}">
+                <td th:text="${category.id}"></td>
+                <td th:text="${category.categoryName}"></td>
+            </tr>
+        </table>
+    </th:block>
 
-        </tr>
-        <tr th:each="category: ${categoryList}">
-            <td th:text="${category.id}"></td>
-            <td th:text="${category.categoryName}"></td>
-        </tr>
-        </tr>
-    </table>
 </div>
 <a href="/admin/adminMain">메인화면</a>
 </body>
@@ -79,8 +83,8 @@
             output += "<tr>\n" +
                 "                <td>" + categoryDTO1[i].id + "</td>\n" +
                 "                <td>" + categoryDTO1[i].categoryName + "</td>\n" +
-                "                <td><button onclick=\"category_delete('" + categoryDTO1[i].id + "')\">삭제</button></td>\n" +
-                "                <td><button onclick=\"category_updateForm('" + categoryDTO1[i].id + "')\">수정</button></td>\n" +
+                "                <td><button class='btn btn-primary' onclick=\"category_delete('" + categoryDTO1[i].id + "')\">삭제</button></td>\n" +
+                "                <td><button class='btn btn-primary' onclick=\"category_updateForm('" + categoryDTO1[i].id + "')\">수정</button></td>\n" +
                 "            </tr>";
         }
         output += "</table>";

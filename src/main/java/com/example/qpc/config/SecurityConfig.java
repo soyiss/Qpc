@@ -1,5 +1,8 @@
 package com.example.qpc.config;
 
+import com.example.qpc.config.customError.CustomAccessDeniedHandler;
+import com.example.qpc.config.customError.CustomAuthenticationEntryPoint;
+import com.example.qpc.config.customError.CustomMethodNotAllowedFilter;
 import com.example.qpc.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -15,6 +18,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -24,18 +28,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     protected MemberService memberService;
 
+    @Autowired
+    private CustomAccessDeniedHandler accessDeniedHandler;
+
+    @Autowired
+    private CustomAuthenticationEntryPoint authenticationEntryPoint;
+
+
 
     // 첫 잠금 해제
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         // post , put 공격 방어
         http
                 .csrf().disable()
                 // 이 주소를 받는 곳에만 모든곳에서 접근가능하도록 설정
                 .authorizeRequests()
-                .antMatchers("/member/save", "/member/login", "/member/login/error", "/memberSave/mailConfirm","/test","/index").anonymous()
-                .antMatchers("/member/findById/email_check").permitAll()
+                .antMatchers("/member/save", "/member/login", "/member/login/error", "/memberSave/mailConfirm", "/test", "/index").anonymous()
+                .antMatchers("/member/findById/email_check").anonymous()
                 .antMatchers("/category/**").permitAll()
                 .antMatchers("/chat/**").permitAll()
                 .antMatchers("/GameCategory/**").permitAll()
@@ -44,9 +54,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/payment/**").permitAll()
                 .antMatchers("/member/**").hasRole("MEMBER")
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST,"/payment/**").permitAll()
-                .antMatchers(HttpMethod.POST,"/member/login").permitAll()
-                .antMatchers("/css/**", "/js/**","/img/**").permitAll()
+                .antMatchers("/error/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/payment/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/member/login").anonymous()
+                .antMatchers("/css/**", "/js/**", "/img/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 /* 로그인페이지 설정, 위에 설정된 주소 말고 다른 곳으로 갈때
@@ -60,6 +71,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureUrl("/member/login/error")
                 .permitAll()
                 .and()
+                .exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler) // 커스텀 AccessDeniedHandler 사용
+                .authenticationEntryPoint(authenticationEntryPoint) // 커스텀 AuthenticationEntryPoint 사용
+                .and()
+                .addFilterAfter(new CustomMethodNotAllowedFilter(), ExceptionTranslationFilter.class) // 커스텀 MethodNotAllowedFilter 사용
                 // 누구나 로그아웃 할 수 있도록 로그아웃 페이지도 모든곳에서 접근가능하도록 설정
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))

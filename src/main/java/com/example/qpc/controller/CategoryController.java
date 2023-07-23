@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,9 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/product")
-    public String Category(){
+    public String Category(Model model){
+        List<CategoryDTO> categoryDTOList = categoryService.findAll();
+        model.addAttribute("categoryList",categoryDTOList);
         return "/categories/productCategoryForm";
     }
 
