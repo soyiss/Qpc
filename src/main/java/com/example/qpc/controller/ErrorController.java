@@ -15,9 +15,19 @@ import java.nio.file.AccessDeniedException;
 @ControllerAdvice
 public class ErrorController extends ResponseEntityExceptionHandler {
 
+    @GetMapping("/error/401")
+    public String error401Handler() {
+        return "/errorPages/error401";
+    }
+
     @GetMapping("/error/403")
     public String error403Handler() {
         return "/errorPages/error403";
+    }
+
+    @GetMapping("/error/405")
+    public String error405Handler() {
+        return "/errorPages/error405";
     }
 
     @ExceptionHandler(AccessDeniedException.class)
