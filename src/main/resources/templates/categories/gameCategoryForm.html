@@ -7,11 +7,27 @@
 <h1>게임 카테고리 관리</h1>
 <div id="categorySave">
   <input type="text" name="GameCategoryName" id="GameCategoryName">
-  <button onclick ="category_save()">카테고리저장</button>
+  <button class="btn btn-primary" onclick ="category_save()">카테고리저장</button>
 </div>
 
 <div id="category-list">
-
+  <th:block th:if="${#lists.isEmpty(categoryList)}">
+    <p>카테고리가 아직 등록되지 않았습니다</p>
+  </th:block>
+  <th:block th:unless="${#lists.isEmpty(categoryList)}">
+    <table class="table">
+      <tr>
+        <th>id</th>
+        <th>categoryName</th>
+        <th>수정</th>
+        <th>삭제</th>
+      </tr>
+      <tr th:each="category: ${categoryList}">
+        <td th:text="${category.id}"></td>
+        <td th:text="${category.gameCategoryName}"></td>
+      </tr>
+    </table>
+  </th:block>
 </div>
 <a href="/admin/adminMain">메인화면</a>
 </body>
@@ -60,8 +76,8 @@
             "<tr>" +
             "<th>id</th>" +
             "<th>GameCategoryName</th>" +
-            "<th></th>" +
-            "<th></th>" +
+            "<th>수정</th>" +
+            "<th>삭제</th>" +
             "</tr>";
     for (let i in categoryDTO1) {
       console.log("aa", categoryDTO1[i].id);
@@ -70,8 +86,8 @@
       output += "<tr>" +
               "<td>" + categoryDTO1[i].id + "</td>" +
               "<td>" + categoryDTO1[i].gameCategoryName  + "</td>" +
-              "<td><button onclick=\"category_delete('" + categoryDTO1[i].id + "')\">삭제</button></td>" +
               "<td><button onclick=\"category_updateForm('" + categoryDTO1[i].id + "')\">수정</button></td>" +
+              "<td><button onclick=\"category_delete('" + categoryDTO1[i].id + "')\">삭제</button></td>" +
               "</tr>";
     }
     output += "</table>";
