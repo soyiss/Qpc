@@ -102,6 +102,8 @@ public class MemberService implements UserDetailsService {
 
     public MemberDTO memberUpdate(MemberDTO memberDTO) {
         MemberEntity memberEntity = memberRepository.save(MemberEntity.toUpdateEntity(memberDTO));
+        System.out.println("memberEntity.getTotalTime() = " + memberEntity.getTotalTime());
+        System.out.println("memberEntity.getOverTime() = " + memberEntity.getOverTime());
         return MemberDTO.toDTO(memberEntity);
     }
 

@@ -89,6 +89,8 @@ public class MemberDTO {
                 .memberEmail(memberEntity.getMemberEmail())
                 .memberBirth(memberEntity.getMemberBirth())
                 .memberMobile(memberEntity.getMemberMobile())
+                .totalTime(memberEntity.getTotalTime())
+                .overTime(memberEntity.getOverTime())
                 .role(memberEntity.getRole())
                 .build();
     }

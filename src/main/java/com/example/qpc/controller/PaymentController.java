@@ -35,6 +35,7 @@ public class PaymentController {
 
     @PostMapping("/memberCharge")
     public ResponseEntity memberCharge(@RequestBody PaymentInformationDTO paymentInformationDTO) {
+        System.out.println("paymentInformationDTO = " + paymentInformationDTO);
         MemberDTO memberDTO = memberService.findById(paymentInformationDTO.getMemberId());
         System.out.println("memberDTO = " + memberDTO);
         memberDTO.setOverTime(memberDTO.getOverTime()+paymentInformationDTO.getTime());
