@@ -175,7 +175,7 @@
 <div id="idFindModal" class="modal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
             <p>아이디/비밀번호 찾기</p>
         </div>
     </div>
@@ -196,7 +196,7 @@
 <div id="idFindModal2" class="modal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
             <p style="text-align: center">아이디 찾기</p>
             <input class="form-control" id="id-find-email" name="idFindEmail" type="email" placeholder="이메일">
             <button onclick="emailCheck(document.getElementById('id-find-email').value)">이메일 인증</button>
@@ -220,7 +220,7 @@
 <div id="pwFindModal2" class="modal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
             <p style="text-align: center">비밀번호 찾기</p>
             <input class="form-control" name="pwFindEmail" type="email" placeholder="이메일">
             <button onclick="emailCheck(document.querySelector('input[name=pwFindEmail]').value)">이메일 인증</button>
@@ -322,12 +322,18 @@
 
 <!-- javascript 코드 -->
 <script>
-    // 모든 모달창 닫기 함수
+    // 모든 모달 창 닫기 함수
     function closeAllModals() {
         var modals = document.getElementsByClassName("modal");
         for (var i = 0; i < modals.length; i++) {
             modals[i].style.display = "none";
         }
+    }
+
+    // 모든 모달 창에 대해 클릭 이벤트 처리
+    var modalCloseButtons = document.getElementsByClassName("modal-close");
+    for (var i = 0; i < modalCloseButtons.length; i++) {
+        modalCloseButtons[i].addEventListener("click", closeAllModals);
     }
 
     // 모든 모달창 가져오기
