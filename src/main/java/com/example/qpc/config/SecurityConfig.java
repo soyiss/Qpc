@@ -17,6 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import javax.servlet.http.HttpServletResponse;
+
 @Configuration
 @EnableWebSecurity
 @Order(1)
@@ -35,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     // 이 주소를 받는 곳에만 모든곳에서 접근가능하도록 설정
                     .authorizeRequests()
                     .antMatchers("/member/save", "/member/login", "/member/login/error", "/memberSave/mailConfirm","/test","/index").anonymous()
-                    .antMatchers("/member/findById/email_check").permitAll()
+                    .antMatchers("/member/findById/email_check").anonymous()
                     .antMatchers("/category/**").permitAll()
                     .antMatchers("/chat/**").permitAll()
                     .antMatchers("/GameCategory/**").permitAll()
@@ -44,9 +46,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/payment/**").permitAll()
                     .antMatchers("/member/**").hasRole("MEMBER")
                     .antMatchers("/admin/**").hasRole("ADMIN")
-                    .antMatchers("/error/403").permitAll()
+                    .antMatchers("/error/**").permitAll()
                     .antMatchers(HttpMethod.POST,"/payment/**").permitAll()
-                    .antMatchers(HttpMethod.POST,"/member/login").permitAll()
+                    .antMatchers(HttpMethod.POST,"/member/login").anonymous()
                     .antMatchers("/css/**", "/js/**","/img/**").permitAll()
                     .anyRequest().authenticated()
                 .and()
@@ -63,6 +65,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling()
                     .accessDeniedPage("/error/403")
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "인증되지 않음");
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "권한 없음");
+                })
                 .and()
                 // 누구나 로그아웃 할 수 있도록 로그아웃 페이지도 모든곳에서 접근가능하도록 설정
                 .logout()
