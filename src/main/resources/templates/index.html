@@ -15,6 +15,53 @@
         .error {
             color: #bd2130;
         }
+        @font-face {
+            font-family: 'Tmon';
+            font-weight: normal;
+            font-style: normal;
+            src: url('https://cdn.jsdelivr.net/gh/webfontworld/tmon/Tmon.eot');
+        url('https://cdn.jsdelivr.net/gh/webfontworld/tmon/Tmon.woff2') format('woff2'),
+        url('https://cdn.jsdelivr.net/gh/webfontworld/tmon/Tmon.woff') format('woff'),
+        url('https://cdn.jsdelivr.net/gh/webfontworld/tmon/Tmon.ttf') format("truetype");
+            font-display: swap;
+        }
+        body {
+            background-color: #e3f2fd;
+        }
+        svg {
+            font-family: 'Tmon';
+            font-size: 140px;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            text-transform: uppercase;
+            animation: stroke 5s 10 alternate;
+            fill: rgba(72,138,204,1);
+        }
+        @keyframes stroke {
+            0% {
+                stroke-dashoffset: 25%;
+                stroke-dasharray: 0 50%;
+                fill: rgba(72,138,204,0);
+                stroke: rgba(54,95,160,1);
+                stroke-width: 2;
+            }
+            70% {
+                fill: rgba(72,138,204,0);
+                stroke: rgba(54,95,160,1);
+            }
+            80% {
+                fill: rgba(72,138,204,0);
+                stroke: rgba(54,95,160,1);
+            }
+            100% {
+                stroke-dashoffset: -25%;
+                stroke-dasharray: 50% 0;
+                fill: rgba(72,138,204,1);
+                stroke: rgba(54,95,160,0);
+                stroke-width: 0;
+            }
+        }
 
         /* 모달창을 구성하는 스타일 */
         .modal {
@@ -89,6 +136,14 @@
 <div class="container" style="position: relative;width: 100%; height: 80vh;">
     <img class="w-100 h-100" th:src="@{/img/testMain.png}" alt="Image 404 Error"
          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain;">
+
+
+    <svg viewBox="0 0 1800 800"
+         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+        <text x="30%" y="50%" dy="30px" text-anchor="middle" font-family="Cursive">Q</text>
+        <text x="55%" y="50%" dy="30px" text-anchor="middle" font-family="Cursive"> PC ROOM</text>
+        <!-- SVG 효과 코드 -->
+    </svg>
 </div>
 
 <!--회원가입 모달창-->
