@@ -65,14 +65,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling()
                     .accessDeniedPage("/error/403")
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint((request, response, authException) -> {
+                    .authenticationEntryPoint((request, response, authException) -> {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "인증되지 않음");
-                })
-                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    })
+                    .accessDeniedHandler((request, response, accessDeniedException) -> {
                     response.sendError(HttpServletResponse.SC_FORBIDDEN, "권한 없음");
-                })
+                    })
                 .and()
                 // 누구나 로그아웃 할 수 있도록 로그아웃 페이지도 모든곳에서 접근가능하도록 설정
                 .logout()
