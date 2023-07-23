@@ -86,8 +86,8 @@
       output += "<tr>" +
               "<td>" + categoryDTO1[i].id + "</td>" +
               "<td>" + categoryDTO1[i].gameCategoryName  + "</td>" +
-              "<td><button onclick=\"category_updateForm('" + categoryDTO1[i].id + "')\">수정</button></td>" +
-              "<td><button onclick=\"category_delete('" + categoryDTO1[i].id + "')\">삭제</button></td>" +
+              "<td><button class='btn btn-primary' onclick=\"category_updateForm('" + categoryDTO1[i].id + "')\">수정</button></td>" +
+              "<td><button class='btn btn-primary' onclick=\"category_delete('" + categoryDTO1[i].id + "')\">삭제</button></td>" +
               "</tr>";
     }
     output += "</table>";
