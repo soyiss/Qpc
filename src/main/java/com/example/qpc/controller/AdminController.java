@@ -1,9 +1,12 @@
 package com.example.qpc.controller;
 
 import com.example.qpc.dto.BlackListDTO;
+import com.example.qpc.dto.GameCategoryDTO;
 import com.example.qpc.dto.MemberDTO;
+import com.example.qpc.entity.GameCategoryEntity;
 import com.example.qpc.entity.RoleEntity;
 import com.example.qpc.service.AdminService;
+import com.example.qpc.service.GameCategoryService;
 import com.example.qpc.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,10 +25,12 @@ import java.util.stream.Collectors;
 public class AdminController {
     private final MemberService memberService;
     private final AdminService adminService;
-
+    private final GameCategoryService gameCategoryService;
 
     @GetMapping("/adminMain")
-    public String adminMain() {
+    public String adminMain(Model model) {
+        List<GameCategoryDTO> gameCategoryDTOList = gameCategoryService.findAll();
+        model.addAttribute("gameCategoryList",gameCategoryDTOList);
         return "/adminPages/adminMain";
     }
 
