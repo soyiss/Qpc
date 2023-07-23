@@ -31,40 +31,44 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // post , put 공격 방어
         http
-                .csrf().disable()
-                // 이 주소를 받는 곳에만 모든곳에서 접근가능하도록 설정
-                .authorizeRequests()
-                .antMatchers("/member/save", "/member/login", "/member/login/error", "/memberSave/mailConfirm","/test","/index").anonymous()
-                .antMatchers("/member/findById/email_check").permitAll()
-                .antMatchers("/category/**").permitAll()
-                .antMatchers("/chat/**").permitAll()
-                .antMatchers("/GameCategory/**").permitAll()
-                .antMatchers("/game/**").permitAll()
-                .antMatchers("/product/**").permitAll()
-                .antMatchers("/payment/**").permitAll()
-                .antMatchers("/member/**").hasRole("MEMBER")
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST,"/payment/**").permitAll()
-                .antMatchers(HttpMethod.POST,"/member/login").permitAll()
-                .antMatchers("/css/**", "/js/**","/img/**").permitAll()
-                .anyRequest().authenticated()
+                    .csrf().disable()
+                    // 이 주소를 받는 곳에만 모든곳에서 접근가능하도록 설정
+                    .authorizeRequests()
+                    .antMatchers("/member/save", "/member/login", "/member/login/error", "/memberSave/mailConfirm","/test","/index").anonymous()
+                    .antMatchers("/member/findById/email_check").permitAll()
+                    .antMatchers("/category/**").permitAll()
+                    .antMatchers("/chat/**").permitAll()
+                    .antMatchers("/GameCategory/**").permitAll()
+                    .antMatchers("/game/**").permitAll()
+                    .antMatchers("/product/**").permitAll()
+                    .antMatchers("/payment/**").permitAll()
+                    .antMatchers("/member/**").hasRole("MEMBER")
+                    .antMatchers("/admin/**").hasRole("ADMIN")
+                    .antMatchers("/error/403").permitAll()
+                    .antMatchers(HttpMethod.POST,"/payment/**").permitAll()
+                    .antMatchers(HttpMethod.POST,"/member/login").permitAll()
+                    .antMatchers("/css/**", "/js/**","/img/**").permitAll()
+                    .anyRequest().authenticated()
                 .and()
                 /* 로그인페이지 설정, 위에 설정된 주소 말고 다른 곳으로 갈때
                 로그인되어 있지 않다면 redirect로 로그인창으로 */
                 // 로그인 페이지 URL 설정
                 .formLogin()
-                .loginPage("/index")                 // HTML명
-                .usernameParameter("memberId")
-                .passwordParameter("memberPassword")
-                .defaultSuccessUrl("/memberPages/memberMain")
-                .failureUrl("/member/login/error")
-                .permitAll()
+                    .loginPage("/index")                 // HTML명
+                    .usernameParameter("memberId")
+                    .passwordParameter("memberPassword")
+                    .defaultSuccessUrl("/memberPages/memberMain")
+                    .failureUrl("/member/login/error")
+                    .permitAll()
+                .and()
+                .exceptionHandling()
+                    .accessDeniedPage("/error/403")
                 .and()
                 // 누구나 로그아웃 할 수 있도록 로그아웃 페이지도 모든곳에서 접근가능하도록 설정
                 .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/")
-                .permitAll();
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .logoutSuccessUrl("/")
+                    .permitAll();
     }
 
     // 패스워드 암호화(인코딩)
