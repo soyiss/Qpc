@@ -244,13 +244,13 @@
             <p>카테고리가 아직 등록되지 않았습니다.</p>
           </th:block>
           <th:block th:unless="${#lists.isEmpty(gameCategoryList)}">
-            <select name="gameCategory" id="game-save-category" class="form-control">
+            <select name="gameCategory" id="game-save-category" class="form-control mb-3">
               <option th:each="category : ${gameCategoryList}" th:value="${category.id}" th:text="${category.gameCategoryName}"></option>
             </select>
           <input type="text" placeholder="게임이름" class="form-control"> <br>
           <input type="text" placeholder="게임링크" class="form-control"> <br>
           <input type="file" name="gameFile" class="form-control"> <br>
-          <button style="margin: 0 auto;">게임등록</button>
+          <button style="margin: 0 auto;" class="btn btn-primary">게임등록</button>
           </th:block>
         </form>
       </div>
