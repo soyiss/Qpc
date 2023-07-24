@@ -230,7 +230,7 @@
                 <!-- 모달 내용 -->
                 <div id="game-section">
                     <th:block th:if="${#lists.isEmpty(gameList)}">
-                        <p>카테고리가 아직 등록되지 않았습니다.</p>
+                        <p>게임이 아직 등록되지 않았습니다.</p>
                     </th:block>
                     <th:block th:unless="${#lists.isEmpty(gameList)}">
                         <!-- 모달 내용 -->
@@ -256,13 +256,9 @@
                                 </td>
                             </tr>
                         </table>
-
                     </th:block>
                 </div>
-                <button class="btn btn-primary mt-3" onclick="openModal('gameSaveModal')" style="text-align: left;">게임
-                    등록
-                </button>
-                <br>
+                <button class="btn btn-primary mt-3" onclick="openModal('gameSaveModal')" style="text-align: left;">게임 등록</button>
             </div>
         </div>
     </div>
