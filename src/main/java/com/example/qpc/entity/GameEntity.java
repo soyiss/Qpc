@@ -17,7 +17,7 @@ public class GameEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 10,nullable = false)
+    @Column(length = 50,nullable = false)
     private String gameName;
 
     @Column(length = 500,nullable = false)
@@ -34,13 +34,12 @@ public class GameEntity {
     @JoinColumn(name="category_id")
     private GameCategoryEntity gameCategoryEntity;
 
-    public static GameEntity toSaveEntity(GameDTO gameDTO) {
+    public static GameEntity toSaveEntity(GameDTO gameDTO,GameCategoryEntity gameCategoryEntity) {
         GameEntity gameEntity = new GameEntity();
         gameEntity.setGameName(gameDTO.getGameName());
         gameEntity.setGameLink(gameDTO.getGameLink());
 
         // 게임 카테고리 정보 설정
-        GameCategoryEntity gameCategoryEntity = new GameCategoryEntity();
         gameCategoryEntity.setId(gameDTO.getGameCategoryId());
         gameEntity.setGameCategoryEntity(gameCategoryEntity);
 
@@ -50,14 +49,13 @@ public class GameEntity {
     }
 
 
-    public static GameEntity toSaveEntityWithFile(GameDTO gameDTO) {
+    public static GameEntity toSaveEntityWithFile(GameDTO gameDTO,GameCategoryEntity gameCategoryEntity) {
         GameEntity gameEntity = new GameEntity();
         gameEntity.setGameName(gameDTO.getGameName());
         gameEntity.setGameLink(gameDTO.getGameLink());
         gameEntity.setFileAttached(1);
         // 카테고리 설정
-        gameEntity.setGameCategoryEntity(GameCategoryEntity.toGameEntity(gameDTO.getGameCategoryId()));
-
+        gameEntity.setGameCategoryEntity(gameCategoryEntity);
         // 파일 첨부 정보 설정
         if(gameDTO.getFileAttached() == 1){
             // 파일이 첨부된 경우, 가능한 경우에만 파일 관련 속성을 설정

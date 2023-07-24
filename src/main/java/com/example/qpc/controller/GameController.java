@@ -41,8 +41,7 @@ public class GameController {
         gameDTO.setGameCategoryId(gameCategoryId);
         // 게임 저장 로직 수행
         gameService.save(gameDTO);
-        System.out.println("gameCategoryId = " + gameCategoryId);
-        return "redirect:/";
+        return "redirect:/admin/adminMain";
     }
 
     @GetMapping("/list")

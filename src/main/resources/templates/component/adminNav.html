@@ -217,17 +217,16 @@
                 <td>${game.gameImg}</td>
                 <td>${game.gameName}</td>
                 <td>
-                  <button onclick="openModal('gameUpdateModal')">수정</button>
+                  <button class="btn btn-primary" onclick="openModal('gameUpdateModal')">수정</button>
                 </td>
-
                 <td>
-                  <button onclick="gameDelete()">삭제</button>
+                  <button class="btn btn-danger" onclick="gameDelete()">삭제</button>
                 </td>
               </tr>
             </th:each>
           </table>
         </div> <br>
-        <button onclick="openModal('gameSaveModal')" style="text-align: left;">게임 등록</button> <br>
+        <button class="btn btn-primary" onclick="openModal('gameSaveModal')" style="text-align: left;">게임 등록</button> <br>
       </div>
     </div>
   </div>
@@ -239,18 +238,18 @@
         <span class="modal-close" onclick="closeModal('gameSaveModal')">&times;</span>
         <h3>게임 등록</h3>
         <!-- 모달 내용 -->
-        <form action="/game/save" method="post" id="gameSaveForm" enctype="multipart/form-data">
+        <form action="/game/save" method="post" id="gameSaveForm" onsubmit="return gameSaveCheck()" enctype="multipart/form-data">
           <th:block th:if="${#lists.isEmpty(gameCategoryList)}">
             <p>카테고리가 아직 등록되지 않았습니다.</p>
           </th:block>
           <th:block th:unless="${#lists.isEmpty(gameCategoryList)}">
-            <select name="gameCategoryName" id="game-save-category" class="form-control">
+            <select name="gameCategoryName" id="game-save-category" class="form-control mb-3">
               <option th:each="category : ${gameCategoryList}" th:value="${category.gameCategoryName}" th:text="${category.gameCategoryName}"></option>
             </select>
-            <input type="text" name="gameName" placeholder="게임이름" class="form-control">
-            <input type="text" name="gameLink" placeholder="게임링크" class="form-control">
+            <input type="text" name="gameName" placeholder="게임이름" class="form-control mb-3">
+            <input type="text" name="gameLink" placeholder="게임링크" class="form-control mb-3">
             <input type="file" name="gameFile" class="form-control">
-          <button style="margin: 0 auto;">게임등록</button>
+          <button class="btn btn-primary" style="text-align: center; align-items: center">게임등록</button>
           </th:block>
         </form>
       </div>
@@ -436,6 +435,22 @@
 
     const blackList = () => {
       location.href="/admin/memberList"
+    }
+
+    const gameSaveCheck = () => {
+      const gameName = document.querySelector('input[name="gameName"]').value;
+      const gameLink = document.querySelector('input[name="gameLink"]').value;
+
+      if(gameName.length===0) {
+        alert("게임 이름을 작성해주세요!");
+        return false;
+      }else if(gameLink.length===0) {
+        alert("게임 링크를 작성해주세요!");
+        return false;
+      }else {
+        alert("게임 등록이 완료되었습니다.")
+        return true;
+      }
     }
 
   </script>
