@@ -2,11 +2,13 @@ package com.example.qpc.controller;
 
 import com.example.qpc.dto.BlackListDTO;
 import com.example.qpc.dto.GameCategoryDTO;
+import com.example.qpc.dto.GameDTO;
 import com.example.qpc.dto.MemberDTO;
 import com.example.qpc.entity.GameCategoryEntity;
 import com.example.qpc.entity.RoleEntity;
 import com.example.qpc.service.AdminService;
 import com.example.qpc.service.GameCategoryService;
+import com.example.qpc.service.GameService;
 import com.example.qpc.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,11 +28,14 @@ public class AdminController {
     private final MemberService memberService;
     private final AdminService adminService;
     private final GameCategoryService gameCategoryService;
+    private final GameService gameService;
 
     @GetMapping("/adminMain")
     public String adminMain(Model model) {
         List<GameCategoryDTO> gameCategoryDTOList = gameCategoryService.findAll();
         model.addAttribute("gameCategoryList",gameCategoryDTOList);
+        List<GameDTO> gameDTOList = gameService.findAll();
+        model.addAttribute("gameList",gameDTOList);
         return "/adminPages/adminMain";
     }
 

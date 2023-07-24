@@ -56,7 +56,25 @@
       font-weight: bold;
       cursor: pointer;
     }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
 
+    th, td {
+      padding: 8px; /* 원하는 간격으로 설정 */
+      border: 1px solid #ccc;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+    }
+    /* 이미지를 가운데 정렬하고 원하는 크기로 조절 */
+    td img {
+      display: block;
+      margin: 0 auto;
+      max-width: 100px;
+      max-height: 100px;
+    }
 
   </style>
 
@@ -205,17 +223,22 @@
         <h3>게임관리</h3>
         <!-- 모달 내용 -->
         <div id="game-section">
+          <th:block th:if="${#lists.isEmpty(gameList)}">
+            <p>카테고리가 아직 등록되지 않았습니다.</p>
+          </th:block>
+          <th:block th:unless="${#lists.isEmpty(gameList)}">
           <table>
             <tr>
               <th>id</th>
               <th>게임 이미지</th>
               <th>게임 이름</th>
+              <th>수정</th>
+              <th>삭제</th>
             </tr>
-            <th:each items="${gameList}" var="game">
-              <tr>
-                <td>${game.id}</td>
-                <td>${game.gameImg}</td>
-                <td>${game.gameName}</td>
+            <tr th:each="game : ${gameList}">
+              <td th:text="${game.id}"></td>
+              <td>이미지</td>
+              <td th:text="${game.gameName}"></td>
                 <td>
                   <button class="btn btn-primary" onclick="openModal('gameUpdateModal')">수정</button>
                 </td>
@@ -225,8 +248,9 @@
               </tr>
             </th:each>
           </table>
-        </div> <br>
-        <button class="btn btn-primary" onclick="openModal('gameSaveModal')" style="text-align: left;">게임 등록</button> <br>
+          </th:block>
+        </div>
+        <button class="btn btn-primary mt-3" onclick="openModal('gameSaveModal')" style="text-align: left;">게임 등록</button> <br>
       </div>
     </div>
   </div>
