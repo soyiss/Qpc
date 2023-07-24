@@ -244,12 +244,12 @@
             <p>카테고리가 아직 등록되지 않았습니다.</p>
           </th:block>
           <th:block th:unless="${#lists.isEmpty(gameCategoryList)}">
-            <select name="gameCategory" id="game-save-category" class="form-control">
-              <option th:each="category : ${gameCategoryList}" th:value="${category.id}" th:text="${category.gameCategoryName}"></option>
+            <select name="gameCategoryName" id="game-save-category" class="form-control">
+              <option th:each="category : ${gameCategoryList}" th:value="${category.gameCategoryName}" th:text="${category.gameCategoryName}"></option>
             </select>
-          <input type="text" placeholder="게임이름" class="form-control"> <br>
-          <input type="text" placeholder="게임링크" class="form-control"> <br>
-          <input type="file" name="gameFile" class="form-control"> <br>
+            <input type="text" name="gameName" placeholder="게임이름" class="form-control">
+            <input type="text" name="gameLink" placeholder="게임링크" class="form-control">
+            <input type="file" name="gameFile" class="form-control">
           <button style="margin: 0 auto;">게임등록</button>
           </th:block>
         </form>
@@ -272,18 +272,14 @@
         </tr>
 
         <form action="/game/update" method="post" id="gameUpdateForm" enctype="multipart/form-data">
-          <select name="gameCategory" id="game-update-category" class="form-control">
-            <option value="">선택해주세요</option>
-            <option value="">인기게임</option>
-            <option value="">스포츠/FPS게임</option>
-            <option value="">캐주얼게임</option>
-            <option value="">스팀/CD게임</option>
-          </select> <br>
-          <input type="text" placeholder="게임이름" class="form-control"> <br>
-          <input type="text" placeholder="게임링크" class="form-control"> <br>
-          <input type="file" name="gameFile" class="form-control"> <br>
+          <select name="gameCategoryName" id="game-update-category" class="form-control">
+            <option th:each="category : ${gameCategoryList}" th:value="${category.id}" th:text="${category.gameCategoryName}"></option>
+          </select>
+          <input type="text" name="gameName" placeholder="게임이름" class="form-control">
+          <input type="text" name="gameLink" placeholder="게임링크" class="form-control">
+          <input type="file" name="gameFile" class="form-control">
           <input type="submit" style="margin: 0 auto;" value="게임수정">
-        </form> <br>
+        </form>
       </div>
     </div>
   </div>
