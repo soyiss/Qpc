@@ -37,9 +37,7 @@ public class GameController {
     public String saveGame(@ModelAttribute GameDTO gameDTO) throws IOException {
         // 게임 카테고리 이름을 기반으로 카테고리 ID를 가져옵니다.
         Long gameCategoryId = gameCategoryService.findGameCategoryIdByName(gameDTO.getGameCategoryName());
-        // 게임 카테고리 ID를 설정합니다.
         gameDTO.setGameCategoryId(gameCategoryId);
-        // 게임 저장 로직 수행
         gameService.save(gameDTO);
         return "redirect:/admin/adminMain";
     }

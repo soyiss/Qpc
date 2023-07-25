@@ -22,9 +22,6 @@ public class ProductDTO {
     private int fileAttached;
     private Long categoryId;
     private String categoryName;
-
-    private Long memberId;
-
     private MultipartFile productFile;
     private String originalFileName;
     private String storedFileName;

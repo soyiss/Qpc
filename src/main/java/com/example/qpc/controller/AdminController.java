@@ -26,9 +26,19 @@ public class AdminController {
     private final GameCategoryService gameCategoryService;
     private final GameService gameService;
     private final GameFileService gameFileService;
+    private final CategoryService categoryService;
+    private final ProductService productService;
 
     @GetMapping("/adminMain")
     public String adminMain(Model model) {
+        // 상품 카테고리 리스트 가져오기
+        List<CategoryDTO> categoryDTOList = categoryService.findAll();
+        model.addAttribute("categoryList",categoryDTOList);
+
+        // 상품목록 가져오기
+        List<ProductDTO> productDTOList = productService.findAll();
+        model.addAttribute("productList",productDTOList);
+
         // 게임 카테고리 리스트 가져오기
         List<GameCategoryDTO> gameCategoryDTOList = gameCategoryService.findAll();
         model.addAttribute("gameCategoryList", gameCategoryDTOList);
@@ -41,7 +51,6 @@ public class AdminController {
                 gameDTOList.get(i).setOriginalFileName(gameFileDTO.getOriginalFileName());
                 gameDTOList.get(i).setStoredFileName(gameFileDTO.getStoredFileName());
             }
-            System.out.println("adminController의 gameDTOList(i)"+gameDTOList.get(i));
         }
         model.addAttribute("gameList", gameDTOList);
 
