@@ -1,15 +1,11 @@
 package com.example.qpc.controller;
 
-import com.example.qpc.dto.BlackListDTO;
-import com.example.qpc.dto.GameCategoryDTO;
-import com.example.qpc.dto.GameDTO;
-import com.example.qpc.dto.MemberDTO;
+import com.example.qpc.dto.*;
 import com.example.qpc.entity.GameCategoryEntity;
+import com.example.qpc.entity.GameEntity;
+import com.example.qpc.entity.GameFileEntity;
 import com.example.qpc.entity.RoleEntity;
-import com.example.qpc.service.AdminService;
-import com.example.qpc.service.GameCategoryService;
-import com.example.qpc.service.GameService;
-import com.example.qpc.service.MemberService;
+import com.example.qpc.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,15 +25,29 @@ public class AdminController {
     private final AdminService adminService;
     private final GameCategoryService gameCategoryService;
     private final GameService gameService;
+    private final GameFileService gameFileService;
 
     @GetMapping("/adminMain")
     public String adminMain(Model model) {
+        // 게임 카테고리 리스트 가져오기
         List<GameCategoryDTO> gameCategoryDTOList = gameCategoryService.findAll();
-        model.addAttribute("gameCategoryList",gameCategoryDTOList);
+        model.addAttribute("gameCategoryList", gameCategoryDTOList);
+
+        // 게임리스트 가져오기
         List<GameDTO> gameDTOList = gameService.findAll();
-        model.addAttribute("gameList",gameDTOList);
+        for(int i=0; i<gameDTOList.size(); i++) {
+            if(gameDTOList.get(i).getFileAttached() == 1) {
+                GameFileDTO gameFileDTO = gameFileService.findByGameId(gameDTOList.get(i).getId());
+                gameDTOList.get(i).setOriginalFileName(gameFileDTO.getOriginalFileName());
+                gameDTOList.get(i).setStoredFileName(gameFileDTO.getStoredFileName());
+            }
+            System.out.println("adminController의 gameDTOList(i)"+gameDTOList.get(i));
+        }
+        model.addAttribute("gameList", gameDTOList);
+
         return "/adminPages/adminMain";
     }
+
 
 
     //회원리스트

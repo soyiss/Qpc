@@ -78,4 +78,8 @@ public class GameService {
     public void delete(Long id) {
         gameRepository.deleteById(id);
     }
+
+    public GameEntity findById(Long id) {
+        return gameRepository.findById(id).get();
+    }
 }

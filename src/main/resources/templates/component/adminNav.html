@@ -244,7 +244,10 @@
                             </tr>
                             <tr th:each="game : ${gameList}">
                                 <td th:text="${game.id}"></td>
-                                <td>이미지</td>
+                                <td>
+                                    <img th:if="${game.fileAttached == 1}" th:src="@{|/upload/${game.storedFileName}|}" alt="이미지 없음" width="100" height="100">
+                                    <span th:unless="${game.fileAttached == 1}">이미지 없음</span>
+                                </td>
                                 <td th:text="${game.gameName}"></td>
                                 <td>
                                     <button class="btn btn-primary" onclick="openModal('gameUpdateModal')">수정</button>
