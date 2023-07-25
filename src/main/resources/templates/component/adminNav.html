@@ -418,10 +418,11 @@
                 confirmButtonText: "게임",
                 cancelButtonText: "상품",
                 allowOutsideClick: false, // alert창 밖을 눌러도 화면고정
-                allowEscapeKey: true // ESC 키를 누르면 꺼짐
+                allowEscapeKey: true, // ESC 키를 누르면 꺼짐
+                showCloseButton: true, // X 버튼 표시
             }).then((result) => {
-                if (result.dismiss === Swal.DismissReason.esc) {
-                    return; // ESC 키를 클릭 시 종료
+                if (result.dismiss === Swal.DismissReason.esc || result.dismiss === Swal.DismissReason.close) {
+                    return; // ESC 키 또는 X 버튼을 클릭 시 종료
                 }
 
                 if (result.isConfirmed) {
