@@ -291,36 +291,66 @@
                         <p>카테고리가 아직 등록되지 않았습니다.</p>
                     </th:block>
                     <th:block th:unless="${#lists.isEmpty(gameCategoryList)}">
-                        <select name="gameCategoryName" id="game-save-category" class="form-control mb-3">
-                            <option th:each="category : ${gameCategoryList}" th:value="${category.gameCategoryName}"
-                                    th:text="${category.gameCategoryName}"></option>
-                        </select>
-                        <input type="text" name="gameName" placeholder="게임이름" class="form-control mb-3">
-                        <input type="text" name="gameLink" placeholder="게임링크" class="form-control mb-3">
-                        <input type="file" name="gameFile" class="form-control">
-                        <button class="btn btn-primary" style="text-align: center; align-items: center">게임등록</button>
+                        <div class="mb-3 text-center">
+                            <label for="game-save-category" class="form-label">게임 카테고리</label>
+                            <select name="gameCategoryName" id="game-save-category" class="form-control">
+                                <option th:each="category : ${gameCategoryList}" th:value="${category.gameCategoryName}"
+                                        th:text="${category.gameCategoryName}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3 text-center">
+                            <label for="game-name" class="form-label">게임 이름</label>
+                            <input type="text" name="gameName" placeholder="게임이름" class="form-control">
+                        </div>
+                        <div class="mb-3 text-center">
+                            <label for="game-link" class="form-label">게임 링크</label>
+                            <input type="text" name="gameLink" placeholder="게임링크" class="form-control">
+                        </div>
+                        <div class="mb-3 text-center">
+                            <label for="game-file" class="form-label">게임 파일</label>
+                            <input type="file" name="gameFile" class="form-control">
+                        </div>
+                        <button class="btn btn-primary d-block mx-auto">게임 등록</button>
                     </th:block>
                 </form>
             </div>
         </div>
     </div>
 
+
     <!-- 게임 수정 모달 창 -->
-    <div id="gameUpdateModal" class="modal" style="margin: 0 auto;padding: 20px;">
+    <div id="gameUpdateModal" class="modal fade" style="margin: 0 auto; padding: 20px;">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="margin: 0 auto; width: 80%">
-                <span class="modal-close" onclick="closeModal('gameUpdateModal')">&times;</span>
-                <h3>게임 수정</h3>
-                <form action="/game/update" method="post" id="gameUpdateForm" enctype="multipart/form-data">
-                    <select name="gameCategoryName" id="game-update-category" class="form-control">
-                        <option th:each="category : ${gameCategoryList}" th:value="${category.id}"
-                                th:text="${category.gameCategoryName}"></option>
-                    </select>
-                    <input type="text" id="game-name" name="gameName" placeholder="게임이름" class="form-control">
-                    <input type="text" id="game-link" name="gameLink" placeholder="게임링크" class="form-control">
-                    <input type="file" name="gameFile" class="form-control">
-                    <input type="submit" style="margin: 0 auto;" value="게임수정">
-                </form>
+                <div class="modal-header">
+                    <h3 class="modal-title">게임 수정</h3>
+                    <span class="modal-close" onclick="closeModal('gameUpdateModal')">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <form action="/game/update" method="post" id="gameUpdateForm" enctype="multipart/form-data">
+                        <input type="hidden" id="game-id" name="id">
+                        <div class="mb-3 text-center">
+                            <label for="game-update-category" class="form-label">게임 카테고리</label>
+                            <select name="gameCategoryName" id="game-update-category" class="form-control">
+                                <option th:each="category : ${gameCategoryList}" th:value="${category.gameCategoryName}"
+                                        th:text="${category.gameCategoryName}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3 text-center">
+                            <label for="game-name" class="form-label">게임 이름</label>
+                            <input type="text" id="game-name" name="gameName" placeholder="게임이름" class="form-control">
+                        </div>
+                        <div class="mb-3 text-center">
+                            <label for="game-link" class="form-label">게임 링크</label>
+                            <input type="text" id="game-link" name="gameLink" placeholder="게임링크" class="form-control">
+                        </div>
+                        <div class="mb-3 text-center">
+                            <label for="game-file" class="form-label">게임 파일</label>
+                            <input type="file" name="gameFile" id="game-file" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary">게임 수정</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -511,6 +541,7 @@
                 url: `/game/${gameId}`
             }).then(res => {
                 openModal('gameUpdateModal');
+                document.getElementById("game-id").value = res.data.id;
                 document.getElementById("game-name").value = res.data.gameName;
                 document.getElementById("game-link").value = res.data.gameLink;
             }).catch(err => {

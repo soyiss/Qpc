@@ -7,4 +7,6 @@ public interface GameFileRepository extends JpaRepository<GameFileEntity,Long> {
 
     GameFileEntity findByGameEntityId(Long id);
 
+    void deleteByGameEntityId(Long id);
+
 }

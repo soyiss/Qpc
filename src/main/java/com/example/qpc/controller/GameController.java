@@ -69,6 +69,15 @@ public class GameController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PostMapping("/update")
+    public String gameUpdate(@ModelAttribute GameDTO gameDTO) throws IOException {
+        System.out.println("gameDTO = " + gameDTO);
+        Long gameCategoryId = gameCategoryService.findGameCategoryIdByName(gameDTO.getGameCategoryName());
+        gameDTO.setGameCategoryId(gameCategoryId);
+        gameService.update(gameDTO);
+        return "redirect:/admin/adminMain";
+    }
+
 
 
 
