@@ -60,24 +60,20 @@ public class ProductController {
 
     // 상품 상세 조회 화면 이동
     @GetMapping("/{id}")
-    public String ProductDetail(@PathVariable("id") Long id, Model model) {
-        System.out.println("id = " + id);
-
+    public ResponseEntity ProductDetail(@PathVariable("id") Long id) {
         ProductDTO productDTO = productService.findByProductId(id);
-        System.out.println("productDTO12 = " + productDTO);
-
-        model.addAttribute("product", productDTO);
-
-        return "productPages/ProductDetail";
+        System.out.println("productDTO = " + productDTO);
+        return new ResponseEntity<>(productDTO,HttpStatus.OK);
     }
 
     // 상품 수정 처리
-    @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
-        productDTO.setId(id);
+    @PostMapping("/update")
+    public String productUpdate(@ModelAttribute ProductDTO productDTO) throws IOException {
         System.out.println("productDTO = " + productDTO);
-        productService.productUpdate(productDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Long categoryId = categoryService.findCategoryIdByName(productDTO.getCategoryName());
+        productDTO.setCategoryId(categoryId);
+        productService.update(productDTO);
+        return "redirect:/admin/adminMain";
     }
 
     // 상품 삭제 처리

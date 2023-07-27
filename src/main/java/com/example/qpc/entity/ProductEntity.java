@@ -53,6 +53,17 @@ public class ProductEntity {
         return productEntity;
     }
 
+    public static ProductEntity toUpdateEntity(ProductDTO productDTO,CategoryEntity categoryEntity) {
+        ProductEntity productEntity = new ProductEntity();
+        productEntity.setId(productDTO.getId());
+        productEntity.setProductName(productDTO.getProductName());
+        productEntity.setProductPrice(productDTO.getProductPrice());
+        productEntity.setProductCount(productDTO.getProductCount());
+        productEntity.setCategoryEntity(categoryEntity);
+        productEntity.setFileAttached(0);
+        return productEntity;
+    }
+
     public static ProductEntity toSaveEntityWithFile(ProductDTO productDTO,CategoryEntity categoryEntity) {
         ProductEntity productEntity = new ProductEntity();
         productEntity.setProductName(productDTO.getProductName());
@@ -76,27 +87,23 @@ public class ProductEntity {
         return productEntity;
     }
 
-    public static ProductEntity toUpdateEntity(ProductDTO productDTO) {
+    public static ProductEntity toUpdateEntityWithFile(ProductDTO productDTO,CategoryEntity categoryEntity) {
         ProductEntity productEntity = new ProductEntity();
-        productEntity.setId(productDTO.getId());
         productEntity.setProductName(productDTO.getProductName());
         productEntity.setProductPrice(productDTO.getProductPrice());
         productEntity.setProductCount(productDTO.getProductCount());
-        productEntity.setCategoryEntity(CategoryEntity.toEntity(productDTO.getCategoryId())); // 카테고리 ID로부터 CategoryEntity 생성
         productEntity.setFileAttached(1);
-
-        if (productDTO.getFileAttached() == 1) {
-            // 파일이 첨부된 경우, 가능한 경우에만 파일 관련 속성을 설정합니다.
-            if (!productDTO.getOriginalFileName().isEmpty() && !productDTO.getStoredFileName().isEmpty()) {
-                List<ProductFileEntity> productFileEntities = new ArrayList<>();
-                ProductFileEntity productFileEntity = new ProductFileEntity();
-                productFileEntity.setOriginalFileName(productDTO.getOriginalFileName());
-                productFileEntity.setStoredFileName(productDTO.getStoredFileName());
-                productFileEntities.add(productFileEntity);
-                productEntity.setProductFileEntityList(productFileEntities);
-            }
+        productEntity.setCategoryEntity(categoryEntity);
+        if (productDTO.getOriginalFileName() != null && !productDTO.getOriginalFileName().isEmpty()
+                && productDTO.getStoredFileName() != null && !productDTO.getStoredFileName().isEmpty()) {
+            List<ProductFileEntity> productFileEntities = new ArrayList<>();
+            ProductFileEntity productFileEntity = new ProductFileEntity();
+            productFileEntity.setOriginalFileName(productDTO.getOriginalFileName());
+            productFileEntity.setStoredFileName(productDTO.getStoredFileName());
+            productFileEntities.add(productFileEntity);
+            productEntity.setProductFileEntityList(productFileEntities);
         }
-
         return productEntity;
     }
+
 }

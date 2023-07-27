@@ -80,12 +80,6 @@ public class ProductService {
         return productDTO;
     }
 
-    public ProductDTO productUpdate(ProductDTO productDTO) {
-        System.out.println("productDTO = " + productDTO);
-        ProductEntity productEntity = productRepository.save(ProductEntity.toUpdateEntity(productDTO));
-        return ProductDTO.toDTO(productEntity);
-    }
-
 
     public void delete(Long id) {
         productRepository.deleteById(id);
@@ -111,5 +105,30 @@ public class ProductService {
         }
 
         return productDTOs;
+    }
+
+    public void update(ProductDTO productDTO) throws IOException {
+        CategoryEntity categoryEntity = categoryRepository.findByCategoryName(productDTO.getCategoryName());
+        if(productDTO.getProductFile().isEmpty()) {
+            // 파일 없음
+            ProductEntity updateEntity = ProductEntity.toUpdateEntity(productDTO,categoryEntity);
+            productRepository.save(updateEntity);
+        }else {
+            ProductFileEntity productFileEntity = productFileRepository.findByProductEntityId(productDTO.getId());
+            if(productFileEntity != null) {
+                productFileRepository.deleteByProductEntityId(productDTO.getId());
+            }
+            ProductEntity productEntity = ProductEntity.toUpdateEntityWithFile(productDTO,categoryEntity);
+            ProductEntity savedEntity = productRepository.save(productEntity);
+
+            String originalFileName = productDTO.getProductFile().getOriginalFilename();
+            String storedFileName = System.currentTimeMillis() + "_" + originalFileName;
+            String savePath = "D:\\springboot_img\\" + storedFileName;
+            productDTO.getProductFile().transferTo(new File(savePath));
+
+            ProductFileEntity saveProductFileEntity = ProductFileEntity.toSaveProductFileEntity(savedEntity, originalFileName, storedFileName);
+            productFileRepository.save(saveProductFileEntity);
+
+        }
     }
 }
