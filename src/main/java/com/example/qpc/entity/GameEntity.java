@@ -67,7 +67,6 @@ public class GameEntity {
         gameEntity.setGameCategoryEntity(gameCategoryEntity);
         // 파일 첨부 정보 설정
         if(gameDTO.getFileAttached() == 1){
-            // 파일이 첨부된 경우, 가능한 경우에만 파일 관련 속성을 설정
             if (!gameDTO.getOriginalFileName().isEmpty() && !gameDTO.getStoredFileName().isEmpty()) {
                 List<GameFileEntity> gameFileEntities = new ArrayList<>();
                 GameFileEntity gameFileEntity = new GameFileEntity();
@@ -88,8 +87,6 @@ public class GameEntity {
         gameEntity.setGameLink(gameDTO.getGameLink());
         gameEntity.setFileAttached(1);
         gameEntity.setGameCategoryEntity(gameCategoryEntity);
-        // 파일 첨부 정보 설정
-            // 파일이 첨부된 경우, 가능한 경우에만 파일 관련 속성을 설정
         if (gameDTO.getOriginalFileName() != null && !gameDTO.getOriginalFileName().isEmpty()
                 && gameDTO.getStoredFileName() != null && !gameDTO.getStoredFileName().isEmpty()) {
             List<GameFileEntity> gameFileEntities = new ArrayList<>();

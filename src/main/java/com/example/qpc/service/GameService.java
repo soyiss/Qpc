@@ -90,8 +90,6 @@ public class GameService {
             GameEntity updateEntity = GameEntity.toUpdateEntity(gameDTO, gameCategoryEntity);
             gameRepository.save(updateEntity);
         } else {
-            // 파일 있음
-            // 1. Game 에 데이터 저장
             GameFileEntity gameFileEntity = gameFileRepository.findByGameEntityId(gameDTO.getId());
             if (gameFileEntity != null) {
                 gameFileRepository.deleteByGameEntityId(gameDTO.getId());
@@ -99,13 +97,11 @@ public class GameService {
             GameEntity gameEntity = GameEntity.toUpdateEntityWithFile(gameDTO, gameCategoryEntity);
             GameEntity savedEntity = gameRepository.save(gameEntity);
 
-            // 2. 파일이름 꺼내고, 저장용 이름 만들고 파일 로컬에 저장
             String originalFileName = gameDTO.getGameFile().getOriginalFilename();
             String storedFileName = System.currentTimeMillis() + "_" + originalFileName;
             String savePath = "D:\\springboot_img\\" + storedFileName;
             gameDTO.getGameFile().transferTo(new File(savePath));
 
-            // 3. GameFileEntity로 변환 후 저장
             GameFileEntity saveGameFileEntity = GameFileEntity.toSaveGameFileEntity(savedEntity, originalFileName, storedFileName);
             gameFileRepository.save(saveGameFileEntity);
         }
