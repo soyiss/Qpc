@@ -119,7 +119,7 @@ public class MemberController {
             // 인증 성공 시 처리
             if (member.getRole().equals(RoleEntity.MEMBER)) {
                 // 인증이 성공하면 로그인 처리
-                return "/memberPages/memberMain";
+                return "redirect:/member/memberMain";
             } else if (member.getRole().equals(RoleEntity.ADMIN)) {
                 return "redirect:/admin/adminMain";
             }
@@ -206,11 +206,18 @@ public class MemberController {
         return "/memberPages/memberFood";
     }
     @GetMapping("/memberMain")
-    public String memberMain(){return "/memberPages/memberMain";}
-
-
-
-
+    public String memberMain(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();
+            // username을 사용하여 MemberDTO를 데이터베이스 등에서 찾아오는 로직을 구현하세요.
+            // 예시로 MemberService를 사용한다고 가정하겠습니다.
+            MemberDTO memberDTO = memberService.findByMemberId(username);
+            System.out.println("memberDTO = " + memberDTO);
+            model.addAttribute("memberDTO", memberDTO);
+        }
+        return "/memberPages/memberMain";
+    }
 }
 
 
