@@ -31,7 +31,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     open-in-view: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 
 # db query log
 logging:

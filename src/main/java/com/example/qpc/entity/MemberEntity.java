@@ -46,8 +46,6 @@ public class MemberEntity extends BaseEntity{
 
 
 
-    @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<ProductEntity> productEntityList = new ArrayList<>();
 
     @OneToMany(mappedBy = "memberEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<SeatEntity> seatEntityList = new ArrayList<>();

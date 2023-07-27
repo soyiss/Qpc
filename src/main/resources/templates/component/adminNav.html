@@ -3,445 +3,606 @@
 <th:block th:fragment="adminNav">
 
 
-  <!-- 스위트 얼럿 cdn추가  -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+    <!-- 스위트 얼럿 cdn추가  -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
 
-  <style>
-    body {
-      background-color: #4b5359;
-    }
-
-    #nav {
-      text-align: center;
-      margin: 0 auto;
-    }
-
-    ul {
-      display: inline-block;
-      list-style: none;
-      margin-top: 10px;
-      padding: 0;
-    }
-
-    li {
-      display: inline-block;
-      margin-right: 15px;
-    }
-
-    li:last-child {
-      margin-right: 0;
-    }
-
-    a {
-      display: block;
-      text-decoration: none;
-    }
-
-    .modal-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-    }
-
-    .modal-body {
-      flex-grow: 1;
-      text-align: left;
-    }
-
-    .modal-close {
-
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-
-  </style>
-
-  <div id="nav">
-    <ul>
-      <li style="background-color: white; ">
-        <a href="/" style="color: #4872bb">🕹 <img src="/img/Q_PC_Room_Logo.png" style="width: 80px; height: 24px"> 🎮</a>
-      </li>
-      <li>
-        <a onclick="blackList()">회원관리</a>
-      </li>
-      <li>
-        <a>상품관리</a>
-      </li>
-      <li>
-        <a>게임관리</a>
-      </li>
-      <li>
-        <a onclick="category()">카테고리 관리</a>
-      </li>
-      <li>
-        <a>채팅</a>
-      </li>
-    </ul>
-  </div>
-
-  <!-- 회원관리 모달 창 -->
-  <div id="memberModal" class="modal">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content">
-        <span class="modal-close" onclick="closeModal('memberModal')">&times;</span>
-        <h3>회원관리</h3>
-        <!-- 모달 내용 -->
-      </div>
-    </div>
-  </div>
-
-  <!-- 상품관리 모달 창 -->
-  <div id="productModal" class="modal">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content">
-        <span class="modal-close" onclick="closeModal('productModal')">&times;</span>
-        <h3>상품관리</h3>
-        <!-- 모달 내용 -->
-        <div id="product-section">
-          <table>
-            <tr>
-              <th>id</th>
-              <th>상품 이름</th>
-              <th>상품 가격</th>
-              <th>상품 개수</th>
-            </tr>
-            <th:each items="${productList}" var="product">
-              <tr>
-                <td>${product.id}</td>
-                <td>${product.productName}</td>
-                <td>${product.productPrice}</td>
-                <td>${product.productCount}</td>
-                <td>
-                  <button onclick="openModal('productUpdateModal')">조회</button>
-                </td>
-
-                <td>
-                  <button onclick="productDelete()">삭제</button>
-                </td>
-              </tr>
-            </th:each>
-          </table>
-        </div> <br>
-        <button onclick="openModal('productSaveModal')" style="text-align: left;">상품 등록</button> <br>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- 상품 등록 모달 창 -->
-  <div id="productSaveModal" class="modal"  style="margin: 0 auto;padding: 20px;">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content" style="margin: 0 auto; width: 80%">
-        <span class="modal-close" onclick="closeModal('productSaveModal')">&times;</span>
-        <h3>상품 등록</h3>
-        <!-- 모달 내용 -->
-        <form action="/product/save" method="post" id="productSaveForm" enctype="multipart/form-data">
-          <select name="productCategory" id="product-save-category" class="form-control">
-            <option value="">선택해주세요</option>
-            <option value="">식사류</option>
-            <option value="">튀김</option>
-            <option value="">간식</option>
-            <option value="">음료</option>
-            <option value="">세트메뉴</option>
-          </select> <br>
-          <input type="text" placeholder="상품이름" class="form-control"> <br>
-          <input type="text" placeholder="상품가격" class="form-control"> <br>
-          <input type="text" placeholder="상품개수" class="form-control"> <br>
-
-          <input type="file" name="productFile" class="form-control"> <br>
-          <button style="margin: 0 auto;">상품등록</button>
-        </form> <br>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- 상품 조회-수정 모달 창 -->
-  <div id="productUpdateModal" class="modal" style="margin: 0 auto;padding: 20px;">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content" style="margin: 0 auto; width: 80%">
-        <span class="modal-close" onclick="closeModal('productUpdateModal')">&times;</span>
-        <button onclick="closeModal('productUpdateModal')">상품목록</button>
-        <h3>상품 조회</h3>
-        <!-- 모달 내용 -->
-
-        <!--        <tr th:if="${product.fileAttached == 1}">-->
-        <th>상품이미지</th>
-        <!--          <td th:each="fileName: ${product.storedFileName}">-->
-        <img th:src="@{|/upload/${fileName}}" alt="">
-        </td>
-        </tr>
-
-        <form action="/product/update" method="post" id="productUpdateForm" enctype="multipart/form-data">
-          <select name="productCategory" id="product-update-category" class="form-control">
-            <option value="">선택해주세요</option>
-            <option value="">식사류</option>
-            <option value="">튀김</option>
-            <option value="">간식</option>
-            <option value="">음료</option>
-            <option value="">세트메뉴</option>
-          </select> <br>
-          <input type="text" placeholder="상품이름" class="form-control"> <br>
-          <input type="text" placeholder="상품가격" class="form-control"> <br>
-          <input type="text" placeholder="상품개수" class="form-control"> <br>
-          <input type="file" name="productFile" class="form-control"> <br>
-          <input type="submit" style="margin: 0 auto;" value="상품수정">
-        </form> <br>
-      </div>
-    </div>
-  </div>
-
-
-
-  <!-- 게임관리 모달 창 -->
-  <div id="gameModal" class="modal">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content" style="margin: 0 auto;">
-        <span class="modal-close" onclick="closeModal('gameModal')">&times;</span>
-        <h3>게임관리</h3>
-        <!-- 모달 내용 -->
-        <div id="game-section">
-          <table>
-            <tr>
-              <th>id</th>
-              <th>게임 이미지</th>
-              <th>게임 이름</th>
-            </tr>
-            <th:each items="${gameList}" var="game">
-              <tr>
-                <td>${game.id}</td>
-                <td>${game.gameImg}</td>
-                <td>${game.gameName}</td>
-                <td>
-                  <button onclick="openModal('gameUpdateModal')">수정</button>
-                </td>
-
-                <td>
-                  <button onclick="gameDelete()">삭제</button>
-                </td>
-              </tr>
-            </th:each>
-          </table>
-        </div> <br>
-        <button onclick="openModal('gameSaveModal')" style="text-align: left;">게임 등록</button> <br>
-      </div>
-    </div>
-  </div>
-
-  <!-- 게임 등록 모달 창 -->
-  <div id="gameSaveModal" class="modal"  style="margin: 0 auto;padding: 20px;">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content" style="margin: 0 auto; width: 80%">
-        <span class="modal-close" onclick="closeModal('gameSaveModal')">&times;</span>
-        <h3>게임 등록</h3>
-        <!-- 모달 내용 -->
-        <form action="/game/save" method="post" id="gameSaveForm" enctype="multipart/form-data">
-          <th:block th:if="${#lists.isEmpty(gameCategoryList)}">
-            <p>카테고리가 아직 등록되지 않았습니다.</p>
-          </th:block>
-          <th:block th:unless="${#lists.isEmpty(gameCategoryList)}">
-            <select name="gameCategory" id="game-save-category" class="form-control mb-3">
-              <option th:each="category : ${gameCategoryList}" th:value="${category.id}" th:text="${category.gameCategoryName}"></option>
-            </select>
-          <input type="text" placeholder="게임이름" class="form-control"> <br>
-          <input type="text" placeholder="게임링크" class="form-control"> <br>
-          <input type="file" name="gameFile" class="form-control"> <br>
-          <button style="margin: 0 auto;" class="btn btn-primary">게임등록</button>
-          </th:block>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- 게임 수정 모달 창 -->
-  <div id="gameUpdateModal" class="modal" style="margin: 0 auto;padding: 20px;">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content" style="margin: 0 auto; width: 80%">
-        <span class="modal-close" onclick="closeModal('gameUpdateModal')">&times;</span>
-        <h3>게임 수정</h3>
-        <!-- 모달 내용 -->
-        <!--        <tr th:if="${game.fileAttached == 1}">-->
-        <th>게임이미지</th>
-        <!--          <td th:each="fileName: ${game.storedFileName}">-->
-        <img th:src="@{|/upload/${fileName}}" alt="">
-        </td>
-        </tr>
-
-        <form action="/game/update" method="post" id="gameUpdateForm" enctype="multipart/form-data">
-          <select name="gameCategory" id="game-update-category" class="form-control">
-            <option value="">선택해주세요</option>
-            <option value="">인기게임</option>
-            <option value="">스포츠/FPS게임</option>
-            <option value="">캐주얼게임</option>
-            <option value="">스팀/CD게임</option>
-          </select> <br>
-          <input type="text" placeholder="게임이름" class="form-control"> <br>
-          <input type="text" placeholder="게임링크" class="form-control"> <br>
-          <input type="file" name="gameFile" class="form-control"> <br>
-          <input type="submit" style="margin: 0 auto;" value="게임수정">
-        </form> <br>
-      </div>
-    </div>
-  </div>
-
-  <!--  &lt;!&ndash; 카테고리 등록 모달 창 &ndash;&gt;-->
-  <!--  <div id="categoryModal" class="modal">-->
-  <!--    <div class="modal-dialog modal-dialog-centered">-->
-  <!--    <div class="modal-content">-->
-  <!--      <span class="modal-close" onclick="closeModal('categoryModal')">&times;</span>-->
-  <!--      <h3>카테고리 관리</h3>-->
-  <!--      &lt;!&ndash; 모달 내용 &ndash;&gt;-->
-  <!--      <p>모달 내용을 추가하세요.</p>-->
-  <!--    </div>-->
-  <!--  </div>-->
-  <!--  </div>-->
-
-  <!-- 채팅 모달 창 -->
-  <div id="chatModal" class="modal">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content">
-        <span class="modal-close" onclick="closeModal('chatModal')">&times;</span>
-        <h3>채팅</h3>
-        <!-- 모달 내용 -->
-        <p>모달 내용을 추가하세요.</p>
-      </div>
-    </div>
-  </div>
-
-
-
-
-
-
-  <script>
-    // 모달 열기
-    function openModal(modalId) {
-      var modal = document.getElementById(modalId);
-      modal.classList.add('show');
-    }
-
-    // 모달 닫기
-    function closeModal(modalId) {
-      var modal = document.getElementById(modalId);
-      modal.classList.remove('show');
-    }
-
-    // 링크 클릭 시 모달 열기
-    var links = document.querySelectorAll("#nav li a");
-    links.forEach(function(link) {
-      link.addEventListener("click", function(event) {
-        event.preventDefault();
-        var modalId = this.textContent.toLowerCase() + "Modal";
-        openModal(modalId);
-      });
-    });
-
-    // 각 모달의 닫기 버튼 이벤트 처리
-    var closeButtons = document.querySelectorAll(".modal-close");
-    closeButtons.forEach(function(button) {
-      button.addEventListener("click", function(event) {
-        event.preventDefault();
-        var modalId = this.parentNode.parentNode.getAttribute("id");
-        closeModal(modalId);
-      });
-    });
-
-    // 각 링크 클릭 시 모달 열기
-    var memberLink = document.querySelector("#nav li:nth-child(2) a");
-    memberLink.addEventListener("click", function() {
-      openModal("memberModal");
-    });
-
-    var productLink = document.querySelector("#nav li:nth-child(3) a");
-    productLink.addEventListener("click", function() {
-      openModal("productModal");
-    });
-
-    var gameLink = document.querySelector("#nav li:nth-child(4) a");
-    gameLink.addEventListener("click", function() {
-      openModal("gameModal");
-    });
-
-    // 카테고리 모달 사용 안함(바뀔수도,,)
-    // var categoryLink = document.querySelector("#nav li:nth-child(5) a");
-    // categoryLink.addEventListener("click", function() {
-    //   openModal("categoryModal");
-    // });
-
-    var chatLink = document.querySelector("#nav li:nth-child(6) a");
-    chatLink.addEventListener("click", function() {
-      openModal("chatModal");
-    });
-
-    function openLink(url) {
-      window.location.href = url; // 해당 주소로 이동합니다.
-    }
-
-    function category() {
-      Swal.fire({
-        title: "카테고리",
-        text: "카테고리 관리 창입니다.",
-        showCancelButton: true,
-        confirmButtonText: "게임",
-        cancelButtonText: "상품",
-        allowOutsideClick: false, // alert창 밖을 눌러도 화면고정
-        allowEscapeKey: true // ESC 키를 누르면 꺼짐
-      }).then((result) => {
-        if (result.dismiss === Swal.DismissReason.esc) {
-          return; // ESC 키를 클릭 시 종료
+    <style>
+        body {
+            background-color: #4b5359;
         }
 
-        if (result.isConfirmed) {
-          openLink("/GameCategory/game");
-        } else {
-          openLink("/category/product");
+        #nav {
+            text-align: center;
+            margin: 0 auto;
         }
-      });
-    }
 
-    function gameDelete() {
-      Swal.fire({
-        title: "게임 삭제",
-        text: "게임을 삭제하시겠습니까?",
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonText: "예",
-        cancelButtonText: "아니오"
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // 삭제 작업 수행
-          // 여기에 삭제 로직을 추가하세요.
-          Swal.fire("삭제되었습니다.", "", "success");
+        ul {
+            display: inline-block;
+            list-style: none;
+            margin-top: 10px;
+            padding: 0;
         }
-      });
-    }
 
-    function productDelete() {
-      Swal.fire({
-        title: "상품 삭제",
-        text: "상품을 삭제하시겠습니까?",
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonText: "예",
-        cancelButtonText: "아니오"
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // 삭제 작업 수행
-          // 여기에 삭제 로직을 추가하세요.
-          Swal.fire("삭제되었습니다.", "", "success");
+        li {
+            display: inline-block;
+            margin-right: 15px;
         }
-      });
-    }
+
+        li:last-child {
+            margin-right: 0;
+        }
+
+        a {
+            display: block;
+            text-decoration: none;
+        }
+
+        .modal-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+        }
+
+        .modal-body {
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .modal-close {
+
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px; /* 원하는 간격으로 설정 */
+            border: 1px solid #ccc;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 이미지를 가운데 정렬하고 원하는 크기로 조절 */
+        td img {
+            display: block;
+            margin: 0 auto;
+            max-width: 100px;
+            max-height: 100px;
+        }
+
+    </style>
+
+    <div id="nav">
+        <ul>
+            <li style="background-color: white; ">
+                <a href="/" style="color: #4872bb">🕹 <img src="/img/Q_PC_Room_Logo.png"
+                                                          style="width: 80px; height: 24px"> 🎮</a>
+            </li>
+            <li>
+                <a onclick="blackList()">회원관리</a>
+            </li>
+            <li>
+                <a>상품관리</a>
+            </li>
+            <li>
+                <a>게임관리</a>
+            </li>
+            <li>
+                <a onclick="category()">카테고리 관리</a>
+            </li>
+            <li>
+                <a>채팅</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 회원관리 모달 창 -->
+    <div id="memberModal" class="modal">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeModal('memberModal')">&times;</span>
+                <h3>회원관리</h3>
+                <!-- 모달 내용 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 상품관리 모달 창 -->
+    <div id="productModal" class="modal">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeModal('productModal')">&times;</span>
+                <h3>상품관리</h3>
+                <!-- 모달 내용 -->
+                <div id="product-section">
+                    <th:block th:if="${#lists.isEmpty(productList)}">
+                        <p>상품이 아직 등록되지 않았습니다.</p>
+                    </th:block>
+                    <th:block th:unless="${#lists.isEmpty(productList)}">
+                        <!-- 모달 내용 -->
+                        <table>
+                            <tr>
+                                <th>id</th>
+                                <th>상품 이미지</th>
+                                <th>상품 이름</th>
+                                <th>상품 가격</th>
+                                <th>상품 재고</th>
+                                <th>수정</th>
+                                <th>삭제</th>
+                            </tr>
+                            <tr th:each="product : ${productList}">
+                                <td th:text="${product.id}"></td>
+                                <td>
+                                    <img th:if="${product.fileAttached == 1}"
+                                         th:src="@{|/upload/${product.storedFileName}|}" alt="이미지 없음" width="100"
+                                         height="100">
+                                    <span th:unless="${product.fileAttached == 1}">이미지 없음</span>
+                                </td>
+                                <td th:text="${product.productName}"></td>
+                                <td th:text="${product.productPrice}"></td>
+                                <td>
+                                    <span th:text="${product.productCount}"></span>
+                                    <span th:if="${product.productCount==0}" style="color: red"> (매진)</span>
+                                </td>
+                                <td>
+                                    <!--                                    <button class="btn btn-primary" onclick="openModal('productUpdateModal')">수정</button>-->
+                                    <button class="btn btn-primary"
+                                            th:attr="onclick='productUpdateForm(\'' + ${product.id} + '\')'">
+                                        수정
+                                    </button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger" onclick="productDelete()">삭제</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </th:block>
+                </div>
+                <br>
+                <button onclick="openModal('productSaveModal')" style="text-align: left;">상품 등록</button>
+                <br>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 상품 등록 모달 창 -->
+    <div id="productSaveModal" class="modal" style="margin: 0 auto;padding: 20px;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="margin: 0 auto; width: 80%">
+                <span class="modal-close" onclick="closeModal('productSaveModal')">&times;</span>
+                <h3 style="text-align: center;">상품 등록</h3>
+                <!-- 모달 내용 -->
+                <form action="/product/save" method="post" id="productSaveForm" enctype="multipart/form-data">
+                    <th:block th:if="${#lists.isEmpty(categoryList)}">
+                        <p style="text-align: center;">카테고리가 아직 등록되지 않았습니다.</p>
+                    </th:block>
+                    <th:block th:unless="${#lists.isEmpty(categoryList)}">
+                        <div style="text-align: center;">
+                            <label for="category-name">카테고리
+                            <select name="categoryName" id="category-name" class="form-control mb-3">
+                                <option th:each="category : ${categoryList}" th:value="${category.categoryName}"
+                                        th:text="${category.categoryName}"></option>
+                            </select>
+                            </label>
+                            <label for="product-save-name">상품이름
+                                <input type="text" name="productName" id="product-save-name" placeholder="상품이름"
+                                       class="form-control mb-3">
+                            </label>
+                            <label for="product-save-price">상품가격
+                                <input type="text" name="productPrice" id="product-save-price" placeholder="상품가격"
+                                       class="form-control mb-3">
+                            </label>
+                            <label for="product-save-count">상품개수
+                                <input type="text" name="productCount" id="product-save-count" placeholder="상품개수"
+                                       class="form-control mb-3">
+                            </label>
+                            <label for="product-save-file">상품파일
+                                <input type="file" name="productFile" id="product-save-file" class="form-control mb-3">
+                            </label>
+                            <button class="btn btn-primary mb-3" style="margin: 0 auto; display: block;">상품등록</button>
+                        </div>
+                    </th:block>
+                </form>
+            </div>
+        </div>
+    </div>
 
 
-    const blackList = () => {
-      location.href="/admin/memberList"
-    }
+    <!-- 상품 수정 모달 창 -->
+    <div id="productUpdateModal" class="modal" style="margin: 0 auto;padding: 20px;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="margin: 0 auto; width: 80%">
+                <span class="modal-close" onclick="closeModal('productUpdateModal')">&times;</span>
+                <h3 style="text-align: center;">상품 수정</h3>
+                <form action="/product/update" method="post" id="productUpdateForm" enctype="multipart/form-data">
+                    <th:block th:if="${#lists.isEmpty(categoryList)}">
+                        <p style="text-align: center;">카테고리가 아직 등록되지 않았습니다.</p>
+                    </th:block>
+                    <th:block th:unless="${#lists.isEmpty(categoryList)}">
+                        <div style="text-align: center;">
+                            <input type="hidden" name="id" id="product-update-id">
+                            <label for="category-update-name">카테고리
+                            <select name="categoryName" id="category-update-name" class="form-control mb-3">
+                                <option th:each="category : ${categoryList}" th:value="${category.categoryName}"
+                                        th:text="${category.categoryName}"></option>
+                            </select>
+                            </label>
+                            <label for="product-update-name">상품이름
+                                <input type="text" name="productName" id="product-update-name" placeholder="상품이름"
+                                       class="form-control mb-3">
+                            </label>
+                            <label for="product-update-price">상품가격
+                                <input type="text" name="productPrice" id="product-update-price" placeholder="상품가격"
+                                       class="form-control mb-3">
+                            </label>
+                            <label for="product-update-count">상품개수
+                                <input type="text" name="productCount" id="product-update-count" placeholder="상품개수"
+                                       class="form-control mb-3">
+                            </label>
+                            <label for="product-update-file">상품파일
+                                <input type="file" name="productFile" id="product-update-file"
+                                       class="form-control mb-3">
+                            </label>
+                            <button class="btn btn-primary mb-3" style="margin: 0 auto; display: block;">상품수정</button>
+                        </div>
+                    </th:block>
+                </form>
+            </div>
+        </div>
+    </div>
 
-  </script>
+
+    <!-- 게임관리 모달 창 -->
+    <div id="gameModal" class="modal">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="margin: 0 auto;">
+                <span class="modal-close" onclick="closeModal('gameModal')">&times;</span>
+                <h3>게임관리</h3>
+                <!-- 모달 내용 -->
+                <div id="game-section">
+                    <th:block th:if="${#lists.isEmpty(gameList)}">
+                        <p>게임이 아직 등록되지 않았습니다.</p>
+                    </th:block>
+                    <th:block th:unless="${#lists.isEmpty(gameList)}">
+                        <!-- 모달 내용 -->
+                        <table>
+                            <tr>
+                                <th>id</th>
+                                <th>게임 이미지</th>
+                                <th>게임 이름</th>
+                                <th>수정</th>
+                                <th>삭제</th>
+                            </tr>
+                            <tr th:each="game : ${gameList}">
+                                <td th:text="${game.id}"></td>
+                                <td>
+                                    <img th:if="${game.fileAttached == 1}" th:src="@{|/upload/${game.storedFileName}|}"
+                                         alt="이미지 없음" width="100" height="100">
+                                    <span th:unless="${game.fileAttached == 1}">이미지 없음</span>
+                                </td>
+                                <td th:text="${game.gameName}"></td>
+                                <td>
+                                    <!--                                    <button class="btn btn-primary" onclick="openModal('gameUpdateModal')">수정</button>-->
+                                    <button class="btn btn-primary"
+                                            th:attr="onclick='gameUpdateForm(\'' + ${game.id} + '\')'">
+                                        수정
+                                    </button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger"
+                                            th:attr="onclick='gameDelete(\'' + ${game.id} + '\')'">
+                                        삭제
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </th:block>
+                </div>
+                <button class="btn btn-primary mt-3" onclick="openModal('gameSaveModal')" style="text-align: left;">게임
+                    등록
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 게임 등록 모달 창 -->
+    <div id="gameSaveModal" class="modal" style="margin: 0 auto;padding: 20px;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="margin: 0 auto; width: 80%">
+                <span class="modal-close" onclick="closeModal('gameSaveModal')">&times;</span>
+                <h3>게임 등록</h3>
+                <!-- 모달 내용 -->
+                <form action="/game/save" method="post" id="gameSaveForm" onsubmit="return gameSaveCheck()"
+                      enctype="multipart/form-data">
+                    <th:block th:if="${#lists.isEmpty(gameCategoryList)}">
+                        <p>카테고리가 아직 등록되지 않았습니다.</p>
+                    </th:block>
+                    <th:block th:unless="${#lists.isEmpty(gameCategoryList)}">
+                        <div class="mb-3 text-center">
+                            <label for="game-save-category" class="form-label">게임 카테고리</label>
+                            <select name="gameCategoryName" id="game-save-category" class="form-control">
+                                <option th:each="category : ${gameCategoryList}" th:value="${category.gameCategoryName}"
+                                        th:text="${category.gameCategoryName}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3 text-center">
+                            <label for="game-name" class="form-label">게임 이름</label>
+                            <input type="text" name="gameName" placeholder="게임이름" class="form-control">
+                        </div>
+                        <div class="mb-3 text-center">
+                            <label for="game-link" class="form-label">게임 링크</label>
+                            <input type="text" name="gameLink" placeholder="게임링크" class="form-control">
+                        </div>
+                        <div class="mb-3 text-center">
+                            <label for="game-file" class="form-label">게임 파일</label>
+                            <input type="file" name="gameFile" class="form-control">
+                        </div>
+                        <button class="btn btn-primary d-block mx-auto">게임 등록</button>
+                    </th:block>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- 게임 수정 모달 창 -->
+    <div id="gameUpdateModal" class="modal fade" style="margin: 0 auto; padding: 20px;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="margin: 0 auto; width: 80%">
+                <div class="modal-header">
+                    <h3 class="modal-title">게임 수정</h3>
+                    <span class="modal-close" onclick="closeModal('gameUpdateModal')">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <form action="/game/update" method="post" id="gameUpdateForm" enctype="multipart/form-data">
+                        <input type="hidden" id="game-id" name="id">
+                        <div class="mb-3 text-center">
+                            <label for="game-update-category" class="form-label">게임 카테고리</label>
+                            <select name="gameCategoryName" id="game-update-category" class="form-control">
+                                <option th:each="category : ${gameCategoryList}" th:value="${category.gameCategoryName}"
+                                        th:text="${category.gameCategoryName}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3 text-center">
+                            <label for="game-name" class="form-label">게임 이름</label>
+                            <input type="text" id="game-name" name="gameName" placeholder="게임이름" class="form-control">
+                        </div>
+                        <div class="mb-3 text-center">
+                            <label for="game-link" class="form-label">게임 링크</label>
+                            <input type="text" id="game-link" name="gameLink" placeholder="게임링크" class="form-control">
+                        </div>
+                        <div class="mb-3 text-center">
+                            <label for="game-file" class="form-label">게임 파일</label>
+                            <input type="file" name="gameFile" id="game-file" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary">게임 수정</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--  &lt;!&ndash; 카테고리 등록 모달 창 &ndash;&gt;-->
+    <!--  <div id="categoryModal" class="modal">-->
+    <!--    <div class="modal-dialog modal-dialog-centered">-->
+    <!--    <div class="modal-content">-->
+    <!--      <span class="modal-close" onclick="closeModal('categoryModal')">&times;</span>-->
+    <!--      <h3>카테고리 관리</h3>-->
+    <!--      &lt;!&ndash; 모달 내용 &ndash;&gt;-->
+    <!--      <p>모달 내용을 추가하세요.</p>-->
+    <!--    </div>-->
+    <!--  </div>-->
+    <!--  </div>-->
+
+    <!-- 채팅 모달 창 -->
+    <div id="chatModal" class="modal">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeModal('chatModal')">&times;</span>
+                <h3>채팅</h3>
+                <!-- 모달 내용 -->
+                <p>모달 내용을 추가하세요.</p>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // 모달 열기
+        function openModal(modalId) {
+            var modal = document.getElementById(modalId);
+            modal.classList.add('show');
+        }
+
+        // 모달 닫기
+        function closeModal(modalId) {
+            var modal = document.getElementById(modalId);
+            modal.classList.remove('show');
+        }
+
+        // 링크 클릭 시 모달 열기
+        var links = document.querySelectorAll("#nav li a");
+        links.forEach(function (link) {
+            link.addEventListener("click", function (event) {
+                event.preventDefault();
+                var modalId = this.textContent.toLowerCase() + "Modal";
+                openModal(modalId);
+            });
+        });
+
+        // 각 모달의 닫기 버튼 이벤트 처리
+        var closeButtons = document.querySelectorAll(".modal-close");
+        closeButtons.forEach(function (button) {
+            button.addEventListener("click", function (event) {
+                event.preventDefault();
+                var modalId = this.parentNode.parentNode.getAttribute("id");
+                closeModal(modalId);
+            });
+        });
+
+        // 각 링크 클릭 시 모달 열기
+        var memberLink = document.querySelector("#nav li:nth-child(2) a");
+        memberLink.addEventListener("click", function () {
+            openModal("memberModal");
+        });
+
+        var productLink = document.querySelector("#nav li:nth-child(3) a");
+        productLink.addEventListener("click", function () {
+            openModal("productModal");
+        });
+
+        var gameLink = document.querySelector("#nav li:nth-child(4) a");
+        gameLink.addEventListener("click", function () {
+            openModal("gameModal");
+        });
+
+        // 카테고리 모달 사용 안함(바뀔수도,,)
+        // var categoryLink = document.querySelector("#nav li:nth-child(5) a");
+        // categoryLink.addEventListener("click", function() {
+        //   openModal("categoryModal");
+        // });
+
+        var chatLink = document.querySelector("#nav li:nth-child(6) a");
+        chatLink.addEventListener("click", function () {
+            openModal("chatModal");
+        });
+
+        function openLink(url) {
+            window.location.href = url; // 해당 주소로 이동합니다.
+        }
+
+        function category() {
+            Swal.fire({
+                title: "카테고리",
+                text: "카테고리 관리 창입니다.",
+                showCancelButton: true,
+                confirmButtonText: "게임",
+                cancelButtonText: "상품",
+                allowOutsideClick: false, // alert창 밖을 눌러도 화면고정
+                allowEscapeKey: true, // ESC 키를 누르면 꺼짐
+                showCloseButton: true, // X 버튼 표시
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.esc || result.dismiss === Swal.DismissReason.close) {
+                    return; // ESC 키 또는 X 버튼을 클릭 시 종료
+                }
+
+                if (result.isConfirmed) {
+                    openLink("/GameCategory/game");
+                } else {
+                    openLink("/category/product");
+                }
+            });
+        }
+
+        const gameDelete = (id) => {
+            Swal.fire({
+                title: "게임 삭제",
+                text: "게임을 삭제하시겠습니까?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "예",
+                cancelButtonText: "아니오"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // 삭제 작업 수행
+                    // 여기에 삭제 로직을 추가하세요.
+                    fetch(`/game/${id}`, {
+                        method: 'delete',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    }).then(response => {
+                        if (response.ok) {
+                            Swal.fire("삭제되었습니다.", "", "success");
+                            location.reload(); // 페이지 새로고침
+                        } else {
+                            Swal.fire("삭제에 실패했습니다.", "", "error");
+                        }
+                    });
+                }
+            });
+        }
+
+        function productDelete() {
+            Swal.fire({
+                title: "상품 삭제",
+                text: "상품을 삭제하시겠습니까?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "예",
+                cancelButtonText: "아니오"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // 삭제 작업 수행
+                    // 여기에 삭제 로직을 추가하세요.
+                    Swal.fire("삭제되었습니다.", "", "success");
+                }
+            });
+        }
+
+
+        const blackList = () => {
+            location.href = "/admin/memberList"
+        }
+
+        const gameSaveCheck = () => {
+            const gameName = document.querySelector('input[name="gameName"]').value;
+            const gameLink = document.querySelector('input[name="gameLink"]').value;
+
+            if (gameName.length === 0) {
+                alert("게임 이름을 작성해주세요!");
+                return false;
+            } else if (gameLink.length === 0) {
+                alert("게임 링크를 작성해주세요!");
+                return false;
+            } else {
+                alert("게임 등록이 완료되었습니다.")
+                return true;
+            }
+        }
+        const productUpdateForm = (productId) => {
+            console.log(productId);
+            axios({
+                method: "get",
+                url: `/product/${productId}`
+            }).then(res => {
+                openModal('productUpdateModal');
+                document.getElementById("product-update-id").value = res.data.id;
+                document.getElementById("product-update-name").value = res.data.productName;
+                document.getElementById("product-update-price").value = res.data.productPrice;
+                document.getElementById("product-update-count").value = res.data.productCount;
+            }).catch(err => {
+                alert(err);
+            })
+        }
+
+        const gameUpdateForm = (gameId) => {
+            console.log(gameId);
+            axios({
+                method: "get",
+                url: `/game/${gameId}`
+            }).then(res => {
+                openModal('gameUpdateModal');
+                document.getElementById("game-id").value = res.data.id;
+                document.getElementById("game-name").value = res.data.gameName;
+                document.getElementById("game-link").value = res.data.gameLink;
+            }).catch(err => {
+                alert(err);
+            })
+        }
+
+
+    </script>
 </th:block>
 </html>

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@Transactional
 @RequestMapping("/product")
 public class ProductController {
 
@@ -37,14 +39,8 @@ public class ProductController {
         // 카테고리 이름을 기반으로 카테고리 ID를 가져옵니다.
         Long categoryId = categoryService.findCategoryIdByName(productDTO.getCategoryName());
         productDTO.setCategoryId(categoryId);
-
-        // 상품을 저장합니다.
         productService.save(productDTO);
-        System.out.println("categoryId = " + categoryId);
-        System.out.println("productDTO = " + productDTO);
-
-        // 상품 등록 후에 홈 화면이나 다른 페이지로 리다이렉트합니다.
-        return "redirect:/";
+        return "redirect:/admin/adminMain";
     }
 
     // 카테고리
@@ -66,24 +62,20 @@ public class ProductController {
 
     // 상품 상세 조회 화면 이동
     @GetMapping("/{id}")
-    public String ProductDetail(@PathVariable("id") Long id, Model model) {
-        System.out.println("id = " + id);
-
+    public ResponseEntity ProductDetail(@PathVariable("id") Long id) {
         ProductDTO productDTO = productService.findByProductId(id);
-        System.out.println("productDTO12 = " + productDTO);
-
-        model.addAttribute("product", productDTO);
-
-        return "productPages/ProductDetail";
+        System.out.println("productDTO = " + productDTO);
+        return new ResponseEntity<>(productDTO,HttpStatus.OK);
     }
 
     // 상품 수정 처리
-    @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
-        productDTO.setId(id);
+    @PostMapping("/update")
+    public String productUpdate(@ModelAttribute ProductDTO productDTO) throws IOException {
         System.out.println("productDTO = " + productDTO);
-        productService.productUpdate(productDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Long categoryId = categoryService.findCategoryIdByName(productDTO.getCategoryName());
+        productDTO.setCategoryId(categoryId);
+        productService.update(productDTO);
+        return "redirect:/admin/adminMain";
     }
 
     // 상품 삭제 처리
