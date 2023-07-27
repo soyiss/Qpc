@@ -135,20 +135,29 @@
                                 <th>상품 이름</th>
                                 <th>상품 가격</th>
                                 <th>상품 재고</th>
-                                <th>조회</th>
+                                <th>수정</th>
                                 <th>삭제</th>
                             </tr>
                             <tr th:each="product : ${productList}">
                                 <td th:text="${product.id}"></td>
                                 <td>
-                                    <img th:if="${product.fileAttached == 1}" th:src="@{|/upload/${product.storedFileName}|}" alt="이미지 없음" width="100" height="100">
+                                    <img th:if="${product.fileAttached == 1}"
+                                         th:src="@{|/upload/${product.storedFileName}|}" alt="이미지 없음" width="100"
+                                         height="100">
                                     <span th:unless="${product.fileAttached == 1}">이미지 없음</span>
                                 </td>
                                 <td th:text="${product.productName}"></td>
                                 <td th:text="${product.productPrice}"></td>
-                                <td th:text="${product.productCount}"></td>
                                 <td>
-                                    <button class="btn btn-primary" onclick="openModal('productUpdateModal')">조회</button>
+                                    <span th:text="${product.productCount}"></span>
+                                    <span th:if="${product.productCount==0}" style="color: red"> (매진)</span>
+                                </td>
+                                <td>
+                                    <!--                                    <button class="btn btn-primary" onclick="openModal('productUpdateModal')">수정</button>-->
+                                    <button class="btn btn-primary"
+                                            th:attr="onclick='productUpdateForm(\'' + ${product.id} + '\')'">
+                                        수정
+                                    </button>
                                 </td>
                                 <td>
                                     <button class="btn btn-danger" onclick="productDelete()">삭제</button>
@@ -170,22 +179,37 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="margin: 0 auto; width: 80%">
                 <span class="modal-close" onclick="closeModal('productSaveModal')">&times;</span>
-                <h3>상품 등록</h3>
+                <h3 style="text-align: center;">상품 등록</h3>
                 <!-- 모달 내용 -->
                 <form action="/product/save" method="post" id="productSaveForm" enctype="multipart/form-data">
                     <th:block th:if="${#lists.isEmpty(categoryList)}">
-                        <p>카테고리가 아직 등록되지 않았습니다.</p>
+                        <p style="text-align: center;">카테고리가 아직 등록되지 않았습니다.</p>
                     </th:block>
                     <th:block th:unless="${#lists.isEmpty(categoryList)}">
-                    <select name="categoryName" id="category-name" class="form-control mb-3">
-                        <option th:each="category : ${categoryList}" th:value="${category.categoryName}"
-                                th:text="${category.categoryName}"></option>
-                    </select>
-                    <input type="text" name="productName" placeholder="상품이름" class="form-control mb-3">
-                    <input type="text" name="productPrice" placeholder="상품가격" class="form-control mb-3">
-                    <input type="text" name="productCount" placeholder="상품개수" class="form-control mb-3">
-                    <input type="file" name="productFile" class="form-control mb-3">
-                    <button class="btn btn-primary mb-3" style="margin: 0 auto;">상품등록</button>
+                        <div style="text-align: center;">
+                            <label for="category-name">카테고리
+                            <select name="categoryName" id="category-name" class="form-control mb-3">
+                                <option th:each="category : ${categoryList}" th:value="${category.categoryName}"
+                                        th:text="${category.categoryName}"></option>
+                            </select>
+                            </label>
+                            <label for="product-save-name">상품이름
+                                <input type="text" name="productName" id="product-save-name" placeholder="상품이름"
+                                       class="form-control mb-3">
+                            </label>
+                            <label for="product-save-price">상품가격
+                                <input type="text" name="productPrice" id="product-save-price" placeholder="상품가격"
+                                       class="form-control mb-3">
+                            </label>
+                            <label for="product-save-count">상품개수
+                                <input type="text" name="productCount" id="product-save-count" placeholder="상품개수"
+                                       class="form-control mb-3">
+                            </label>
+                            <label for="product-save-file">상품파일
+                                <input type="file" name="productFile" id="product-save-file" class="form-control mb-3">
+                            </label>
+                            <button class="btn btn-primary mb-3" style="margin: 0 auto; display: block;">상품등록</button>
+                        </div>
                     </th:block>
                 </form>
             </div>
@@ -193,38 +217,45 @@
     </div>
 
 
-    <!-- 상품 조회-수정 모달 창 -->
+    <!-- 상품 수정 모달 창 -->
     <div id="productUpdateModal" class="modal" style="margin: 0 auto;padding: 20px;">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="margin: 0 auto; width: 80%">
                 <span class="modal-close" onclick="closeModal('productUpdateModal')">&times;</span>
-                <button onclick="closeModal('productUpdateModal')">상품목록</button>
-                <h3>상품 조회</h3>
-                <!-- 모달 내용 -->
-
-                <!--        <tr th:if="${product.fileAttached == 1}">-->
-                <th>상품이미지</th>
-                <!--          <td th:each="fileName: ${product.storedFileName}">-->
-                <img th:src="@{|/upload/${fileName}}" alt="">
-                </td>
-                </tr>
-
+                <h3 style="text-align: center;">상품 수정</h3>
                 <form action="/product/update" method="post" id="productUpdateForm" enctype="multipart/form-data">
-                    <select name="productCategory" id="product-update-category" class="form-control">
-                        <option value="">선택해주세요</option>
-                        <option value="">식사류</option>
-                        <option value="">튀김</option>
-                        <option value="">간식</option>
-                        <option value="">음료</option>
-                        <option value="">세트메뉴</option>
-                    </select> <br>
-                    <input type="text" placeholder="상품이름" class="form-control"> <br>
-                    <input type="text" placeholder="상품가격" class="form-control"> <br>
-                    <input type="text" placeholder="상품개수" class="form-control"> <br>
-                    <input type="file" name="productFile" class="form-control"> <br>
-                    <input type="submit" style="margin: 0 auto;" value="상품수정">
+                    <th:block th:if="${#lists.isEmpty(categoryList)}">
+                        <p style="text-align: center;">카테고리가 아직 등록되지 않았습니다.</p>
+                    </th:block>
+                    <th:block th:unless="${#lists.isEmpty(categoryList)}">
+                        <div style="text-align: center;">
+                            <input type="hidden" name="id" id="product-update-id">
+                            <label for="category-update-name">카테고리
+                            <select name="categoryName" id="category-update-name" class="form-control mb-3">
+                                <option th:each="category : ${categoryList}" th:value="${category.categoryName}"
+                                        th:text="${category.categoryName}"></option>
+                            </select>
+                            </label>
+                            <label for="product-update-name">상품이름
+                                <input type="text" name="productName" id="product-update-name" placeholder="상품이름"
+                                       class="form-control mb-3">
+                            </label>
+                            <label for="product-update-price">상품가격
+                                <input type="text" name="productPrice" id="product-update-price" placeholder="상품가격"
+                                       class="form-control mb-3">
+                            </label>
+                            <label for="product-update-count">상품개수
+                                <input type="text" name="productCount" id="product-update-count" placeholder="상품개수"
+                                       class="form-control mb-3">
+                            </label>
+                            <label for="product-update-file">상품파일
+                                <input type="file" name="productFile" id="product-update-file"
+                                       class="form-control mb-3">
+                            </label>
+                            <button class="btn btn-primary mb-3" style="margin: 0 auto; display: block;">상품수정</button>
+                        </div>
+                    </th:block>
                 </form>
-                <br>
             </div>
         </div>
     </div>
@@ -254,18 +285,21 @@
                             <tr th:each="game : ${gameList}">
                                 <td th:text="${game.id}"></td>
                                 <td>
-                                    <img th:if="${game.fileAttached == 1}" th:src="@{|/upload/${game.storedFileName}|}" alt="이미지 없음" width="100" height="100">
+                                    <img th:if="${game.fileAttached == 1}" th:src="@{|/upload/${game.storedFileName}|}"
+                                         alt="이미지 없음" width="100" height="100">
                                     <span th:unless="${game.fileAttached == 1}">이미지 없음</span>
                                 </td>
                                 <td th:text="${game.gameName}"></td>
                                 <td>
-<!--                                    <button class="btn btn-primary" onclick="openModal('gameUpdateModal')">수정</button>-->
-                                    <button class="btn btn-primary" th:attr="onclick='gameUpdateForm(\'' + ${game.id} + '\')'">
+                                    <!--                                    <button class="btn btn-primary" onclick="openModal('gameUpdateModal')">수정</button>-->
+                                    <button class="btn btn-primary"
+                                            th:attr="onclick='gameUpdateForm(\'' + ${game.id} + '\')'">
                                         수정
                                     </button>
                                 </td>
                                 <td>
-                                    <button class="btn btn-danger" th:attr="onclick='gameDelete(\'' + ${game.id} + '\')'">
+                                    <button class="btn btn-danger"
+                                            th:attr="onclick='gameDelete(\'' + ${game.id} + '\')'">
                                         삭제
                                     </button>
                                 </td>
@@ -273,7 +307,9 @@
                         </table>
                     </th:block>
                 </div>
-                <button class="btn btn-primary mt-3" onclick="openModal('gameSaveModal')" style="text-align: left;">게임 등록</button>
+                <button class="btn btn-primary mt-3" onclick="openModal('gameSaveModal')" style="text-align: left;">게임
+                    등록
+                </button>
             </div>
         </div>
     </div>
@@ -532,6 +568,21 @@
                 alert("게임 등록이 완료되었습니다.")
                 return true;
             }
+        }
+        const productUpdateForm = (productId) => {
+            console.log(productId);
+            axios({
+                method: "get",
+                url: `/product/${productId}`
+            }).then(res => {
+                openModal('productUpdateModal');
+                document.getElementById("product-update-id").value = res.data.id;
+                document.getElementById("product-update-name").value = res.data.productName;
+                document.getElementById("product-update-price").value = res.data.productPrice;
+                document.getElementById("product-update-count").value = res.data.productCount;
+            }).catch(err => {
+                alert(err);
+            })
         }
 
         const gameUpdateForm = (gameId) => {
