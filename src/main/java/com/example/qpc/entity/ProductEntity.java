@@ -89,6 +89,7 @@ public class ProductEntity {
 
     public static ProductEntity toUpdateEntityWithFile(ProductDTO productDTO,CategoryEntity categoryEntity) {
         ProductEntity productEntity = new ProductEntity();
+        productEntity.setId(productDTO.getId());
         productEntity.setProductName(productDTO.getProductName());
         productEntity.setProductPrice(productDTO.getProductPrice());
         productEntity.setProductCount(productDTO.getProductCount());
