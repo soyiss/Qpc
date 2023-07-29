@@ -48,7 +48,7 @@ public class MemberDTO {
     private String createAt; //생성시간
     private String updateAt; //수정시간
 
-    private RoleEntity role; // 관리자 권한주는 필드
+    private String role; // 관리자 권한주는 필드
 
     @NotNull(message = "권한을 선택해주세요")
     private String formRole; // 관리자나 멤버 셀렉트로 선택하기 위한 필드
@@ -57,7 +57,7 @@ public class MemberDTO {
 
     public MemberDTO(String memberId, String memberPassword, String memberName,
                      String memberEmail, String memberBirth, String memberMobile,
-                     RoleEntity role) {
+                     String role) {
         this.memberId = memberId;
         this.memberPassword = memberPassword;
         this.memberName = memberName;

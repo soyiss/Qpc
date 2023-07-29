@@ -41,8 +41,8 @@ public class MemberEntity extends BaseEntity{
     @Column
     private int totalTime;
 
-    @Enumerated(EnumType.STRING)
-    private RoleEntity role;
+    @Column
+    private String role;
 
 
 

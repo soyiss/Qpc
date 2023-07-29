@@ -86,7 +86,7 @@ public class AdminController {
     //회원수정
     @PutMapping("/{id}")
     public ResponseEntity update(@RequestBody MemberDTO memberDTO) {
-        memberDTO.setRole(RoleEntity.MEMBER);
+        memberDTO.setRole("MEMBER");
         memberService.memberUpdate(memberDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
