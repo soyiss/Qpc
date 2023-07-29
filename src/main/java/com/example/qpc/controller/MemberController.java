@@ -51,7 +51,6 @@ public class MemberController {
             if (memberDTO.getFormRole().equals("member")) {
                 MemberDTO member = MemberDTO.createMember(memberDTO, passwordEncoder);
                 member.setRole("MEMBER");
-
                 memberService.saveMember(member);
                 System.out.println(2);
             } else if (memberDTO.getFormRole().equals("admin")) {

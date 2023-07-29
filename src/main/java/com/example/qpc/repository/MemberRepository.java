@@ -13,7 +13,7 @@ public interface MemberRepository extends JpaRepository<MemberEntity,Long> {
 
     MemberEntity findByMemberEmailAndMemberId(String memberEmail,String memberId);
 
-    MemberEntity findByRole(RoleEntity role);
+    MemberEntity findByRole(String role);
 
     boolean existsById(Long id);
 
