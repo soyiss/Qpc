@@ -3,10 +3,14 @@ package com.example.qpc.controller;
 
 import com.example.qpc.config.DuplicateMemberException;
 import com.example.qpc.dto.MemberDTO;
+import com.example.qpc.dto.TimeDTO;
 import com.example.qpc.entity.BlackListEntity;
+import com.example.qpc.entity.MemberEntity;
 import com.example.qpc.entity.RoleEntity;
+import com.example.qpc.entity.TimeEntity;
 import com.example.qpc.repository.AdminRepository;
 import com.example.qpc.service.MemberService;
+import com.example.qpc.service.TimeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Collection;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -37,6 +41,8 @@ public class MemberController {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final AdminRepository adminRepository;
+
+    private final TimeService timeService;
 
     // 일반유저 회원가입
     @PostMapping("/save")
@@ -89,16 +95,25 @@ public class MemberController {
         model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인해주세요.");
         return "/index";
     }
+    // 시간을 형식에 맞게 변환하는 Helper 메서드 추가
+    private String formatTime(int time) {
+        int hours = time / 60;
+        int minutes = time % 60;
+        return String.format("%02d:%02d:00", hours, minutes);
+    }
 
     // 로그인 처리
     @PostMapping("/login")
     public String memberLogin(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
         try {
             MemberDTO member = memberService.findByMemberId(memberDTO.getMemberId());
+            System.out.println("00 member = " + member);
+
             if (member == null) {
                 model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인하세요.");
                 return "/index";
             }
+
             // 블랙리스트 검사
             BlackListEntity blackListEntity = adminRepository.findByMemberLoginId(member.getMemberId());
             if (blackListEntity != null) {
@@ -118,8 +133,27 @@ public class MemberController {
 
             // 인증 성공 시 처리
             if (member.getRole().equals(RoleEntity.MEMBER)) {
-                // 인증이 성공하면 로그인 처리
-                return "/memberPages/memberMain";
+                TimeDTO time = timeService.findByMemberEntity(member);
+
+                if(time == null) {
+                    model.addAttribute("loginErrorMsg", "요금충전해주세요");
+                    return "/index";
+                }
+
+                if(member.getOverTime() == 0){
+                    model.addAttribute("loginErrorMsg", "충전시간이 없습니다 충전을 해주세요.");
+                    return "/index";
+                }else{
+                    // 인증이 성공하면 로그인 처리
+                    model.addAttribute("member", member);
+                    model.addAttribute("overTimeFormatted", formatTime(member.getOverTime())); // 변환된 잔여시간
+                    model.addAttribute("totalTimeFormatted", formatTime(member.getTotalTime())); // 변환된 총 사용시간
+                    model.addAttribute("timeFormatted", formatTime(time.getTime())); // 변환된 총 사용시간
+                    System.out.println("member = " + member);
+
+                    return "/memberPages/memberMain";
+                }
+
             } else if (member.getRole().equals(RoleEntity.ADMIN)) {
                 return "redirect:/admin/adminMain";
             }
@@ -132,8 +166,6 @@ public class MemberController {
         }
         return "/index";
     }
-
-
 
     // 아이디 찾기
     @GetMapping("/findById/email_check")
@@ -186,9 +218,6 @@ public class MemberController {
         return "redirect:/member/mypage" + id;
     }
 
-
-
-
     @GetMapping("/memberlogintest")
     public String memberlogintest(Model model) {
         model.addAttribute("memberDTO", new MemberDTO());
@@ -212,8 +241,6 @@ public class MemberController {
     public String memberMyPage(){
         return "/memberPages/memberMyPage";
     }
-
-
 
 }
 
