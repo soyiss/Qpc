@@ -50,14 +50,15 @@ public class MemberController {
         try {
             if (memberDTO.getFormRole().equals("member")) {
                 MemberDTO member = MemberDTO.createMember(memberDTO, passwordEncoder);
-                member.setRole(RoleEntity.MEMBER);
+                member.setRole("MEMBER");
+
                 memberService.saveMember(member);
                 System.out.println(2);
             } else if (memberDTO.getFormRole().equals("admin")) {
                 MemberDTO checkAdmin = memberService.findByRole();
                 if (checkAdmin == null) {
                     MemberDTO member = MemberDTO.createMember(memberDTO, passwordEncoder);
-                    member.setRole(RoleEntity.ADMIN);
+                    member.setRole("ADMIN");
                     memberService.saveMember(member);
                     System.out.println(3);
                 } else if (checkAdmin != null) {
@@ -117,10 +118,10 @@ public class MemberController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             // 인증 성공 시 처리
-            if (member.getRole().equals(RoleEntity.MEMBER)) {
+            if (member.getRole().equals("MEMBER")) {
                 // 인증이 성공하면 로그인 처리
                 return "redirect:/member/memberMain";
-            } else if (member.getRole().equals(RoleEntity.ADMIN)) {
+            } else if (member.getRole().equals("ADMIN")) {
                 return "redirect:/admin/adminMain";
             }
 
@@ -137,14 +138,14 @@ public class MemberController {
 
     // 아이디 찾기
     @GetMapping("/findById/email_check")
-    public ResponseEntity memberEmailCheck(@RequestParam String memberEmail) {
+    public ResponseEntity memberEmailCheck(@RequestParam String memberEmail,@RequestParam String memberId) {
         System.out.println("memberEmail = " + memberEmail);
-        MemberDTO member = memberService.findByMemberEmail(memberEmail);
+        MemberDTO member = memberService.findByMemberEmailAndMemberId(memberEmail,memberId);
         System.out.println("member = " + member);
         if (member == null) {
-            return new ResponseEntity<>("이메일을 가진 유저가 존재하지 않습니다",HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         } else {
-            return new ResponseEntity<>(member.getMemberId(), HttpStatus.OK);
+            return new ResponseEntity<>(member.getId(), HttpStatus.OK);
         }
     }
 
@@ -162,7 +163,7 @@ public class MemberController {
     }
 
     // 회원 상세조회 화면 이동
-    @GetMapping("/member/{id}")
+    @GetMapping("/{id}")
     public String findById(@PathVariable Long id, Model model) {
         MemberDTO memberDTO = memberService.findById(id);
         model.addAttribute("memberDTO", memberDTO);
@@ -170,17 +171,20 @@ public class MemberController {
     }
 
     // 회원 수정처리
-    @PutMapping("/member/{id}")
-    public String memberUpdate(@PathVariable Long id,
-                               @ModelAttribute MemberDTO memberDTO) {
-        System.out.println("memberDTO = " + memberDTO);
-        MemberDTO Updatedmember = memberService.memberUpdate(memberDTO);
-        System.out.println("Updatedmember = " + Updatedmember);
-        return "redirect:/member/mypage" + memberDTO.getId();
+    @PutMapping("/{id}")
+    public ResponseEntity memberUpdate(@PathVariable Long id,@RequestBody MemberDTO memberDTO) {
+        MemberDTO member = memberService.findById(id);
+        System.out.println("member = " + member);
+        if(passwordEncoder.matches(memberDTO.getMemberPassword(),member.getMemberPassword())) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        member.setMemberPassword(passwordEncoder.encode(memberDTO.getMemberPassword()));
+        memberService.memberUpdate(member);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 회원 삭제처리
-    @DeleteMapping("/member/{id}")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
         memberService.delete(id);
         return "redirect:/member/mypage" + id;
