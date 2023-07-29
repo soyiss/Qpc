@@ -39,4 +39,14 @@ public class TimeEntity extends BaseEntity{
         timeEntity.setMemberEntity(memberEntity);
         return timeEntity;
     }
+
+    public static TimeEntity toUpdateEntity(TimeDTO timeDTO,MemberEntity memberEntity) {
+        TimeEntity timeEntity = new TimeEntity();
+        timeEntity.setId(timeDTO.getId());
+        timeEntity.setAmount(timeDTO.getAmount());
+        timeEntity.setTime(timeDTO.getTime());
+        timeEntity.setPaymentMethod(timeDTO.getPaymentMethod());
+        timeEntity.setMemberEntity(memberEntity);
+        return timeEntity;
+    }
 }
