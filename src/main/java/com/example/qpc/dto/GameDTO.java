@@ -21,7 +21,6 @@ public class GameDTO {
     private MultipartFile gameFile;
     private String originalFileName;
     private String storedFileName;
-    private GameCategoryEntity gameCategoryEntity;
     private Long gameCategoryId;
     private String gameCategoryName;
 

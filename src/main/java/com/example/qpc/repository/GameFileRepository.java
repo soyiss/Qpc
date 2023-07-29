@@ -5,4 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface GameFileRepository extends JpaRepository<GameFileEntity,Long> {
 
+    GameFileEntity findByGameEntityId(Long id);
+
+    void deleteByGameEntityId(Long id);
+
 }

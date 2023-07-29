@@ -24,6 +24,7 @@ public class CategoryService {
         return categoryEntity.getId();
     }
 
+
     public List<CategoryDTO> findAll() {
         List<CategoryEntity> categoryEntityList = categoryRepository.findAll();
         List<CategoryDTO> categoryDTOList = new ArrayList<>();

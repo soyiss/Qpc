@@ -2,6 +2,7 @@ package com.example.qpc.controller;
 
 import com.example.qpc.dto.GameDTO;
 import com.example.qpc.entity.GameCategoryEntity;
+import com.example.qpc.entity.GameEntity;
 import com.example.qpc.service.GameCategoryService;
 import com.example.qpc.service.GameService;
 import com.example.qpc.dto.GameDTO;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/game")
+@Transactional
 public class GameController {
 
     private final GameService gameService;
@@ -37,12 +40,9 @@ public class GameController {
     public String saveGame(@ModelAttribute GameDTO gameDTO) throws IOException {
         // 게임 카테고리 이름을 기반으로 카테고리 ID를 가져옵니다.
         Long gameCategoryId = gameCategoryService.findGameCategoryIdByName(gameDTO.getGameCategoryName());
-        // 게임 카테고리 ID를 설정합니다.
         gameDTO.setGameCategoryId(gameCategoryId);
-        // 게임 저장 로직 수행
         gameService.save(gameDTO);
-        System.out.println("gameCategoryId = " + gameCategoryId);
-        return "redirect:/";
+        return "redirect:/admin/adminMain";
     }
 
     @GetMapping("/list")
@@ -54,11 +54,28 @@ public class GameController {
         return "gamePages/GameList";
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity detail(@PathVariable Long id) {
+        GameEntity gameEntity = gameService.findById(id);
+        GameDTO gameDTO = GameDTO.toDTO(gameEntity);
+        System.out.println("gameDTO = " + gameDTO);
+        return new ResponseEntity<>(gameDTO,HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         System.out.println("id = " + id);
         gameService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/update")
+    public String gameUpdate(@ModelAttribute GameDTO gameDTO) throws IOException {
+        System.out.println("gameDTO = " + gameDTO);
+        Long gameCategoryId = gameCategoryService.findGameCategoryIdByName(gameDTO.getGameCategoryName());
+        gameDTO.setGameCategoryId(gameCategoryId);
+        gameService.update(gameDTO);
+        return "redirect:/admin/adminMain";
     }
 
 

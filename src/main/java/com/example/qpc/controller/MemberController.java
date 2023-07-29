@@ -237,6 +237,10 @@ public class MemberController {
     @GetMapping("/memberMain")
     public String memberMain(){return "/memberPages/memberMain";}
 
+    @GetMapping("/myPage")
+    public String memberMyPage(){
+        return "/memberPages/memberMyPage";
+    }
 
 }
 

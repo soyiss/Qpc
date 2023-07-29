@@ -343,9 +343,6 @@
 </div>
 
 <input type="hidden" name="code">
-<div class="container" style="height: 80vh;">
-    <img class="w-100 h-100" th:src="@{/img/testMain.png}" alt="Image 404 Error">
-</div>
 </body>
 
 <footer>
@@ -392,7 +389,7 @@
 
 
 <!-- javascript 코드 -->
-<script>
+<script th:inline="javascript">
     // 모든 모달 창 닫기 함수
     function closeAllModals() {
         var modals = document.getElementsByClassName("modal");
@@ -484,14 +481,6 @@
         pwFindModal2.style.display = "none";
     };
 
-
-
-
-
-</script>
-
-
-<script th:inline="javascript">
     const emailCheck = (email) => {
         document.getElementById("email-check").style.display = "block";
         const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
@@ -559,7 +548,6 @@
         }
     }
 
-
     const pwFindEmailFinalCheck = () => {
         const typingCode = document.querySelector('input[name="pwFindEmailCode"]').value;
         const trueCode = document.querySelector('input[name="code"]').value;
@@ -582,9 +570,6 @@
         }
     });
 
-</script>
-
-<script th:inline="javascript">
     //로그인 실패시 에러 메시지 출력
     $(document).ready(function () {
         const errorMessage = [[${errorMessage}]];
@@ -592,11 +577,6 @@
             alert(errorMessage);
         }
     });
-
-
-</script>
-
-<script th:inline="javascript">
 
     const memberCheck = () => {
         const typingKeyword = document.querySelector('input[name="checkResult"]').value;
@@ -682,7 +662,6 @@
         });
     };
 
-
     // 버튼을 눌러서 바로 관리자로 로그인하기
     const adminLogin = () => {
         const form = document.getElementById("loginForm");
@@ -693,6 +672,4 @@
         form.submit();
     }
 </script>
-
-
 </html>
