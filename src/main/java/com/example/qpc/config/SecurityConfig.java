@@ -3,11 +3,13 @@ package com.example.qpc.config;
 import com.example.qpc.config.customError.CustomAccessDeniedHandler;
 import com.example.qpc.config.customError.CustomAuthenticationEntryPoint;
 import com.example.qpc.config.customError.CustomMethodNotAllowedFilter;
+import com.example.qpc.handler.CustomLogoutHandler;
 import com.example.qpc.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -34,6 +37,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomAuthenticationEntryPoint authenticationEntryPoint;
 
+    @Bean
+    public CustomLogoutHandler myCustomLogoutHandler() {
+        return new CustomLogoutHandler(memberService);
+    }
 
 
     // 첫 잠금 해제
@@ -46,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/member/save", "/member/login", "/member/login/error", "/memberSave/mailConfirm", "/test", "/index").anonymous()
                 .antMatchers("/member/findById/email_check").anonymous()
+                .antMatchers("/logout").permitAll()
                 .antMatchers("/category/**").permitAll()
                 .antMatchers("/chat/**").permitAll()
                 .antMatchers("/GameCategory/**").permitAll()
@@ -77,10 +85,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(authenticationEntryPoint) // 커스텀 AuthenticationEntryPoint 사용
                 .and()
                 .addFilterAfter(new CustomMethodNotAllowedFilter(), ExceptionTranslationFilter.class) // 커스텀 MethodNotAllowedFilter 사용
-                // 누구나 로그아웃 할 수 있도록 로그아웃 페이지도 모든곳에서 접근가능하도록 설정
                 .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/")
+                .addLogoutHandler(myCustomLogoutHandler()) // 커스텀 로그아웃 핸들러 등록
+                .invalidateHttpSession(true)
                 .permitAll();
     }
 

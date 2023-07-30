@@ -15,15 +15,65 @@
             overflow: auto; /* 모달창을 스크롤 가능하게 함 */
             background-color: rgb(0, 0, 0);
             background-color: rgba(0, 0, 0, 0.4); /* 모달창 배경 투명도 조절 */
+            margin-bottom: 10px;
+
+        }
+
+        .mypageModal {
+            background-color: #fefefe;
+            margin: 50px;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 20%;
+            height: 50%;
+
         }
 
         /* 모달창 내부 컨텐츠 표시 스타일 */
-        .modal-content {
+        /*.modal-update-content {*/
+        /*    background-color: #fefefe;*/
+        /*    margin: 50px;*/
+        /*    padding: 20px;*/
+        /*    border: 1px solid #888;*/
+        /*    width: 20%;*/
+        /*    height: 50%;*/
+        /*}*/
+        .modal-update-content {
+            /* 기존 스타일 유지 */
+            background-color: #fefefe;
+            margin: 50px;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 20%;
+            height: 50%;
+
+            /* 모달창 위치*/
+            position: fixed;
+            top: 40%;
+            left: 45%;
+            transform: translate(-50%, -50%);
+            border-radius: 10px;
+
+        }
+
+        .modal-update-content input {
+            margin-bottom: 10px;
+        }
+
+        .modal-delete-content {
             background-color: #fefefe;
             margin: auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 80%;
+            width: 20%;
+            height: 15%;
+
+            /* 모달창 위치*/
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 10px;
         }
 
         /* 모달창 내부 닫기 버튼 스타일 */
@@ -51,6 +101,23 @@
             cursor: pointer;
             margin-right: 10px;
         }
+
+        .modal-pass-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 20%;
+            height: 15%;
+
+            /* 모달창 위치*/
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -62,12 +129,13 @@
     <input type="text" placeholder="이메일"> <br>
     <input type="text" placeholder="이름"> <br>
     <input type="date" placeholder="생년월일"> <br>
-    <button id="btnUpdate">회원수정</button> <button id="btnDelete">회원탈퇴</button>
+    <!--    <button id="btnUpdate">회원수정</button> <button id="btnDelete">회원탈퇴</button>-->
+    <a onclick="passwordCheck('update')"> 회원수정</a>/<a onclick="passwordCheck('delete')">회원탈퇴</a>
 </form>
 
 <!-- 회원정보수정 모달창 -->
 <div id="updateModal" class="modal">
-    <div class="modal-content">
+    <div class="modal-update-content">
         <span id="closeUpdateModal" class="modal-close">&times;</span>
         <p>회원정보수정</p>
         <input type="text" placeholder="ID(수정불가능)"> <br>
@@ -76,19 +144,23 @@
         <input type="text" placeholder="비밀번호 확인"> <br>
         <input type="text" placeholder="이름"> <br>
         <input type="date" placeholder="생년월일"> <br>
-        <button>수정</button>
+        <button id="btnUpdate">수정</button>
+        <button id="btnNotUpdate">닫기</button>
 
     </div>
 </div>
 
 <!-- 회원탈퇴 모달창 -->
 <div id="deleteModal" class="modal">
-    <div class="modal-content">
+    <div class="modal-delete-content">
         <span id="closeDeleteModal" class="modal-close">&times;</span>
         <p>회원탈퇴를 하시겠습니까?</p>
-        <button>예</button> <button>아니오</button>
+        <button id="btnDelete">예</button>
+        <button id="btnNotDelete">아니오</button>
     </div>
 </div>
+
+<a onclick="backMain()">뒤로가기</a>
 
 <script th:inline="javascript">
     // 회원수정 모달창 가져오기
@@ -134,6 +206,185 @@
             closeModal(deleteModal);
         }
     }
+
+    function passwordCheck(action) {
+        var password = prompt("비밀번호를 입력하세요:");
+
+        // 입력된 비밀번호가 유효한지 확인하는 로직을 여기에 추가하세요.
+        // 예를 들어, 서버로 비밀번호를 전송하여 유효성을 검사하거나 클라이언트 측에서 비밀번호 패턴을 확인할 수 있습니다.
+
+        // 임시로 비밀번호가 "0000"인 경우에만 동작하도록 설정합니다.
+        if (password === "0000") {
+            if (action === "update") {
+                // "회원수정" 작업을 처리하는 함수를 호출합니다.
+                // 여기에서 모달을 보이도록 처리합니다.
+                performUpdate();
+            } else if (action === "delete") {
+                // "회원탈퇴" 작업을 처리하는 함수를 호출합니다.
+                // 여기에서 모달을 보이도록 처리합니다.
+                performDelete();
+            }
+        } else {
+            alert("비밀번호가 올바르지 않습니다.");
+        }
+    }
+
+    // 회원수정 작업을 처리하는 함수 예시
+    function performUpdate() {
+        // 모달을 표시합니다.
+        updateModal.style.display = "block";
+
+        // 모달 닫기 버튼 이벤트 처리
+        closeUpdateModal.onclick = function () {
+            closeModal(updateModal);
+        };
+    }
+
+    // 회원탈퇴 작업을 처리하는 함수 예시
+    function performDelete() {
+        // 모달을 표시합니다.
+        deleteModal.style.display = "block";
+
+        // 모달 닫기 버튼 이벤트 처리
+        closeDeleteModal.onclick = function () {
+            closeModal(deleteModal);
+        };
+    }
+
+    // "예" 버튼 클릭 시 회원수정 작업을 수행하고 모달 닫기
+    btnUpdate.onclick = function () {
+        var confirmUpdate = confirm("수정하시겠습니까?");
+        if (confirmUpdate) {
+            performUpdate();
+            closeModal(updateModal);
+            showUpdateSuccess();
+        }
+    };
+
+    // "아니오" 버튼 클릭 시 수정 모달 창 닫기
+    btnNotUpdate.onclick = function () {
+        var confirmNotUpdate = confirm("수정을 취소하시겠습니까?");
+        if (confirmNotUpdate) {
+            closeModal(updateModal);
+        }
+    };
+
+    // 회원수정 성공 알림창 표시 함수
+    function showUpdateSuccess() {
+        alert("수정이 완료되었습니다.");
+    }
+
+
+
+    // "예" 버튼 클릭 시 회원탈퇴 작업을 수행하고 모달 닫기
+    btnDelete.onclick = function () {
+        var confirmDelete = confirm("탈퇴하시겠습니까?");
+        if (confirmDelete) {
+            performDelete();
+            closeModal(deleteModal);
+            showDeleteSuccess();
+        }
+    };
+
+    function showDeleteSuccess() {
+        alert("탈퇴가 완료되었습니다.");
+    }
+
+    btnNotDelete.onclick = function () {
+        var confirmNotDelete = confirm("취소하시겠습니까?");
+        if (confirmNotDelete) {
+            closeModal(deleteModal);
+        }
+    };
+
+    const backMain = () => {
+        location.href="/member/memberMain";
+
+    }
+
+
+
 </script>
+
+<!--<script th:inline="javascript">-->
+<!--    // 회원수정 모달창 가져오기-->
+<!--    var updateModal = document.getElementById("updateModal");-->
+<!--    var closeUpdateModal = document.getElementById("closeUpdateModal");-->
+<!--    var btnUpdate = document.getElementById("btnUpdate");-->
+
+<!--    // 회원탈퇴 모달창 가져오기-->
+<!--    var deleteModal = document.getElementById("deleteModal");-->
+<!--    var closeDeleteModal = document.getElementById("closeDeleteModal");-->
+<!--    var btnDelete = document.getElementById("btnDelete");-->
+
+<!--    // 회원수정 버튼 클릭 시 모달창 띄우기-->
+<!--    btnUpdate.onclick = function (event) {-->
+<!--        event.preventDefault(); // 기본 동작 방지-->
+<!--        updateModal.style.display = "block";-->
+<!--    }-->
+
+<!--    // 회원탈퇴 버튼 클릭 시 모달창 띄우기-->
+<!--    btnDelete.onclick = function (event) {-->
+<!--        event.preventDefault(); // 기본 동작 방지-->
+<!--        deleteModal.style.display = "block";-->
+<!--    }-->
+
+<!--    // 모달창 닫기 함수 정의-->
+<!--    function closeModal(modal) {-->
+<!--        modal.style.display = "none";-->
+<!--    }-->
+
+<!--    // 모달창 닫기 버튼 클릭 시 모달창 닫기-->
+<!--    closeUpdateModal.onclick = function () {-->
+<!--        closeModal(updateModal);-->
+<!--    }-->
+<!--    closeDeleteModal.onclick = function () {-->
+<!--        closeModal(deleteModal);-->
+<!--    }-->
+
+<!--    // 모달창 이외의 영역 클릭 시 모달창 닫기-->
+<!--    window.onclick = function (event) {-->
+<!--        if (event.target == updateModal) {-->
+<!--            closeModal(updateModal);-->
+<!--        } else if (event.target == deleteModal) {-->
+<!--            closeModal(deleteModal);-->
+<!--        }-->
+<!--    }-->
+
+<!--    function passwordCheck(action) {-->
+<!--        var password = prompt("비밀번호를 입력하세요:");-->
+
+<!--        // 입력된 비밀번호가 유효한지 확인하는 로직을 여기에 추가하세요.-->
+<!--        // 예를 들어, 서버로 비밀번호를 전송하여 유효성을 검사하거나 클라이언트 측에서 비밀번호 패턴을 확인할 수 있습니다.-->
+
+<!--        // 임시로 비밀번호가 "0000"인 경우에만 동작하도록 설정합니다.-->
+<!--        if (password === "0000") {-->
+<!--            if (action === "update") {-->
+<!--                // "회원수정" 작업을 처리하는 함수를 호출합니다.-->
+<!--                // 여기에서 모달을 보이도록 처리합니다.-->
+<!--                performUpdate();-->
+<!--            } else if (action === "delete") {-->
+<!--                // "회원탈퇴" 작업을 처리하는 함수를 호출합니다.-->
+<!--                // 여기에서 모달을 보이도록 처리합니다.-->
+<!--                performDelete();-->
+<!--            }-->
+<!--        } else {-->
+<!--            alert("비밀번호가 올바르지 않습니다.");-->
+<!--        }-->
+<!--    }-->
+
+
+<!--    // 회원수정 작업을 처리하는 함수 예시-->
+<!--    function performUpdate() {-->
+<!--        // 모달을 표시합니다.-->
+<!--        updateModal();-->
+<!--    }-->
+
+<!--    // 회원탈퇴 작업을 처리하는 함수 예시-->
+<!--    function performDelete() {-->
+<!--        // 모달을 표시합니다.-->
+<!--        deleteModal();-->
+<!--    }-->
+<!--</script>-->
 </body>
 </html>

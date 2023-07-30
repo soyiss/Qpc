@@ -1,6 +1,7 @@
 package com.example.qpc.controller;
 
 import com.example.qpc.dto.*;
+import com.example.qpc.handler.CustomLogoutHandler;
 import com.example.qpc.service.MemberService;
 import com.example.qpc.service.PaymentService;
 import com.example.qpc.service.TimeService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 
 @Controller
@@ -34,7 +36,7 @@ public class PaymentController {
     }
 
     @PostMapping("/memberCharge")
-    public ResponseEntity memberCharge(@RequestBody PaymentInformationDTO paymentInformationDTO) {
+    public ResponseEntity memberCharge(@RequestBody PaymentInformationDTO paymentInformationDTO, HttpSession session ) {
         System.out.println("paymentInformationDTO = " + paymentInformationDTO);
         MemberDTO memberDTO = memberService.findById(paymentInformationDTO.getMemberId());
         System.out.println("memberDTO = " + memberDTO);
@@ -46,6 +48,7 @@ public class PaymentController {
         timeDTO.setTime(paymentInformationDTO.getTime());
         timeDTO.setPaymentMethod("KakaoPay");
         timeService.save(memberDTO,timeDTO);
+        session.invalidate();
         return new ResponseEntity<>(memberDTO,HttpStatus.OK);
     }
 

@@ -130,4 +130,10 @@ public class MemberService implements UserDetailsService {
             return null;
         }
     }
+
+    public void save(MemberDTO memberDTO) {
+        memberRepository.save(MemberEntity.toUpdateEntity(memberDTO));
+    }
+
+
 }

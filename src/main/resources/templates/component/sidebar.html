@@ -8,6 +8,7 @@
             .slides {
                 display: none;
             }
+
             .active {
                 display: block;
             }
@@ -16,14 +17,17 @@
                 display: block;
                 margin-bottom: 10px;
             }
+
             .container {
                 display: flex;
                 align-items: flex-start;
             }
+
             .item-four {
                 width: 100px; /* 이미지 4의 고정 너비 */
                 height: 110px; /* 이미지 비율에 따라 자동 조정 */
             }
+
             .item-container {
                 display: flex;
                 flex-direction: column;
@@ -31,14 +35,17 @@
                 margin-right: 10px;
                 margin-left: 10px;
             }
+
             .item-container .item {
                 width: 100px; /* 이미지 1, 2, 3의 너비 */
                 height: auto; /* 이미지 비율에 따라 자동 조정 */
             }
+
             .ad-img {
                 margin-right: 10px; /* 이미지 4의 왼쪽 여백과 동일한 값 */
                 margin-left: 10px; /* 이미지 4의 왼쪽 여백 */
             }
+
             label {
                 color: white;
                 font-size: 14px;
@@ -109,27 +116,33 @@
             <ul>
                 <a><img src="/img/icon/좌석이동-아이콘.gif" style="width: 20px; height: 20px">자리이동</a>
                 <a onclick="logout()"><img src="/img/icon/종료-아이콘.png" style="width: 20px; height: 20px">사용종료</a>
-                <button class="toggle-button" onclick="toggleSidebar()">ㅡ</button> <br>
+                <button class="toggle-button" onclick="toggleSidebar()">ㅡ</button>
+                <br>
             </ul>
 
 
-                <input type="text" placeholder="좌석번호">
-            <!-- 요금충전 버튼 -->
-            <button data-bs-toggle="modal" data-bs-target="#payReloadModal">
-                <img src="/img/icon/충전-아이콘.gif" style="width: 20px; height: 20px" />요금충전
-            </button>
+            <input type="text" placeholder="좌석번호">
+            <button><img src="/img/icon/충전-아이콘.gif" style="width: 20px; height: 20px"/>요금충전</button>
+            <br>
+            <label>충전 시간 :</label>
+            <span name="time" th:text="${timeFormatted}" style="color: white"></span><br>
 
-                <label>충전 시간 :</label> <input> <br>
-                <label>잔여 시간 :</label> <input> <br>
-                <label>사용 시간 :</label> <input> <br>
+            <label>잔여 시간 :</label>
+            <span id="overTime" name="overTime" th:text="${overTimeFormatted}" style="color: white"></span><br>
 
+            <label>사용 시간 :</label>
+            <span name="totalTime" th:text="${totalTimeFormatted}" style="color: white"></span><br>
+            <input type="hidden" th:value="${member.id}" name="id" id="id">
 
 
                 <button><img src="/img/icon/채팅-아이콘.gif" style="width: 20px; height: 20px" />채팅</button>
                 <button><img src="/img/icon/호출-아이콘.gif" style="width: 20px; height: 20px" />호출</button>
+
                 <button onclick="memberDetail()"><img src="/img/icon/회원정보-아이콘.gif" style="width: 20px; height: 20px" />회원정보</button>
+
                 <button onclick="memberFood()"><img src="/img/icon/주문-아이콘.gif" style="width: 20px; height: 20px" />먹거리</button>
                 <button onclick="openModal('modal1')"><img src="/img/icon/주문내역-아이콘.gif" style="width: 20px; height: 20px" />주문내역</button> <br>
+
 
         </div>
 
@@ -160,10 +173,12 @@
 
                 <div class="ad-img">
                     <a href="https://sa.nexon.com/main/index.aspx" target="_blank">
-                        <img class="slides active" src="/img/광고-서든.png" alt="adImage 1" style="width: 200px; height: 250px;border-radius: 10px;">
+                        <img class="slides active" src="/img/광고-서든.png" alt="adImage 1"
+                             style="width: 200px; height: 250px;border-radius: 10px;">
                     </a>
                     <a href="https://fifaonline4.nexon.com/main/index" target="_blank">
-                        <img class="slides" src="/img/광고-피파.png" alt="adImage 2" style="width: 200px; height: 250px;border-radius: 10px;">
+                        <img class="slides" src="/img/광고-피파.png" alt="adImage 2"
+                             style="width: 200px; height: 250px;border-radius: 10px;">
                     </a>
                 </div>
 
@@ -276,6 +291,7 @@
         // 3초마다 전환됨
         var slideIndex = 0;
         carousel();
+
         function carousel() {
             var i;
             var slides = document.getElementsByClassName('slides');
@@ -291,7 +307,7 @@
         }
 
         const memberFood = () => {
-            location.href="/member/memberFood";
+            location.href = "/member/memberFood";
         }
 
         // modal-content-wrapper의 클릭 이벤트에 event.stopPropagation() 추가
@@ -311,9 +327,11 @@
             modal.style.display = 'none';
         }
 
-        const logout = () => {
-            location.href="/logout";
+
+        function stopUpdateOverTime() {
+            clearTimeout(timerId); // 타이머를 멈추는 함수
         }
+
 
         const selectTime = (time, price) => {
             // const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
@@ -374,6 +392,78 @@
             const memberDetailModal = new bootstrap.Modal(memberDetail);
             memberDetailModal.show();
         }
+
+
+
+        function logout() {
+            const overTimeInMinutes = Math.floor(overTimeInSeconds / 60); // 초 단위를 분 단위로 변환
+            // memberId 값을 가져와서 주소에 추가
+            const id = document.getElementById('id').value;
+            console.log("id=" + id);
+            console.log("overTimeInMinutes=" + overTimeInMinutes);
+            alert("잔여 시간"+overTimeInMinutes+"분이 저장됩니다.\n(초는 포함되지 않습니다.)");
+
+            axios.post('/logout', null, {
+                params: {
+                    id: id,
+                    overTime: overTimeInMinutes
+
+                }
+            }).then(res => {
+                if (res) {
+                    console.log(res);
+                    // 성공적인 응답을 받은 경우, 원하는 URL로 리다이렉트
+                    window.location.href = '/'; // 필요한 URL로 변경하세요
+                }
+            }).catch(err => {
+                console.log("err", err);
+            });
+
+
+        }
+
+        // 잔여시간을 초로 변환하는 함수
+        function convertToSeconds(timeFormatted) {
+            const timeParts = timeFormatted.split(':');
+            let hours = parseInt(timeParts[0]);
+            let minutes = parseInt(timeParts[1]);
+            let seconds = hours * 3600 + minutes * 60;
+            return seconds;
+        }
+
+        // 잔여시간 초 타이머
+        const overTimeFormattedElement = document.getElementById('overTime');
+        const overTime = overTimeFormattedElement.textContent;
+        let overTimeInSeconds = convertToSeconds(overTime);
+        let timerId; // 타이머 식별자 변수를 먼저 선언해줍니다.
+
+        function startUpdateOverTime() {
+            timerId = setTimeout(updateOverTime, 1000); // 1초 후에 잔여시간 업데이트 시작
+        }
+
+        function updateOverTime() {
+            if (overTimeInSeconds > 0) {
+                overTimeInSeconds--;
+                let hours = Math.floor(overTimeInSeconds / 3600);
+                let minutes = Math.floor((overTimeInSeconds % 3600) / 60);
+                let seconds = overTimeInSeconds % 60;
+                overTimeFormattedElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                setTimeout(updateOverTime, 1000);
+            } else {
+                // 잔여시간이 0이면 사용종료
+                alert("잔여시간이 0분 남아서 자동종료됩니다.");
+                logout();
+            }
+        }
+
+        startUpdateOverTime();
+      
+  const memberPage = () => {
+            location.href="/member/myPage";
+
+        }
+
+
     </script>
 
     </body>
