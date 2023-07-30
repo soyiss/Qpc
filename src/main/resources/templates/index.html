@@ -31,6 +31,9 @@
             font-display: swap;
         }
 
+        body {
+            background-color: #e3f2fd;
+        }
 
 
         svg {
@@ -41,13 +44,16 @@
             height: 100%;
             text-transform: uppercase;
             animation: stroke 5s 10 alternate;
+
             fill: rgb(125, 8, 143);
 
         }
+
         @keyframes stroke {
             0% {
                 stroke-dashoffset: 25%;
                 stroke-dasharray: 0 50%;
+
                 fill: rgba(72,138,204,0);
                 stroke: rgb(152, 15, 15);
                 stroke-width: 2;
@@ -59,12 +65,15 @@
             80% {
                 fill: rgba(72,138,204,0);
                 stroke: rgb(152, 15, 15);
+
             }
             100% {
                 stroke-dashoffset: -25%;
                 stroke-dasharray: 50% 0;
+
                 fill: rgb(125, 8, 143);
                 stroke: rgba(54,95,160,0);
+
                 stroke-width: 0;
             }
         }
@@ -306,18 +315,46 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
 
-            <span class="modal-close" onclick="document.querySelector('#pwFindModal2').style.display = 'none'">&times;</span> <!-- here -->
+            <span class="modal-close"
+                  onclick="document.querySelector('#pwFindModal2').style.display = 'none'">&times;</span> <!-- here -->
 
             <p style="text-align: center">비밀번호 찾기</p>
             <input class="form-control" name="pwFindEmail" type="email" placeholder="이메일">
             <button onclick="emailCheck(document.querySelector('input[name=pwFindEmail]').value)">이메일 인증</button>
             <input class="form-control" name="pwFindEmailCode" type="text" placeholder="인증번호 입력">
             <h5 id="pwFind-code-bottom"></h5>
-            <input class="form-control" type="text" placeholder="아이디">
-            <button onclick="pwFindEmailFinalCheck()">비밀번호 찾기</button>
+            <input class="form-control" type="text" name="pwFindId" placeholder="아이디">
+            <button onclick="pwFindEmailFinalCheck(document.querySelector('input[name=pwFindEmail]').value)">비밀번호 찾기</button>
         </div>
     </div>
 </div>
+
+<!-- 비밀번호 재설정 모달 -->
+<div class="modal fade" id="password-changer" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="password-changer-header">비밀번호 재설정</h5>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p style="font-weight: bold">비밀번호 재설정하기</p>
+                    <input type="text" id="member-password-memberId">
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="member-password-changer" name="memberPassword"
+                               placeholder="변경할 비밀번호 입력">
+                        <label for="member-password-changer">변경할 비밀번호</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="member-password-changer-check" name="memberPasswordCheck" placeholder="비밀번호 확인">
+                        <label for="member-password-changer-check">비밀번호 확인</label>
+                    </div>
+                    <input type="button" class="form-control" onclick="passwordChangerCheck()" value="비밀번호 변경">
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <!-- 아이디 확인 모달 -->
@@ -554,7 +591,7 @@
         const result = document.getElementById("input-code-bottom");
 
         if (typingCode == trueCode) {
-            document.getElementById("signSubmit").disabled=false;
+            document.getElementById("signSubmit").disabled = false;
             result.innerText = "인증완료";
             result.style.color = "green";
         } else {
@@ -579,9 +616,9 @@
             }).then(res => {
                 idFindModal.style.display = "none";
                 idResultModal.style.display = "block";
-                document.getElementById("idFindResultId").innerText="회원님의 아이디는 "+ res.data+"입니다.";
+                document.getElementById("idFindResultId").innerText = "회원님의 아이디는 " + res.data + "입니다.";
             }).catch(err => {
-                result.innerText=err.data;
+                result.innerText = err.data;
             });
         } else {
             result.innerText = "인증코드 불일치";
@@ -589,15 +626,28 @@
         }
     }
 
-    const pwFindEmailFinalCheck = () => {
+    const pwFindEmailFinalCheck = (memberEmail) => {
         const typingCode = document.querySelector('input[name="pwFindEmailCode"]').value;
         const trueCode = document.querySelector('input[name="code"]').value;
+        const memberId = document.querySelector('input[name="pwFindId"]').value;
         const result = document.getElementById("pwFind-code-bottom");
 
         if (typingCode == trueCode) {
-            result.innerText = "인증완료";
-            result.style.color = "green";
-            // 다음 모델 띄우기
+            axios({
+                method: "get",
+                url: "/member/findById/email_check",
+                params: {
+                    memberEmail: memberEmail,
+                    memberId: memberId
+                }
+            }).then(res => {
+                document.getElementById("member-password-memberId").value = res.data;
+                document.querySelector('#pwFindModal2').style.display = 'none';
+                document.querySelector('#password-changer').classList.add('show');
+                document.querySelector('#password-changer').style.display = 'block';
+            }).catch(err => {
+                alert("이메일과 아이디가 일치하는 계정 정보가 없습니다");
+            })
         } else {
             result.innerText = "인증코드 불일치";
             result.style.color = "red";
@@ -712,5 +762,42 @@
 
         form.submit();
     }
+
+    const passwordChangerCheck = () => {
+        const passwordChanger = document.getElementById("member-password-changer");
+        const passwordChangerCheck = document.getElementById("member-password-changer-check");
+        const memberId = document.getElementById("member-password-memberId");
+
+        if (passwordChanger.value.length === 0) {
+            alert("변경할 비밀번호를 입력하세요");
+            passwordChanger.focus();
+        } else if (passwordChangerCheck.value.length === 0) {
+            alert("비밀번호 확인을 위해 변경할 비밀번호를 작성해주세요");
+            passwordChangerCheck.focus();
+        } else if (passwordChanger.value === passwordChangerCheck.value) {
+            // 수정처리
+            axios({
+                method: "put",
+                url: `/member/`+memberId.value,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                data: {
+                    memberPassword: passwordChangerCheck.value
+                }
+            })
+                .then(res => {
+                    alert("비밀번호가 수정되었습니다.")
+                    location.href="/";
+                })
+                .catch(err => {
+                    alert("이전에 사용한 비밀번호는 사용불가합니다");
+
+                });
+        } else {
+            alert("비밀번호가 일치하지 않습니다");
+        }
+    };
+
 </script>
 </html>

@@ -56,14 +56,14 @@ public class MemberController {
         try {
             if (memberDTO.getFormRole().equals("member")) {
                 MemberDTO member = MemberDTO.createMember(memberDTO, passwordEncoder);
-                member.setRole(RoleEntity.MEMBER);
+                member.setRole("MEMBER");
                 memberService.saveMember(member);
                 System.out.println(2);
             } else if (memberDTO.getFormRole().equals("admin")) {
                 MemberDTO checkAdmin = memberService.findByRole();
                 if (checkAdmin == null) {
                     MemberDTO member = MemberDTO.createMember(memberDTO, passwordEncoder);
-                    member.setRole(RoleEntity.ADMIN);
+                    member.setRole("ADMIN");
                     memberService.saveMember(member);
                     System.out.println(3);
                 } else if (checkAdmin != null) {
@@ -132,7 +132,8 @@ public class MemberController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             // 인증 성공 시 처리
-            if (member.getRole().equals(RoleEntity.MEMBER)) {
+
+            if (member.getRole().equals("MEMBER")) {
                 TimeDTO time = timeService.findByMemberEntity(member);
 
                 if(time == null) {
@@ -151,10 +152,11 @@ public class MemberController {
                     model.addAttribute("timeFormatted", formatTime(time.getTime())); // 변환된 총 사용시간
                     System.out.println("member = " + member);
 
-                    return "/memberPages/memberMain";
+                    return "redirect:/member/memberMain";
                 }
 
-            } else if (member.getRole().equals(RoleEntity.ADMIN)) {
+            }else if (member.getRole().equals("ADMIN")) {
+
                 return "redirect:/admin/adminMain";
             }
 
@@ -169,14 +171,14 @@ public class MemberController {
 
     // 아이디 찾기
     @GetMapping("/findById/email_check")
-    public ResponseEntity memberEmailCheck(@RequestParam String memberEmail) {
+    public ResponseEntity memberEmailCheck(@RequestParam String memberEmail, @RequestParam String memberId) {
         System.out.println("memberEmail = " + memberEmail);
-        MemberDTO member = memberService.findByMemberEmail(memberEmail);
+        MemberDTO member = memberService.findByMemberEmailAndMemberId(memberEmail, memberId);
         System.out.println("member = " + member);
         if (member == null) {
-            return new ResponseEntity<>("이메일을 가진 유저가 존재하지 않습니다",HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         } else {
-            return new ResponseEntity<>(member.getMemberId(), HttpStatus.OK);
+            return new ResponseEntity<>(member.getId(), HttpStatus.OK);
         }
     }
 
@@ -194,7 +196,7 @@ public class MemberController {
     }
 
     // 회원 상세조회 화면 이동
-    @GetMapping("/member/{id}")
+    @GetMapping("/{id}")
     public String findById(@PathVariable Long id, Model model) {
         MemberDTO memberDTO = memberService.findById(id);
         model.addAttribute("memberDTO", memberDTO);
@@ -202,17 +204,30 @@ public class MemberController {
     }
 
     // 회원 수정처리
-    @PutMapping("/member/{id}")
-    public String memberUpdate(@PathVariable Long id,
-                               @ModelAttribute MemberDTO memberDTO) {
+    @PutMapping("/{id}")
+    public ResponseEntity memberUpdate(@PathVariable Long id, @RequestBody MemberDTO memberDTO) {
+        MemberDTO member = memberService.findById(id);
+        System.out.println("member = " + member);
         System.out.println("memberDTO = " + memberDTO);
-        MemberDTO Updatedmember = memberService.memberUpdate(memberDTO);
-        System.out.println("Updatedmember = " + Updatedmember);
-        return "redirect:/member/mypage" + memberDTO.getId();
+        member.setMemberPassword(passwordEncoder.encode(memberDTO.getMemberPassword()));
+        if (!(passwordEncoder.matches(memberDTO.getMemberPassword(), member.getMemberPassword()))) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        if (memberDTO.getMemberName() != null) {
+            System.out.println("멤버가 바꾸는 수정처리");
+            member.setMemberName(memberDTO.getMemberName());
+            member.setMemberBirth(memberDTO.getMemberBirth());
+            member.setMemberMobile(memberDTO.getMemberMobile());
+            memberService.memberUpdate(member);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            memberService.memberUpdate(member);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
     }
 
     // 회원 삭제처리
-    @DeleteMapping("/member/{id}")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
         memberService.delete(id);
         return "redirect:/member/mypage" + id;
@@ -234,6 +249,7 @@ public class MemberController {
     public String memberFood() {
         return "/memberPages/memberFood";
     }
+
     @GetMapping("/memberMain")
     public String memberMain(){return "/memberPages/memberMain";}
 
@@ -242,6 +258,20 @@ public class MemberController {
         return "/memberPages/memberMyPage";
     }
 
+
+    @GetMapping("/memberMain")
+    public String memberMain(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();
+            // username을 사용하여 MemberDTO를 데이터베이스 등에서 찾아오는 로직을 구현하세요.
+            // 예시로 MemberService를 사용한다고 가정하겠습니다.
+            MemberDTO memberDTO = memberService.findByMemberId(username);
+            System.out.println("memberDTO = " + memberDTO);
+            model.addAttribute("memberDTO", memberDTO);
+        }
+        return "/memberPages/memberMain";
+    }
 }
 
 

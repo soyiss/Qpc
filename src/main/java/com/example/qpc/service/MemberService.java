@@ -123,7 +123,7 @@ public class MemberService implements UserDetailsService {
     }
 
     public MemberDTO findByRole() {
-        MemberEntity memberEntity = memberRepository.findByRole(RoleEntity.ADMIN);
+        MemberEntity memberEntity = memberRepository.findByRole("ADMIN");
         if(memberEntity != null) {
             return MemberDTO.toDTO(memberEntity);
         }else {

@@ -137,7 +137,9 @@
 
                 <button><img src="/img/icon/채팅-아이콘.gif" style="width: 20px; height: 20px" />채팅</button>
                 <button><img src="/img/icon/호출-아이콘.gif" style="width: 20px; height: 20px" />호출</button>
-                <button onclick="memberPage()"><img src="/img/icon/회원정보-아이콘.gif" style="width: 20px; height: 20px" />회원정보</button>
+
+                <button onclick="memberDetail()"><img src="/img/icon/회원정보-아이콘.gif" style="width: 20px; height: 20px" />회원정보</button>
+
                 <button onclick="memberFood()"><img src="/img/icon/주문-아이콘.gif" style="width: 20px; height: 20px" />먹거리</button>
                 <button onclick="openModal('modal1')"><img src="/img/icon/주문내역-아이콘.gif" style="width: 20px; height: 20px" />주문내역</button> <br>
 
@@ -253,7 +255,29 @@
             </div>
         </div>
     </div>
-
+    <!-- 요금충전 버튼 모달 -->
+    <div class="modal fade" id="payReloadModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">요금충전</h5>
+                    <input type="hidden" id="member-id" th:value="${memberDTO.id}">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p style="font-weight: bold">카카오페이 현재 사용가능</p>
+                    <div class="row">
+                        <button class="col-6 btn btn-primary" onclick="selectTime('50', '1000')">50분 1000원</button>
+                        <button class="col-6 btn btn-primary" onclick="selectTime('100', '2000')">1시간40분 2000원</button>
+                        <button class="col-6 btn btn-primary" onclick="selectTime('150', '3000')">2시간30분 3000원</button>
+                        <button class="col-6 btn btn-primary" onclick="selectTime('300', '5000')">5시간 5000원</button>
+                        <button class="col-6 btn btn-primary" onclick="selectTime('420', '7000')">7시간 7000원</button>
+                        <button class="col-6 btn btn-primary" onclick="selectTime('660', '10000')">11시간 10000원</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         function toggleSidebar() {
             var sideBar = document.querySelector('.side-bar');
@@ -306,6 +330,67 @@
 
         function stopUpdateOverTime() {
             clearTimeout(timerId); // 타이머를 멈추는 함수
+        }
+
+
+        const selectTime = (time, price) => {
+            // const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            console.log('Selected time:', time);
+            console.log('Selected price:', price);
+            // const memberId = document.querySelector('input[name="checkResult"]').value;
+            var IMP = window.IMP;
+            IMP.init('imp35682308');
+            var money = price;
+            console.log(money);
+
+            IMP.request_pay({
+                pg: 'kakaopay',
+                merchant_uid: 'merchant_' + new Date().getTime(),
+                name: 'Q PC Room ' + time + '분 ' + price + '원',
+                amount: money,
+                buyer_email: 'iamport@siot.do',
+                buyer_name: 'Q PC Room',
+                buyer_tel: '010-1234-5678',
+                buyer_addr: '인천광역시 부평구',
+                buyer_postcode: '123-456'
+            }, function (rsp) {
+                console.log(rsp);
+                if (rsp.success) {
+                    var msg = '결제가 완료되었습니다.';
+                    msg += '고유ID : ' + rsp.imp_uid;
+                    msg += '상점 거래ID : ' + rsp.merchant_uid;
+                    msg += '결제 금액 : ' + rsp.paid_amount;
+                    msg += '카드 승인번호 : ' + rsp.apply_num;
+                    $.ajax({
+                        type: "post",
+                        url: "/payment/memberCharge",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            amount: money,
+                            time: time,
+                            memberId: document.getElementById("member-id").value
+                        }),
+                        // headers: {
+                        //     "X-CSRF-TOKEN": csrfToken  // csrfToken은 CSRF 토큰 값으로 대체해야 합니다.
+                        // }
+                    }).then(res => {
+                        alert(JSON.stringify(res));
+                    }).catch(err => {
+                        alert(err);
+                    });
+                } else {
+                    var msg = '결제에 실패하였습니다.';
+                    msg += '에러내용 : ' + rsp.error_msg;
+                }
+                alert(msg);
+                window.location.href = "/member/memberMain";
+            });
+        };
+
+        const memberDetail = () => {
+            const memberDetail = document.querySelector('#member-detail');
+            const memberDetailModal = new bootstrap.Modal(memberDetail);
+            memberDetailModal.show();
         }
 
 
@@ -377,6 +462,7 @@
             location.href="/member/myPage";
 
         }
+
 
     </script>
 

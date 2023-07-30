@@ -60,6 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/game/**").permitAll()
                 .antMatchers("/product/**").permitAll()
                 .antMatchers("/payment/**").permitAll()
+                .antMatchers(HttpMethod.PUT,"/member/**").permitAll()
                 .antMatchers("/member/**").hasRole("MEMBER")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/error/**").permitAll()
