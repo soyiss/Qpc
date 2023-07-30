@@ -250,9 +250,6 @@ public class MemberController {
         return "/memberPages/memberFood";
     }
 
-    @GetMapping("/memberMain")
-    public String memberMain(){return "/memberPages/memberMain";}
-
     @GetMapping("/myPage")
     public String memberMyPage(){
         return "/memberPages/memberMyPage";
@@ -268,7 +265,13 @@ public class MemberController {
             // 예시로 MemberService를 사용한다고 가정하겠습니다.
             MemberDTO memberDTO = memberService.findByMemberId(username);
             System.out.println("memberDTO = " + memberDTO);
+
+            TimeDTO time = timeService.findByMemberEntity(memberDTO);
             model.addAttribute("memberDTO", memberDTO);
+            model.addAttribute("overTimeFormatted", formatTime(memberDTO.getOverTime())); // 변환된 잔여시간
+            model.addAttribute("totalTimeFormatted", formatTime(memberDTO.getTotalTime())); // 변환된 총 사용시간
+            model.addAttribute("timeFormatted", formatTime(time.getTime())); // 변환된 총 사용시간
+            System.out.println("member = " + memberDTO);
         }
         return "/memberPages/memberMain";
     }
