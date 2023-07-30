@@ -316,6 +316,7 @@
             const id = document.getElementById('id').value;
             console.log("id=" + id);
             console.log("overTimeInMinutes=" + overTimeInMinutes);
+            alert("잔여 시간"+overTimeInMinutes+"분이 저장됩니다.\n(초는 포함되지 않습니다.)");
 
             axios.post('/logout', null, {
                 params: {
@@ -325,7 +326,6 @@
                 }
             }).then(res => {
                 if (res) {
-                    alert("성공");
                     console.log(res);
                     // 성공적인 응답을 받은 경우, 원하는 URL로 리다이렉트
                     window.location.href = '/'; // 필요한 URL로 변경하세요
@@ -366,6 +366,7 @@
                 setTimeout(updateOverTime, 1000);
             } else {
                 // 잔여시간이 0이면 사용종료
+                alert("잔여시간이 0분 남아서 자동종료됩니다.");
                 logout();
             }
         }
