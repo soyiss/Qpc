@@ -134,12 +134,11 @@ public class MemberController {
     }
 
 
-
     // 아이디 찾기
     @GetMapping("/findById/email_check")
-    public ResponseEntity memberEmailCheck(@RequestParam String memberEmail,@RequestParam String memberId) {
+    public ResponseEntity memberEmailCheck(@RequestParam String memberEmail, @RequestParam String memberId) {
         System.out.println("memberEmail = " + memberEmail);
-        MemberDTO member = memberService.findByMemberEmailAndMemberId(memberEmail,memberId);
+        MemberDTO member = memberService.findByMemberEmailAndMemberId(memberEmail, memberId);
         System.out.println("member = " + member);
         if (member == null) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -171,15 +170,25 @@ public class MemberController {
 
     // 회원 수정처리
     @PutMapping("/{id}")
-    public ResponseEntity memberUpdate(@PathVariable Long id,@RequestBody MemberDTO memberDTO) {
+    public ResponseEntity memberUpdate(@PathVariable Long id, @RequestBody MemberDTO memberDTO) {
         MemberDTO member = memberService.findById(id);
         System.out.println("member = " + member);
-        if(passwordEncoder.matches(memberDTO.getMemberPassword(),member.getMemberPassword())) {
+        System.out.println("memberDTO = " + memberDTO);
+        member.setMemberPassword(passwordEncoder.encode(memberDTO.getMemberPassword()));
+        if (!(passwordEncoder.matches(memberDTO.getMemberPassword(), member.getMemberPassword()))) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
-        member.setMemberPassword(passwordEncoder.encode(memberDTO.getMemberPassword()));
-        memberService.memberUpdate(member);
-        return new ResponseEntity<>(HttpStatus.OK);
+        if (memberDTO.getMemberName() != null) {
+            System.out.println("멤버가 바꾸는 수정처리");
+            member.setMemberName(memberDTO.getMemberName());
+            member.setMemberBirth(memberDTO.getMemberBirth());
+            member.setMemberMobile(memberDTO.getMemberMobile());
+            memberService.memberUpdate(member);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            memberService.memberUpdate(member);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
     }
 
     // 회원 삭제처리
@@ -188,8 +197,6 @@ public class MemberController {
         memberService.delete(id);
         return "redirect:/member/mypage" + id;
     }
-
-
 
 
     @GetMapping("/memberlogintest")
@@ -208,8 +215,9 @@ public class MemberController {
     public String memberFood() {
         return "/memberPages/memberFood";
     }
+
     @GetMapping("/memberMain")
-    public String memberMain(Model model){
+    public String memberMain(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             String username = authentication.getName();

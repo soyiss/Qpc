@@ -127,7 +127,7 @@
 
                 <button><img src="/img/icon/채팅-아이콘.gif" style="width: 20px; height: 20px" />채팅</button>
                 <button><img src="/img/icon/호출-아이콘.gif" style="width: 20px; height: 20px" />호출</button>
-                <button><img src="/img/icon/회원정보-아이콘.gif" style="width: 20px; height: 20px" />회원정보</button>
+                <button onclick="memberDetail()"><img src="/img/icon/회원정보-아이콘.gif" style="width: 20px; height: 20px" />회원정보</button>
                 <button onclick="memberFood()"><img src="/img/icon/주문-아이콘.gif" style="width: 20px; height: 20px" />먹거리</button>
                 <button onclick="openModal('modal1')"><img src="/img/icon/주문내역-아이콘.gif" style="width: 20px; height: 20px" />주문내역</button> <br>
 
@@ -368,6 +368,12 @@
                 window.location.href = "/member/memberMain";
             });
         };
+
+        const memberDetail = () => {
+            const memberDetail = document.querySelector('#member-detail');
+            const memberDetailModal = new bootstrap.Modal(memberDetail);
+            memberDetailModal.show();
+        }
     </script>
 
     </body>

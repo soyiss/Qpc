@@ -8,10 +8,143 @@
 </head>
 <body>
 
+<!-- 회원정보 모달 -->
+<div class="modal fade" id="member-detail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="member-detail-header">회원 정보</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-floating mb-3">
+                    회원번호 : <h5 th:text="${memberDTO.id}"></h5>
+                </div>
+                <div class="form-floating mb-3">
+                    아이디 : <h5 th:text="${memberDTO.memberId}"></h5>
+                </div>
+                <div class="form-floating mb-3">
+                    이름 : <h5 th:text="${memberDTO.memberName}"></h5>
+                </div>
+                <div class="form-floating mb-3">
+                    이메일 : <h5 th:text="${memberDTO.memberEmail}"></h5>
+                </div>
+                <div class="form-floating mb-3">
+                    전화번호 : <h5 th:text="${memberDTO.memberMobile}"></h5>
+                </div>
+                <button class="btn btn-primary" onclick="memberUpdateForm()">회원수정</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 회원정보 모달 -->
+<!-- 회원정보 수정 모달 -->
+<div class="modal fade" id="member-update" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="member-update-header">회원 정보 수정</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="member-update-memberId" th:value="${memberDTO.id}">
+                <div class="form-floating mb-3">
+                    <h4>변경할 비밀번호</h4>
+                    <input type="password" class="form-control" id="member-update-password" name="memberPassword"
+                           placeholder="변경할 비밀번호 입력">
+                    <label for="member-update-password">변경할 비밀번호</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <h4>변경할 비밀번호 확인</h4>
+                    <input type="password" class="form-control" id="member-update-password-check"
+                           placeholder="변경할 비밀번호 입력">
+                    <label for="member-update-password-check">비밀번호 확인</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <h4>변경할 이름</h4>
+                    <input type="text" class="form-control" id="member-update-name" name="memberName"
+                           placeholder="변경할 이름 입력">
+                    <label for="member-update-name">변경할 이름</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <h4>변경할 생년월일</h4>
+                    <input type="date" class="form-control" id="member-update-birth" name="memberBirth">
+                    <label for="member-update-birth">변경할 생년월일</label>
+                </div>
+                <h4>변경할 전화번호</h4>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="member-update-mobile" name="memberMobile"
+                           placeholder="변경할 전화번호 입력">
+                    <label for="member-update-mobile">변경할 전화번호</label>
+                </div>
+                <button class="btn btn-primary" onclick="memberUpdate()">수정하기</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 
 <footer>
     <th:block th:replace="component/memberNav :: memberNav"></th:block>
 </footer>
+<script th:inline="javascript">
+    const memberUpdateForm = () => {
+        alert("회원수정은 비밀번호,이름,생년월일,전화번호만 가능합니다.");
 
+        // 첫 번째 Modal 객체 가져오기
+        const memberDetail = document.querySelector('#member-detail');
+        const memberDetailModal = new bootstrap.Modal(memberDetail);
+        memberDetailModal.hide(); // 첫 번째 Modal 숨기기
+
+        // 두 번째 Modal 객체 가져오기
+        const memberUpdate = document.querySelector('#member-update');
+        const memberUpdateModal = new bootstrap.Modal(memberUpdate);
+        memberUpdateModal.show(); // 두 번째 Modal 보이기
+    }
+
+    const memberUpdate = () => {
+        const id = document.getElementById("member-update-memberId").value;
+        const memberPassword = document.getElementById("member-update-password");
+        const memberPasswordCheck = document.getElementById("member-update-password-check");
+        const memberName = document.getElementById("member-update-name");
+        const memberBirth = document.getElementById("member-update-birth");
+        const memberMobile = document.getElementById("member-update-mobile");
+
+        if (memberPassword.value.length === 0) {
+            alert("변경할 비밀번호를 입력하세요");
+            memberPassword.focus();
+        } else if (memberPasswordCheck.value.length === 0) {
+            alert("비밀번호 체크를 입력해주세요");
+            memberPasswordCheck.focus();
+        } else if (memberPassword.value !== memberPasswordCheck.value) {
+            alert("비밀번호 체크와 변경할 비밀번호를 같게 입력해주세요");
+        } else if (memberName.value.length === 0) {
+            alert("변경할 이름을 입력하세요");
+            memberName.focus();
+        } else if (memberBirth.value.length === 0) {
+            alert("변경할 생년월일을 입력하세요");
+            memberBirth.focus();
+        } else if (memberMobile.value.length === 0) {
+            alert("변경할 전화번호를 입력하세요");
+            memberMobile.focus();
+        } else {
+            axios({
+                method: "put",
+                url: "/member/" + id,
+                data: {
+                    memberPassword: memberPassword.value,
+                    memberName: memberName.value,
+                    memberBirth: memberBirth.value,
+                    memberMobile: memberMobile.value
+                }
+            }).then(res => {
+                alert("회원정보가 수정되었습니다.")
+                location.href="/member/memberMain";
+            }).catch(err => {
+                alert("이전에 사용한 비밀번호는 사용불가합니다");
+            });
+        }
+    }
+</script>
 </html>
