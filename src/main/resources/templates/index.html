@@ -180,7 +180,7 @@
 
 
 <!--회원가입 모달창-->
-<div id="myModal" class="modal">
+<div id="myModal" class="modal" >
     <div class="modal-dialog modal-dialog-centered" style="max-height: 80vh; overflow-y: auto;">
         <div class="modal-content">
             <span class="modal-close">&times;</span>
@@ -475,6 +475,12 @@
             modals[i].style.display = "none";
         }
     }
+
+    const signupModal = document.getElementById("myModal");
+
+    signupModal.addEventListener("click", function (event) {
+        event.stopPropagation();
+    });
 
     // 모든 모달 창에 대해 클릭 이벤트 처리
     var modalCloseButtons = document.getElementsByClassName("modal-close");
