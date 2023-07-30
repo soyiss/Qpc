@@ -128,6 +128,22 @@
         .find-area {
             margin: 0 auto;
         }
+        /* 아래의 스타일을 CSS에 추가하세요. */
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between; /* 이렇게 설정하면 열간 간격이 균등하게 됩니다. */
+        }
+
+        /* 버튼에 스타일 적용하기 */
+        .row .col-6 button {
+            width: 100%; /* 버튼이 컨테이너의 전체 너비를 차지하도록 설정합니다. */
+            height: 60px; /* 모든 버튼의 높이를 고정값으로 설정합니다. */
+            margin-bottom: 10px; /* 버튼 사이의 세로 간격을 설정합니다. */
+            display: flex;
+            justify-content: center; /* 버튼 텍스트를 가로 방향 가운데 정렬합니다. */
+            align-items: center; /* 버튼 텍스트를 세로 방향 가운데 정렬합니다. */
+        }
 
     </style>
 </head>
@@ -313,7 +329,7 @@
                     <label for="member-check">아이디 입력</label>
                     <p th:if="${findByIdErrorMsg}" class="error" th:text="${findByIdErrorMsg}"></p>
                 </div>
-                <button class="btn btn-primary" onclick="memberCheck()">회원 확인</button>
+                <button onclick="memberCheck()"  style="padding: 10px 15px">회원 확인</button>
             </div>
         </div>
     </div>
@@ -327,17 +343,36 @@
                 <h5 class="modal-title" id="exampleModalLabel">시간 선택</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
             <div class="modal-body">
-                <p style="font-weight: bold">카카오페이 현재 사용가능</p>
                 <div class="row">
-                    <button class="col-6 btn btn-primary" onclick="selectTime('50', '1000')">50분 1000원</button>
-                    <button class="col-6 btn btn-primary" onclick="selectTime('100', '2000')">1시간40분 2000원</button>
-                    <button class="col-6 btn btn-primary" onclick="selectTime('150', '3000')">2시간30분 3000원</button>
-                    <button class="col-6 btn btn-primary" onclick="selectTime('300', '5000')">5시간 5000원</button>
-                    <button class="col-6 btn btn-primary" onclick="selectTime('420', '7000')">7시간 7000원</button>
-                    <button class="col-6 btn btn-primary" onclick="selectTime('660', '10000')">11시간 10000원</button>
+                    <div class="col-6">
+                        <button onclick="selectTime('1', '100')">1분<br>100원</button>
+                    </div>
+                    <div class="col-6">
+                        <button  onclick="selectTime('2', '200')">2분 200원</button>
+                    </div>
+                    <div class="col-6">
+                        <button  onclick="selectTime('50', '1000')">50분 1000원</button>
+                    </div>
+                    <div class="col-6">
+                        <button  onclick="selectTime('100', '2000')">1시간40분 2000원</button>
+                    </div>
+                    <div class="col-6">
+                        <button  onclick="selectTime('150', '3000')">2시간30분 3000원</button>
+                    </div>
+                    <div class="col-6">
+                        <button  onclick="selectTime('300', '5000')">5시간 5000원</button>
+                    </div>
+                    <div class="col-6">
+                        <button  onclick="selectTime('420', '7000')">7시간 7000원</button>
+                    </div>
+                    <div class="col-6">
+                        <button  onclick="selectTime('660', '10000')">11시간 10000원</button>
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
