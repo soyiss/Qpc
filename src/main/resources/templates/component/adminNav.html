@@ -279,6 +279,7 @@
                                 <th>id</th>
                                 <th>게임 이미지</th>
                                 <th>게임 이름</th>
+                                <th>게임 링크</th>
                                 <th>수정</th>
                                 <th>삭제</th>
                             </tr>
@@ -290,6 +291,9 @@
                                     <span th:unless="${game.fileAttached == 1}">이미지 없음</span>
                                 </td>
                                 <td th:text="${game.gameName}"></td>
+                                <td>
+                                </td>
+                                <td th:text="${game.gameLink}"></td>
                                 <td>
                                     <!--                                    <button class="btn btn-primary" onclick="openModal('gameUpdateModal')">수정</button>-->
                                     <button class="btn btn-primary"
