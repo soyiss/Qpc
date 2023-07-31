@@ -18,6 +18,9 @@ public class SeatEntity {
     @Column(length = 10,nullable = false)
     private String seatName;
 
+    @Column
+    private boolean taken;
+
     // 참조관계 설정(자식테이블)
     @ManyToOne // 자식이 여러개니까 (N관계) ManyToOne를 써줌
     @JoinColumn(name="member_id") //실제 DB에서 생성되는 참조 컬럼의 이름
