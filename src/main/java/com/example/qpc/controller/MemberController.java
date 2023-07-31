@@ -172,9 +172,21 @@ public class MemberController {
         }
         return "/index";
     }
+    // 아이디 찾기
+    @GetMapping("/findById/email_check_id")
+    public ResponseEntity memberEmailCheck(@RequestParam String memberEmail) {
+        System.out.println("memberEmail = " + memberEmail);
+        MemberDTO member = memberService.findByMemberEmail(memberEmail);
+        System.out.println("member = " + member);
+        if (member == null) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } else {
+            return new ResponseEntity<>(member.getId(), HttpStatus.OK);
+        }
+    }
 
     // 아이디 찾기
-    @GetMapping("/findById/email_check")
+    @GetMapping("/findById/email_check_pw")
     public ResponseEntity memberEmailCheck(@RequestParam String memberEmail, @RequestParam String memberId) {
         System.out.println("memberEmail = " + memberEmail);
         MemberDTO member = memberService.findByMemberEmailAndMemberId(memberEmail, memberId);

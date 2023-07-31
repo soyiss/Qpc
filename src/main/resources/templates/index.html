@@ -339,7 +339,7 @@
             </div>
             <div class="modal-body">
                 <p style="font-weight: bold">비밀번호 재설정하기</p>
-                    <input type="text" id="member-password-memberId">
+                    <input type="hidden" id="member-password-memberId">
                     <div class="form-floating mb-3">
                         <input type="password" class="form-control" id="member-password-changer" name="memberPassword"
                                placeholder="변경할 비밀번호 입력">
@@ -615,7 +615,7 @@
         if (typingCode == trueCode) {
             alert("인증완료");
             // 다음 모달 띄우기
-            axios.get("/member/findById/email_check", {
+            axios.get("/member/findById/email_check_id", {
                 params: {
                     memberEmail: email,
                 }
@@ -641,7 +641,7 @@
         if (typingCode == trueCode) {
             axios({
                 method: "get",
-                url: "/member/findById/email_check",
+                url: "/member/findById/email_check_pw",
                 params: {
                     memberEmail: memberEmail,
                     memberId: memberId
