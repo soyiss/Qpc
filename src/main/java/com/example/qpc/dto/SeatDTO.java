@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 public class SeatDTO {
     private Long id;
     private String seatName;
+    private boolean taken;
     private Long memberId;
     private Long timeId;
-
-
 }

@@ -1,0 +1,99 @@
+@charset "UTF-8";
+
+#allContainer {
+    height: 100%;
+    margin: 0 auto;
+}
+#allContainer h1{
+    text-align: center;
+    margin: 15px auto;
+}
+#memberContainer{
+    text-align: center;
+}
+#memberContainer label{
+    line-height: 10px;
+}
+.lbl:nth-child(2) {
+    margin-left: 10px;
+}
+select{
+    padding: 5px;
+}
+
+#seatsContainer {
+    margin-top: 10px;
+}
+button{
+    margin: 3px;
+    color: white;
+    border-radius: 5px;
+    width: 130px;
+    height: 65px;
+    font-size: 1.2em;
+    text-align: center;
+    border: 0;
+    outline : 0;
+    cursor: pointer;
+}
+button:hover {
+    background-color: goldenrod;
+}
+.btnEmptySeats {
+    background-color: lightgray;
+    color: #4A4F5A;
+    position: relative;
+}
+.btnEmptySeats div:nth-child(1){
+    position: absolute;
+    top: 10px;
+    left: 15px;
+}
+.btnEmptySeats div:nth-child(2){
+    position: absolute;
+    bottom: 5px;
+    left: 30px;
+}
+.btnSelSeats{
+    background-color: #DC143C;
+    position: relative;
+}
+.btnMySelSeat{
+    background-color: #0679C0;
+    position: relative;
+}
+.btnSelSeats div:nth-child(1), .btnMySelSeat div:nth-child(1){
+    position: absolute;
+    top: 10px;
+    left: 15px;
+}
+.btnSelSeats div:nth-child(2), .btnMySelSeat div:nth-child(2){
+    position: absolute;
+    bottom: 5px;
+    left: 40px;
+}
+.btnSelSeats div:nth-child(4), .btnMySelSeat div:nth-child(4){
+    position: absolute;
+    top: 10px;
+    right:5px;
+}
+
+span {
+    margin-top:3px;
+    margin-right: 10px;
+    color: black;
+    font-size: 1.4em;
+}
+#btnContainer{
+    text-align: center;
+    margin: 20px auto;
+}
+#btnContainer #btnSelSeat{
+    background-color : #383838;
+    color: white;
+    width: 140px;
+    height: 62px;
+}
+#btnContainer #btnSelSeat:hover{
+    background-color: darkgoldenrod
+}

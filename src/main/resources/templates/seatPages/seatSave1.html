@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QPC 좌석 선택</title>
+    <style>
+        /* 버튼에 대한 스타일링 */
+        .seat-button {
+            margin: 10px;
+            padding: 15px; /* 높이 조절을 위해 padding 값을 조정합니다 */
+            border: 5px solid #ccc;
+            background-color: #f5f5f5;
+            cursor: pointer;
+            line-height: 3.9; /* 선택 사항: 텍스트 정렬을 위해 line-height 값을 조정합니다 */
+            display: inline-block; /* 좌석 버튼을 인라인 블록 요소로 표시하여 옆으로 배열합니다 */
+        }
+
+        /* 선택된 버튼에 대한 스타일링 */
+        .selected {
+            background-color: #007bff;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <h2>Q PC 좌석 선택</h2>
+    <div style="display: flex;justify-content: center">
+        <div id="seatsContainer" style="width: 56%;" >
+            <!-- 좌석 정보를 자바스크립트로 동적으로 생성할 예정 -->
+        </div>
+    </div>
+    <form id="userInfoForm">
+        <input type="hidden" name="id" th:value="${member.id}">
+        <input type="hidden" name="memberId" th:value="${member.memberId}">
+        <input type="hidden" name="overTime" th:value="${member.overTime}">
+    </form>
+    <div id="seatContainer">
+        <!-- Thymeleaf를 사용하여 서버에서 전달된 좌석 정보를 동적으로 생성 -->
+        <div th:each="seat : ${seats}"
+             th:class="${seat.taken} ? 'seat selected' : 'seat'"
+             th:text="${seat.seatName}"
+             th:attr="data-seatId=${seat.id}, data-memberId=${seat.memberEntity != null ? seat.memberEntity.id : null}"
+             onclick="selectSeat(this)"></div>
+    </div>
+</body>
+<script th:inline="javascript">
+    // 좌석 개수
+    const numberOfSeats = 15;
+    const seatsPerRow = 5;
+
+    // 좌석 정보를 서버로 전송하는 함수
+    function addSeatToServer(seatName, seatNumber) {
+        const data = {
+            seatName: seatName,
+            seatNumber: seatNumber
+        };
+
+        fetch('/seat/save', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('data', data);
+            })
+            .catch(error => {
+                console.error('err', error);
+            });
+    }
+
+    // 좌석 선택 시 동작
+    // function seatClickHandler(seatNumber) {
+    //     // 여기서 선택된 좌석에 대한 처리를 구현
+    //     console.log(`Seat Number ${seatNumber} is selected`);
+    // }
+    const availableSeats = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+    // const users = {
+    //     id: document.querySelector('input[name="id"]').value,
+    //     memberId: document.querySelector('input[name="memberId"]').value,
+    //     memberTime: document.querySelector('input[name="overTime"]').value
+    // };
+    // 좌석 선택 시 동작
+    // function seatClickHandler(seatNumber) {
+    //     if (availableSeats.includes(seatNumber)) {
+    //         // 사용 가능한 좌석인 경우, 해당 좌석으로 이동하도록 처리
+    //         console.log(`Seat Number ${seatNumber} is available. Moving to the seat.`);
+    //         const moveConfirmation = confirm("해당 좌석으로 이동하시겠습니까?");
+    //         if (moveConfirmation) {
+    //             // 좌석 이동 로직 추가 (예시: 페이지 이동 등)
+    //             const { id, memberId, memberTime } = users[seatNumber];
+    //             // 여기서는 간단하게 콘솔에 메시지를 출력하는 것으로 대체합니다.
+    //             console.log(`이동되었습니다. 좌석 번호: ${seatNumber}, 사용자 아이디: ${id}, 멤버 아이디: ${memberId}, 추가 시간: ${memberTime} 분.`);
+    //             // 여기에 이동된 좌석 정보를 받아오고 해당 좌석에 회원의 아이디와 남은 시간을 표시하는 로직을 추가해야합니다.
+    //             document.querySelector(`#seat${seatNumber}`).textContent = `사용자 아이디: ${id}, 멤버 아이디: ${memberId}, 추가 시간: ${memberTime} 분`;
+    //         }
+    //     } else {
+    //         // 사용 불가능한 좌석인 경우, 메시지를 띄우기
+    //         console.log(`좌석 번호 ${seatNumber}는 사용할 수 없습니다.`);
+    //         alert('해당 좌석은 사용할 수 없습니다.');
+    //     }
+    // }
+
+    function seatClickHandler(seatNumber) {
+        const userInfoForm = document.getElementById("userInfoForm");
+        const formData = new FormData(userInfoForm);
+        const userId = formData.get("id");
+        const memberId = formData.get("memberId");
+        const memberTime = formData.get("overTime");
+
+        if (availableSeats.includes(seatNumber)) {
+            const moveConfirmation = confirm("해당 좌석으로 이동하시겠습니까?");
+            if (moveConfirmation) {
+                // 사용 가능한 좌석인 경우, 해당 좌석으로 이동하도록 처리
+                console.log(`Seat Number ${seatNumber} is available. Moving to the seat.`);
+
+                fetch(`/seat/${seatNumber}/select?id=${userId}&memberId=${memberId}&overTime=${memberTime}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // 성공적으로 서버에 요청을 보낸 경우에만 사용자 정보 표시
+                            console.log(`이동되었습니다. 좌석 번호: ${seatNumber}, 사용자 아이디: ${userId}, 멤버 아이디: ${memberId}, 추가 시간: ${memberTime} 분.`);
+                            document.querySelector(`#seat${seatNumber}`).textContent = `사용자 아이디: ${userId}, 멤버 아이디: ${memberId}, 추가 시간: ${memberTime} 분`;
+                        } else {
+                            console.error('서버 요청 실패');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('err', error);
+                    });
+            }
+        } else {
+            // 사용 불가능한 좌석인 경우, 메시지를 띄우기
+            console.log(`좌석 번호 ${seatNumber}는 사용할 수 없습니다.`);
+            alert('해당 좌석은 사용할 수 없습니다.');
+        }
+    }
+
+    // 좌석 생성 함수
+    function createSeat(seatNumber) {
+        const seatButton = document.createElement("button");
+        seatButton.classList.add("seat-button");
+        seatButton.innerHTML = `좌석번호: ${seatNumber}`;
+        // 클릭 이벤트 리스너 추가
+        seatButton.addEventListener("click", () => seatClickHandler(seatNumber));
+
+        return seatButton;
+    }
+
+    // 좌석을 동적으로 생성하여 seatsContainer에 추가
+    const seatsContainer = document.getElementById("seatsContainer");
+    for (let i = 1; i <= numberOfSeats; i++) {
+        const seat = createSeat(i);
+        seat.style.boxSizing = "border-box";
+        seat.style.width = "145px";
+        seatsContainer.appendChild(seat);
+    }
+
+    // 좌석 정보를 서버로 전송하는 함수를 호출하는 예시
+    const seatName = 'Sample Seat';
+    const seatNumber = 1;
+    addSeatToServer(seatName, seatNumber);
+
+    function selectSeat(seatElement) {
+        const seatId = seatElement.getAttribute("data-seatId");
+        const memberId = seatElement.getAttribute("data-memberId");
+
+        if (memberId) {
+            console.log(`이미 회원 ID: ${memberId}에 의해 선택된 좌석입니다.`);
+        } else {
+            // 서버로 좌석 선택 정보를 전송
+            const formData = new FormData();
+            formData.append("seatId", seatId);
+            formData.append("memberId", 1); // 여기서 1은 회원 ID를 의미합니다. 실제 회원 ID를 받아오거나 로그인 상태를 체크해서 설정하면 됩니다.
+
+            fetch("/selectSeat", {
+                method: "POST",
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    console.log("좌석 선택이 완료되었습니다.");
+                    window.location.reload(); // 페이지 새로고침
+                } else {
+                    console.error("좌석 선택에 실패하였습니다.");
+                }
+            }).catch(error => {
+                console.error("좌석 선택 중 오류가 발생하였습니다.", error);
+            });
+        }
+    }
+</script>
+</html>
