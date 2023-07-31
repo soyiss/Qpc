@@ -2,6 +2,7 @@ package com.example.qpc.controller;
 
 
 import com.example.qpc.config.DuplicateMemberException;
+import com.example.qpc.dto.CategoryDTO;
 import com.example.qpc.dto.MemberDTO;
 import com.example.qpc.dto.TimeDTO;
 import com.example.qpc.entity.BlackListEntity;
@@ -9,6 +10,7 @@ import com.example.qpc.entity.MemberEntity;
 import com.example.qpc.entity.RoleEntity;
 import com.example.qpc.entity.TimeEntity;
 import com.example.qpc.repository.AdminRepository;
+import com.example.qpc.service.CategoryService;
 import com.example.qpc.service.MemberService;
 import com.example.qpc.service.TimeService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.List;
 
 
 @Controller
@@ -41,6 +44,7 @@ public class MemberController {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final AdminRepository adminRepository;
+    private final CategoryService categoryService;
 
     private final TimeService timeService;
 
@@ -265,6 +269,9 @@ public class MemberController {
             // 예시로 MemberService를 사용한다고 가정하겠습니다.
             MemberDTO memberDTO = memberService.findByMemberId(username);
             System.out.println("memberDTO = " + memberDTO);
+
+            List<CategoryDTO> categoryDTOList = categoryService.findAll();
+            model.addAttribute("categoryList",categoryDTOList);
 
             TimeDTO time = timeService.findByMemberEntity(memberDTO);
             model.addAttribute("memberDTO", memberDTO);
